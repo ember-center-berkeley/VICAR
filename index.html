@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="VICAR: Video Imitation with Contact-Aware Retargeting for Humanoid Interactive Skills. Learning contact-rich humanoid skills from third-person human videos.">
+  <meta property="og:title" content="VICAR — Video Imitation with Contact-Aware Retargeting">
+  <meta property="og:description" content="From human video to contact-rich humanoid skills. Explore the method, ten skills, and interactive contact-point augmentation.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://ember-center-berkeley.github.io/VICAR/assets/images/overview.png">
+  <title>VICAR | Video Imitation with Contact-Aware Retargeting</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/content.js"></script>
+  <script defer src="assets/site.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav container" aria-label="Main navigation">
+      <a class="wordmark" href="./" aria-label="VICAR home"><span class="brand-icon" aria-hidden="true">V</span> VICAR</a>
+      <div class="nav-links"><a href="#overview">Overview</a><a href="#skills">Skills</a><a href="#interactive">Interactive demo <span aria-hidden="true">↗</span></a></div>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero container" aria-labelledby="project-title">
+      <p class="eyebrow"><span class="tiny-dot"></span> Learning humanoid interactive skills</p>
+      <h1 id="project-title"><span class="project-name">VICAR</span><span class="project-title">Video Imitation with Contact-Aware Retargeting<br class="desktop-break"> for Humanoid Interactive Skills</span></h1>
+      <div id="authors" class="authors" hidden></div>
+      <p id="affiliations" class="affiliations" hidden></p>
+      <p class="hero-summary">Learn from human videos.<br class="mobile-break"> Preserve the contacts that make a skill work.</p>
+      <div class="resource-links" aria-label="Project resources">
+        <a class="pill" data-resource="arxiv" href="./"><span class="resource-icon" aria-hidden="true">↗</span> arXiv</a>
+        <a class="pill" data-resource="paper" href="./"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7zM14 3v5h4M10 12h5M10 16h5"/></svg> Paper</a>
+        <a class="pill" data-resource="code" href="https://github.com/ember-center-berkeley/VICAR"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 16"/></svg> Code</a>
+        <a class="pill" data-resource="video" href="./"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></svg> Video</a>
+        <a class="pill pill-accent" href="#interactive"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m12 3 9 5v9l-9 5-9-5V8zm0 0v10m9-5-9 5-9-5m9 5v9"/></svg> Interactive demo</a>
+      </div>
+      <div class="hero-facts" aria-label="Project scope"><span><strong>10</strong> video skills</span><i></i><span><strong>6</strong> serve styles</span><i></i><span><strong>1</strong> contact-aware pipeline</span></div>
+    </section>
+
+    <section class="abstract-section" id="abstract" aria-labelledby="abstract-title">
+      <div class="container reading-width"><p class="eyebrow">The idea</p><h2 id="abstract-title">Human motion. Robot embodiment.<br><span class="text-accent">The same interaction.</span></h2>
+      <details class="abstract-details" open><summary>Abstract <span aria-hidden="true">⌄</span></summary><p id="abstract-text">Third-person human videos offer a scalable alternative to task-specific reward engineering, teleoperation, and manually scripted demonstrations for humanoid loco-manipulation. VICAR learns interactive humanoid skills while preserving world-frame contact poses, motion speed, and collision clearance.</p></details>
+      </div>
+    </section>
+
+    <section id="overview" class="section container" aria-labelledby="overview-title">
+      <div class="section-heading centered"><p class="eyebrow">From observation to execution</p><h2 id="overview-title">A pipeline built around contact</h2><p>Reconstruct the scene, preserve the interaction, and learn a reference that adapts.</p></div>
+      <figure class="overview-figure"><a href="assets/images/overview.png" target="_blank" rel="noopener" aria-label="Open full-resolution VICAR overview figure"><img src="assets/images/overview.png" width="2600" height="1463" alt="VICAR pipeline: human videos and scene reconstruction feed contact-aware retargeting, contact-point augmentation, a motion generator, reinforcement learning, and zero-shot deployment on a humanoid robot." loading="lazy"></a><figcaption><strong>VICAR overview.</strong> Third-person human video becomes a contact-aware robot reference. Augmented contact points train a motion generator, whose outputs are tracked by a policy on the robot.</figcaption></figure>
+      <div class="pipeline-steps"><div><span>01</span><h3>Recover</h3><p>Human motion and task-relevant scene geometry from video.</p></div><div><span>02</span><h3>Retarget</h3><p>Preserve global contacts, motion speed, and collision clearance.</p></div><div><span>03</span><h3>Augment</h3><p>Vary contact locations while retaining the demonstrated skill.</p></div><div><span>04</span><h3>Execute</h3><p>Track contact-conditioned references on the humanoid.</p></div></div>
+    </section>
+
+    <section id="skills" class="section section-tinted" aria-labelledby="serves-title"><div class="container">
+      <div class="section-heading heading-row"><div><p class="eyebrow">01 — Table tennis</p><h2 id="serves-title">Six serves. Distinct styles.</h2><p>One source video per skill, with movable racket–ball contact points.</p></div><span class="section-tag">6 video slots</span></div>
+      <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Table tennis serve videos">
+        <div id="serve-track" class="serve-track" tabindex="0" aria-label="Serve videos. Use left and right arrow keys to browse."></div>
+        <div class="carousel-footer"><span class="carousel-note">Explore the six serve styles</span><div id="serve-dots" class="carousel-dots" aria-label="Choose a serve"></div><div class="carousel-arrows"><button id="serve-prev" class="round-button" aria-label="Previous serve">←</button><button id="serve-next" class="round-button" aria-label="Next serve">→</button></div></div>
+      </div>
+      <p class="media-note">Video placeholders are ready for the final clips.</p>
+    </div></section>
+
+    <section class="section container" aria-labelledby="other-skills-title">
+      <div class="section-heading heading-row"><div><p class="eyebrow">02 — Beyond serving</p><h2 id="other-skills-title">Reach, support, lift, climb.</h2><p>Four skills spanning object interaction and whole-body coordination.</p></div><span class="section-tag">4 video slots</span></div>
+      <div id="other-skills" class="skill-grid"></div>
+    </section>
+
+    <section id="interactive" class="section section-tinted" aria-labelledby="interactive-title"><div class="container">
+      <div class="section-heading centered"><p class="eyebrow">03 — Explore in 3D</p><h2 id="interactive-title">One motion. New contact points.</h2><p>Select a contact variation, then orbit the scene and scrub through the motion.</p></div>
+      <div class="demo-shell">
+        <div class="demo-toolbar"><div><span class="live-dot" aria-hidden="true"></span><strong>Contact-point augmentation</strong></div><a id="open-viewer" href="./" target="_blank" rel="noopener">Open viewer <span aria-hidden="true">↗</span></a></div>
+        <div class="demo-layout"><aside class="demo-controls"><label for="demo-scene">Scene</label><select id="demo-scene"></select><p class="control-label">Contact variation</p><div id="demo-variants" class="variant-list"></div><div class="demo-legend"><span><i class="legend-original"></i> Original reference</span><span><i class="legend-augmented"></i> Selected variation</span><span><i class="legend-contact"></i> Contact target</span></div><p class="demo-hint">Drag to orbit<br>Scroll or pinch to zoom<br>Use the timeline to replay</p></aside>
+        <div class="demo-stage" id="demo-stage"><div id="demo-cover" class="demo-cover"><svg class="demo-cube" viewBox="0 0 120 120" aria-hidden="true"><path d="m60 12 43 25v49l-43 25-43-25V37zm0 0v49m43-24L60 61 17 37m43 24v50"/><circle cx="60" cy="61" r="7"/><path class="cube-orbit" d="M8 80C0 40 99 11 113 44S49 120 18 97"/></svg><h3>Step inside the motion</h3><p>Explore contact-point variations in an interactive 3D scene.</p><button id="load-demo" class="button-primary">Load 3D demo <span aria-hidden="true">↗</span></button><small>Powered by Viser · loads on demand</small></div><iframe id="viser-frame" title="Interactive Viser contact-point augmentation scene" allow="fullscreen" hidden></iframe></div></div>
+        <div class="demo-caption"><span class="example-badge">Illustrative preview</span><p id="demo-description">A schematic motion example to preview the interaction. Replace with VICAR recordings for research results.</p></div>
+      </div>
+      <p id="demo-status" class="demo-status" role="status" aria-live="polite"></p>
+    </div></section>
+    <section id="citation" class="section container reading-width" hidden><div class="section-heading heading-row"><h2>Citation</h2><button class="text-button" id="copy-citation">Copy BibTeX</button></div><pre><code id="bibtex"></code></pre><p id="copy-status" role="status"></p></section>
+  </main>
+  <footer class="footer container"><a class="wordmark" href="./">VICAR<span class="tiny-dot"></span></a><p>Video imitation, grounded in contact.</p><p class="credits">Design inspired by <a href="https://omniretarget.github.io/">OmniRetarget</a> and <a href="https://sastry-group.github.io/LATTE-MV/">LATTE-MV</a>.<br>Interactive visualization powered by <a href="https://viser.studio/">Viser</a>.</p></footer>
+  <noscript><p class="noscript-notice">Enable JavaScript to browse all ten video slots and load the interactive Viser demo.</p></noscript>
+</body>
+</html>

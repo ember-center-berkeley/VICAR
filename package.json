@@ -1,0 +1,8 @@
+{
+  "name": "vicar-project-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static VICAR research project page",
+  "scripts": { "test": "node scripts/check-site.cjs" },
+  "devDependencies": { "playwright": "1.62.1" }
+}
