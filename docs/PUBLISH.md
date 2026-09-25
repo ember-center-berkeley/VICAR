@@ -1,28 +1,32 @@
-# Publish this local checkout
+# Website deployment
 
-This website is prepared on the local **website** branch, with the remote set to
+This website is published from the **website** branch, with the remote set to
 `https://github.com/ember-center-berkeley/VICAR.git`.
 
-The connected GitHub integration returned **403: Resource not accessible by integration** when attempting to create the first file. Nothing was uploaded through that connection. The repository is empty as of this handoff. The GitHub connection also does not expose a Pages-settings action.
+GitHub Pages serves the root of this branch at
+**https://ember-center-berkeley.github.io/VICAR/**. Changes pushed to `website`
+are deployed automatically.
 
-## 1. Sign in locally and push
+## 1. Authenticate on a new machine
 
 Use an authenticated Git client with write access to `ember-center-berkeley/VICAR`. For example, install [GitHub CLI](https://cli.github.com/) if needed, then run:
 
 ```sh
 gh auth login
 gh auth setup-git
-cd /Users/dkalaria/Downloads/VICAR_ICRA_submission/website
-git push -u origin website
+git clone --branch website https://github.com/ember-center-berkeley/VICAR.git
+cd VICAR
 ```
 
 Select GitHub.com and HTTPS in the login prompts. Complete browser authentication with the account that can write to the organization repository.
 
-Alternatively, sign into [GitHub Desktop](https://desktop.github.com/), add this existing local repository, and publish/push the `website` branch to its configured remote.
+Alternatively, sign into [GitHub Desktop](https://desktop.github.com/), clone this repository, and select the `website` branch.
 
 There is no need to share your password or token in chat.
 
-## 2. Enable Pages
+## 2. Pages configuration
+
+These settings are already enabled. To check or restore them:
 
 Open [the repository's Pages settings](https://github.com/ember-center-berkeley/VICAR/settings/pages) and select:
 
@@ -30,7 +34,7 @@ Open [the repository's Pages settings](https://github.com/ember-center-berkeley/
 - **Branch:** website
 - **Folder:** / (root)
 
-Click **Save**. GitHub will create its standard Pages deployment. When it succeeds, the website will be at:
+Click **Save** if you changed the settings. GitHub will create its standard Pages deployment. The website URL is:
 
 **https://ember-center-berkeley.github.io/VICAR/**
 

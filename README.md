@@ -2,7 +2,7 @@
 
 A static research project page for **VICAR: Video Imitation with Contact-Aware Retargeting for Humanoid Interactive Skills**.
 
-The website lives on the `website` branch. Expected public URL after enabling GitHub Pages:
+The website lives on the `website` branch and is published with GitHub Pages:
 
 **https://ember-center-berkeley.github.io/VICAR/**
 
