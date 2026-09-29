@@ -1,10 +1,12 @@
 # VICAR motion explorer
 
 The website uses **Viser 1.1.1** with a local static playback client. It now shows
-the actual G1 robot and saved TT_PLayer trajectories: forehand, initial
-under-table pickup, six bimanual motion versions, and ladder climbing. Six other
-task entries show a deliberate coming-soon state because their motion files
-are absent. The earlier schematic example recordings have been removed.
+the actual G1 robot and contact augmentation for forehand, plus saved motions for
+initial under-table pickup, six bimanual versions, and ladder climbing. Forehand
+has X/Y/Z sliders selecting all 729 optimized grid motions from
+`augment_serves_forehand_g1.py`; see [FOREHAND_AUGMENTATION.md](FOREHAND_AUGMENTATION.md)
+for its matching hand model, generation settings, and browser implementation.
+Six task entries remain pending until their motion files are available.
 
 See [VISUALIZATION_SOURCES.md](VISUALIZATION_SOURCES.md) for the complete source
 map, task-specific scripts, missing data, and interpretation limits.
@@ -156,8 +158,9 @@ uses an existing Chrome installation.
 embedding offline Viser scenes. Viser's
 [official embedding guide](https://viser.studio/main/embedded_visualizations/)
 describes animated scene export and static hosting. The bundled client retains
-its MIT license. Rebuild it with `viser-build-client --out-dir viser-client/`
-if changing Viser versions, and regenerate recordings with the same version.
+its MIT license. Rebuild the extended client with `python scripts/build_viser_client.py`.
+The extension currently targets Viser 1.1.1; update and test its patch explicitly
+before changing Viser versions.
 
 G1 robot assets retain the Unitree BSD 3-Clause notice in
 `visualization/robot/LICENSE`; see [Unitree's source license](https://github.com/unitreerobotics/unitree_ros/blob/master/LICENSE).

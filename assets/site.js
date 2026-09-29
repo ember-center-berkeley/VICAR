@@ -141,11 +141,17 @@
   let loaded = false;
   let activated = false;
   let loadVersion = 0;
-  function viewerURL() {
+  let shift = [-.08, 0, 0];
+  let shiftRequest = 0;
+  function viewerURL(externalControls = false) {
     if (!variant) return '';
     if (variant.embedUrl) return new URL(variant.embedUrl, document.baseURI).href;
     const url = new URL(content.viewer.client, document.baseURI);
     url.searchParams.set('playbackPath', new URL(variant.recording, document.baseURI).href);
+    if (variant.augmentationPath) {
+      url.searchParams.set('augmentationPath', new URL(variant.augmentationPath, document.baseURI).href);
+      if (externalControls) url.searchParams.set('controls', 'external');
+    }
     return url.href;
   }
   function updateViewerInfo() {
@@ -156,6 +162,10 @@
     $('#reset-viewer').disabled = !available || !loaded;
     $('#load-demo').hidden = !available;
     $('#demo-description').textContent = scene.description;
+    $('#augmentation-controls').hidden = !variant?.augmentationPath;
+    $('#motion-list-label').hidden = Boolean(variant?.augmentationPath);
+    $('#demo-variants').hidden = Boolean(variant?.augmentationPath);
+    $('.demo-legend').hidden = Boolean(variant?.augmentationPath);
     $('#motion-stage').textContent = variant?.stage || 'Coming soon';
     $('#motion-meta').textContent = !available ? 'Recording coming soon' : Number.isFinite(variant.duration) ? `${variant.frames} frames · ${variant.fps} fps · ${variant.duration.toFixed(1)} s` : 'Interactive scene';
     $('#demo-cover-title').textContent = available ? 'Step inside the motion' : `${scene.title}`;
@@ -186,12 +196,12 @@
         if (responses.some(response => !response.ok)) throw new Error('The viewer or recording file is unavailable.');
       }
       if (version !== loadVersion) return;
-      viewer.src = viewerURL();
+      viewer.src = viewerURL(true);
       viewer.hidden = false;
       $('#demo-cover').hidden = true;
       loaded = true;
       $('#reset-viewer').disabled = false;
-      $('#demo-status').textContent = `${scene.title} · ${variant.label}. Drag to orbit; use the viewer timeline to play or pause. If your browser cannot render 3D, try Open viewer.`;
+      $('#demo-status').textContent = variant.augmentationPath ? 'Loading the contact augmentation grid…' : `${scene.title} · ${variant.label}. Drag to orbit; use the viewer timeline to play or pause.`;
     } catch (error) {
       if (version !== loadVersion) return;
       viewer.hidden = true;
@@ -219,6 +229,14 @@
       });
       list.append(button);
     });
+    if (variant?.axes) {
+      shift = ['x', 'y', 'z'].map(axis => variant.axes[axis].default);
+      ['x', 'y', 'z'].forEach((axis, i) => {
+        const input = $(`#shift-${axis}`);
+        Object.assign(input, {min: variant.axes[axis].min, max: variant.axes[axis].max, step: variant.axes[axis].step, value: shift[i]});
+        $(`#shift-${axis}-value`).textContent = `${shift[i].toFixed(2)} m`;
+      });
+    }
     updateViewerInfo();
   }
   content.viewer.scenes.forEach(item => {
@@ -236,6 +254,37 @@
   });
   $('#load-demo').addEventListener('click', loadViewer);
   $('#reset-viewer').addEventListener('click', loadViewer);
+  function sendShift() {
+    if (!variant?.augmentationPath || !viewer.contentWindow) return;
+    viewer.contentWindow.postMessage({type: 'vicar:set-shift', shift, requestId: ++shiftRequest}, location.origin);
+  }
+  ['x', 'y', 'z'].forEach((axis, i) => {
+    $(`#shift-${axis}`).addEventListener('input', event => {
+      shift[i] = Number(event.target.value);
+      $(`#shift-${axis}-value`).textContent = `${shift[i].toFixed(2)} m`;
+      sendShift();
+    });
+  });
+  $('#reset-shift').addEventListener('click', () => {
+    if (!variant?.axes) return;
+    ['x', 'y', 'z'].forEach((axis, i) => {
+      shift[i] = variant.axes[axis].default;
+      $(`#shift-${axis}`).value = shift[i];
+      $(`#shift-${axis}-value`).textContent = `${shift[i].toFixed(2)} m`;
+    });
+    sendShift();
+  });
+  window.addEventListener('message', event => {
+    if (event.origin !== location.origin || event.source !== viewer.contentWindow || !variant?.augmentationPath) return;
+    if (event.data?.type === 'vicar:augmentation-ready') sendShift();
+    if (event.data?.type === 'vicar:shift-applied' && event.data.requestId === shiftRequest) {
+      $('#demo-status').textContent = `Forehand contact shift · X ${shift[0].toFixed(2)} m · Y ${shift[1].toFixed(2)} m · Z ${shift[2].toFixed(2)} m. Drag to orbit; pause or scrub to compare poses.`;
+      $('#augmentation-controls').dataset.selectedIndex = event.data.index;
+    }
+    if (event.data?.type === 'vicar:augmentation-error') {
+      $('#demo-status').textContent = 'The contact augmentation grid could not be loaded. Use Reset view to try again.';
+    }
+  });
   renderVariants();
 
   if (content.bibtex) {

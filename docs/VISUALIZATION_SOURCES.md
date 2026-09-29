@@ -14,7 +14,7 @@ dependencies; it is not a lightweight playback command.
 
 | Website task | Refinement / visualization source | Augmentation / visualization source | Available in this checkout |
 | --- | --- | --- | --- |
-| Simple forehand | `refine_forehand_serve_g1.py` | `augment_serves_forehand_g1.py`; `augment_serves_general_g1.py --serve_style forehand` | Legacy `refined_serve_g1/base.pkl`, 63 frames. The style-specific augmenter reads this file. |
+| Simple forehand | `refine_forehand_serve_g1.py` | `augment_serves_forehand_g1.py`; `augment_serves_general_g1.py --serve_style forehand` | `refined_serve_g1/base.pkl`, 63 frames; all 729 contact augmentations now regenerated for X/Y/Z sliders. |
 | Simple backhand | `refine_backhand_serve_g1.py` | `augment_serves_backhand_g1.py`; general script with `backhand` | Final robot trajectory missing. |
 | Forehand chop | `refine_forehand_chop_serve_g1.py` | `augment_serves_forehand_chop_g1.py`; general script with `forehand_chop` | Final robot trajectory missing. |
 | Backhand chop | `refine_backhand_chop_serve_g1.py` | `augment_serves_backhand_chop_g1.py`; general script with `backhand_chop` | Final robot trajectory missing. |
@@ -27,7 +27,9 @@ dependencies; it is not a lightweight playback command.
 
 CSV files above are in `LAFAN1_Retargeting_Dataset/g1/`. The robot is the G1
 29-DOF model in `g1_29dof.urdf`, with meshes from `robots/meshes/`.
-Using this model preserves the `left_rubber_hand` and `right_rubber_hand`
+The forehand augmentation viewer instead uses the source script’s 43-joint
+`robots/g1_29dof_with_hand.urdf`; see [FOREHAND_AUGMENTATION.md](FOREHAND_AUGMENTATION.md).
+Using the 29-DOF model for the other task previews preserves the `left_rubber_hand` and `right_rubber_hand`
 frames used by the task optimizers. No finger articulation is invented for
 29-joint motions.
 
@@ -89,8 +91,9 @@ In addition to the task entry points above:
 Each packaged NPZ contains its source filename, full SHA-256, coordinate
 convention, processing description, source revision, stage, and frame-rate
 basis. Robot asset hashes and mesh reduction counts are in
-`visualization/robot/provenance.json`. Original trajectory values are not smoothed,
-reoptimized, or spatially shifted for presentation.
+`visualization/robot/provenance.json`. The imported reference trajectory values are preserved. Forehand augmentations
+are newly optimized from the original reference following the source script;
+their 3.5 cm visualization lift affects only the displayed scene.
 
 ## Files needed to complete the remaining scenes
 

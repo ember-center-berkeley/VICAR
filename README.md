@@ -78,13 +78,13 @@ Use browser-compatible H.264 MP4 with `yuv420p` and fast-start metadata. Keep in
 
 ## Interactive motion explorer
 
-The page includes a **locally hosted Viser 1.1.1 viewer** with the real G1 robot and nine saved trajectories across four tasks: forehand, initial under-table pickup, six bimanual versions, and ladder climbing. The other six task entries display “coming soon” until their trajectories are available. The initial under-table motion is explicitly labeled before contact refinement.
+The page starts with **forehand contact augmentation**, matching `augment_serves_forehand_g1.py`. X/Y/Z sliders select 729 optimized motions on the original 1 cm grid. It uses the G1 model with hands, the original display lift, and 10 fps preview timing. Changing a slider preserves the camera and playback position.
 
-Click **Load 3D demo** to load a recording on demand. Visitors can orbit, zoom, play/pause, scrub time, change speed, switch saved versions, reset the view, and inspect the scene tree. Blue/coral traces follow the hands. Ladder contacts use the source script's schedule; the translucent bimanual box is inferred from the hands.
+Eight other saved recordings remain available: initial under-table pickup, six bimanual versions, and ladder climbing. Six task entries show “coming soon” until their trajectories are available. Under-table is labeled before contact refinement.
 
-The organized `visualization/` package runs the same scene locally and exports it for Pages. See [docs/VISER.md](docs/VISER.md) for setup and import commands, and [docs/VISUALIZATION_SOURCES.md](docs/VISUALIZATION_SOURCES.md) for all 32 original Viser files, per-task mappings, and missing data. Original optimization scripts in TT_PLayer are preserved.
+The organized `visualization/` package runs the same augmentation locally and exports it for GitHub Pages. See [the forehand augmentation guide](docs/FOREHAND_AUGMENTATION.md), [general viewer instructions](docs/VISER.md), and [the source map](docs/VISUALIZATION_SOURCES.md) covering all 32 original Viser files.
 
-Precomputed recordings work entirely on GitHub Pages. Online contact optimization needs a separate live server. Saved bimanual versions have no known offset labels and are not represented as continuous augmentation controls.
+The browser loads geometry and the compact augmentation data once. Slider changes select actual optimized trajectories; they do not run the optimizer or reload the viewer. Other scene controls retain standard Viser playback.
 
 ## Files
 

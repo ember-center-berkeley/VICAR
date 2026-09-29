@@ -43,6 +43,34 @@ const server = http.createServer((req, res) => {
   await page.getByRole('button',{name:'Load 3D demo'}).click();
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor({timeout:20000});
   assert.match(await page.locator('#viser-frame').getAttribute('src'),/\/VICAR\/viser-client\//);
+  await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
+  const forehandFrame=page.frames().find(frame=>frame.url().includes('viser-client'));
+  await forehandFrame.getByRole('button',{name:'Pause motion',exact:true}).click();
+  const timeInput=forehandFrame.getByRole('textbox',{name:'Playback time',exact:true});
+  await timeInput.fill('4.5');
+  await timeInput.press('Tab');
+  const iframeSource=await page.locator('#viser-frame').getAttribute('src');
+  const grid=JSON.parse(fs.readFileSync(path.join(root,'assets/augmentation/forehand.json'),'utf8'));
+  let shift=[-.08,0,0];
+  for(const [axisIndex,axis] of ['x','y','z'].entries()) {
+   for(let step=0;step<9;step++) {
+    shift[axisIndex]=Number((grid.axes[axis].min+step*.01).toFixed(2));
+    await page.locator('#shift-'+axis).fill(String(shift[axisIndex]));
+    const index=grid.shifts.findIndex(s=>s.every((value,i)=>Math.abs(value-shift[i])<1e-6));
+    await page.waitForFunction(index=>document.querySelector('#augmentation-controls').dataset.selectedIndex===String(index),index);
+   }
+  }
+  assert.equal(await page.locator('#viser-frame').getAttribute('src'),iframeSource,'Sliders must not reload the viewer');
+  assert.equal(await timeInput.inputValue(),'4.5','Sliders must preserve paused playback time');
+  await page.locator('#reset-shift').click();
+  await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
+  // Standalone Open viewer has the same sliders within the Viser window.
+  const standalone=await browser.newPage();
+  await standalone.goto(await page.locator('#open-viewer').getAttribute('href'));
+  await standalone.getByRole('slider',{name:'X contact shift'}).waitFor();
+  await standalone.getByRole('slider',{name:'X contact shift'}).fill('-0.12');
+  await standalone.waitForFunction(()=>document.documentElement.dataset.augmentationIndex==='400');
+  await standalone.close();
   // Exercise every task, including six deliberate missing-data states.
   const scenes = await page.evaluate(() => window.VICAR.viewer.scenes);
   assert.equal(scenes.length,10);
@@ -74,7 +102,9 @@ const server = http.createServer((req, res) => {
    }
   }
   assert.equal(recordings,9);
+  const resetResponse=page.waitForResponse(r=>r.url().includes('.viser') && r.request().method()==='GET' && r.status()===200);
   await page.getByRole('button',{name:'Reset view',exact:true}).click();
+  await resetResponse;
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
   if(process.env.SCREENSHOT_DIR) {
    fs.mkdirSync(process.env.SCREENSHOT_DIR,{recursive:true});
@@ -96,7 +126,7 @@ const server = http.createServer((req, res) => {
   await page.reload({waitUntil:'networkidle'});
   let releaseHead;
   const heldHead = new Promise(resolve=>{releaseHead=resolve;});
-  await page.route('**/assets/recordings/**',async route=>{
+  await page.route('**/assets/augmentation/*.viser',async route=>{
    if(route.request().method()==='HEAD') await heldHead;
    await route.continue();
   });
@@ -110,10 +140,10 @@ const server = http.createServer((req, res) => {
   await page.waitForTimeout(100);
   assert.equal(await page.locator('#viser-frame').getAttribute('src'),null);
   assert.equal(await page.locator('#viser-frame').isHidden(),true);
-  await page.unroute('**/assets/recordings/**');
+  await page.unroute('**/assets/augmentation/*.viser');
   await page.locator('#demo-scene').selectOption('ladder-climbing');
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
   assert.deepEqual(errors,[]);
-  console.log('PASS: 10 slots, 6 carousel selections, keyboard controls, 9 real G1 recordings, 6 pending tasks, /VICAR/ paths, reset view, 3 responsive widths, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: X/Y/Z sliders at all 9 positions, preserved playback time, standalone controls, 10 video slots, all 9 recordings, 6 pending tasks, responsive widths, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());
