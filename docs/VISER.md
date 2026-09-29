@@ -1,118 +1,165 @@
-# Putting VICAR motions into the interactive viewer
+# VICAR motion explorer
 
-## A project that already does this
+The website uses **Viser 1.1.1** with a local static playback client. It now shows
+the actual G1 robot and saved TT_PLayer trajectories: forehand, initial
+under-table pickup, six bimanual motion versions, and ladder climbing. Six other
+task entries show a deliberate coming-soon state because their motion files
+are absent. The earlier schematic example recordings have been removed.
 
-[Gauss Gym](https://escontrela.me/gauss_gym/) hosts interactive robot/scene visualizations using Viser. Its page embeds a Viser client in an iframe with a `playbackPath` pointing to a `.viser` recording. This website uses the same deployment pattern, with both the client and recordings stored in this repository.
+See [VISUALIZATION_SOURCES.md](VISUALIZATION_SOURCES.md) for the complete source
+map, task-specific scripts, missing data, and interpretation limits.
 
-Viser's [official embedded visualization guide](https://viser.studio/main/embedded_visualizations/) documents static and animated scene export, camera settings, iframe embedding, and GitHub Pages hosting. The supplied files use **Viser 1.1.1** so that recorder and client formats match.
+## Run the organized viewer locally
 
-## What runs on GitHub Pages
-
-- Scene rendering, camera orbit/pan/zoom, timeline playback, speed changes, and scene-tree inspection run in the browser.
-- Selecting a contact preset loads a different precomputed `.viser` recording. Record each real augmentation once, then host all of them as static files.
-- Python callbacks, online motion generation, physics, and continuous optimization do **not** run in a static recording. They need a live Viser server or a separate browser implementation.
-
-The template includes two geometric, schematic animations to test the viewer, with five presets each. They are not VICAR research results. Keep `illustrative: true` while using them. You can remove the example generation script and example recordings once you replace them.
-
-## Export your actual robot and scene
-
-Install the pinned version in an isolated environment:
+From the website checkout, with Python 3.10 or newer:
 
 ```sh
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r scripts/requirements-demo.txt
+pip install -r visualization/requirements.txt
+python -m visualization list
+python -m visualization view --task ladder-climbing
 ```
 
-Create your normal Viser visualization with `server.scene` (not a per-client scene). Load the real G1 model with `viser.extras.ViserUrdf` and your URDF loader, or add your reconstructed meshes directly. In your existing trajectory script:
-
-```python
-import numpy as np
-import viser
-from scripts.export_recording import export_recording
-
-server = viser.ViserServer()
-server.scene.set_up_direction('+z')
-
-# Add your robot, reconstructed obstacles, contact targets, and reference ghost.
-# Existing code creates `robot_visualizer`, `root_handle`, `joint_positions`,
-# `root_positions`, and `root_quaternions_wxyz` from your real trajectory.
-
-server.initial_camera.position = (2.9, -3.9, 2.4)
-server.initial_camera.look_at = (0.6, 0.0, 0.7)
-server.initial_camera.up = (0.0, 0.0, 1.0)
-
-def update_frame(frame):
-    root_handle.position = root_positions[frame]
-    root_handle.wxyz = root_quaternions_wxyz[frame]
-    robot_visualizer.update_cfg(joint_positions[frame])
-    # Update object poses, contact indicators, and other animated handles here.
-
-export_recording(server, update_frame, len(joint_positions),
-                 'assets/recordings/forehand-left.viser', fps=30)
-server.stop()
-```
-
-The model-specific variables above are integration points for your current visualization code. The helper records scene updates and inserts the frame timing. Confirm that joint ordering, coordinate convention, units, quaternion convention (`wxyz`), and frame rate match the source data. Never export private filesystem paths or credentials into scene labels.
-
-For a static scene only:
-
-```python
-from pathlib import Path
-Path('assets/recordings/static-scene.viser').write_bytes(
-    server.get_scene_serializer().serialize()
-)
-```
-
-## Register each recording
-
-In `assets/content.js`, add or edit a scene in `viewer.scenes`:
-
-```js
-{
-  "id": "forehand",
-  "title": "Forehand serve",
-  "description": "Retargeted VICAR trajectories at five racket–ball hit points.",
-  "illustrative": false,
-  "variants": [
-    { "id": "original", "label": "Original", "recording": "assets/recordings/forehand-original.viser" },
-    { "id": "left", "label": "Shift left", "recording": "assets/recordings/forehand-left.viser" }
-  ]
-}
-```
-
-The site builds the scene selector and preset buttons from this manifest. It converts recording URLs to absolute URLs at runtime, so it works at `localhost` and under `/VICAR/` on Pages.
-
-The gray/blue/amber legend is intended for original reference, selected variant, and contact target. Use those colors in your export or update the legend in `index.html` and `assets/style.css`.
-
-## Rebuild or regenerate the supplied viewer
-
-The client is already committed, so visitors and routine site editing need no Python installation.
-
-With Viser 1.1.1 installed:
+Open `http://127.0.0.1:8080/`. The local player has play/pause, frame scrubbing,
+speed, motion-version selection, hand-trace visibility, and restart controls.
+It shares the renderer with the web exporter; it does not require IsaacLab,
+MuJoCo, Pyroki, or the original absolute filesystem paths. Bind addresses and
+ports are configurable with `--host` and `--port`.
 
 ```sh
-viser-build-client --out-dir viser-client/
-python scripts/generate_demo_recordings.py
+python -m visualization view --task bimanual-pick-place --variant version-3
+python -m visualization view --task forehand
+python -m visualization view --task under-table-pickup
 ```
 
-`--out-dir` is the verified CLI flag for this pinned version. Keep `viser-client/LICENSE` when updating the client. If you change Viser versions, rebuild both the client and all recordings and test them together.
+## Add a real augmentation
 
-## Optional live Viser server
+The canonical format is a pickle-free NPZ with `positions [T,3]`, `wxyz [T,4]`,
+`joints [T,29]`, `joint_names [29]`, scalar `fps`, and a JSON `metadata` string.
+Positions use metres, angles use radians, and the world is Z-up. The loader
+validates shapes, finiteness, frame rates, quaternion norms, and joint names.
+It maps robot joints by name rather than relying on incidental URDF ordering.
 
-To let visitors move continuous sliders that call your Python motion generator, host your Viser application separately behind HTTPS with WebSocket support. Use a trusted host that allows iframe embedding. Set a variant's `embedUrl` instead of `recording`:
+Robot CSV imports must use the source convention: `xyz, xyzw, 29 joint angles`
+(36 columns, no header). Specify the actual frame rate:
 
-```js
-{ "id": "live", "label": "Live augmentation", "embedUrl": "https://your-viser-host.example/" }
+```sh
+python -m visualization import --task bimanual-pick-place \
+  --input /path/to/verified_shift_left.csv --id shift-left \
+  --label 'Shift left' --fps 30
+python -m visualization export --task bimanual-pick-place
 ```
 
-The site then embeds that URL. The Python server must remain running and handle multiple visitors. A public HTTPS GitHub Pages page cannot embed an insecure HTTP localhost service.
+Use a meaningful label only when the motion's contact offset is known. Import
+refuses to overwrite an existing variant id. Canonical NPZ imports retain the
+frame rate already saved inside the file.
 
-## Check before publishing real results
+For original VICAR PKLs, install the migration-only dependencies and explicitly
+allow trusted pickle loading:
 
-1. Serve the repository via HTTP and load every preset.
-2. Verify scene scale, camera framing, contact colors, timing, and representative frames.
-3. Check one small-screen layout, and use Open viewer for a larger 3D workspace.
-4. Replace the illustrative description and set `illustrative: false` only for real research data.
+```sh
+pip install torch jax jaxlie
+python -m visualization import --task backhand \
+  --input /path/to/refined_serve_g1/backhand.pkl --id reference \
+  --label Reference --stage 'Saved reference' --fps 30 --trust-pickle
+python -m visualization export --task backhand
+```
 
-References checked 2026-09-24: [Viser embedding](https://viser.studio/main/embedded_visualizations/), [Viser source](https://github.com/viser-project/viser/tree/v1.1.1), [Gauss Gym](https://escontrela.me/gauss_gym/), [GitHub Pages configuration](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+The legacy importer reads `global_pose.wxyz_xyz`, `global_position`, and `joints`,
+and maps torch storage to the CPU. Only use `--trust-pickle` for files you trust:
+pickle deserialization can execute code. Normal playback and export load only
+the portable NPZ files and do not import torch or JAX.
+
+Edit a scene's description in `visualization/catalog.json` when its scope changes.
+Keep stage labels accurate for reference motions, preliminary retargeting,
+and actual augmentation results.
+
+## Export and publish
+
+```sh
+python -m visualization export
+python3 -m http.server 8000
+```
+
+Export writes one self-contained `.viser` recording per variant and regenerates
+`assets/viewer-manifest.js`. The page loads this after `assets/content.js`.
+The manifest includes only recordings present on disk, while keeping all ten
+task entries visible. Preview at `http://localhost:8000/`, then commit and push
+the website branch. GitHub Pages serves the update automatically.
+
+The browser supports orbit/pan/zoom, timeline playback, speed, scene-tree
+inspection, version switching, reset view, and opening the viewer separately.
+It loads recordings on demand. Static recordings replay saved geometry and
+motion; Python callbacks or continuous contact optimization require a live
+server. Selecting a saved version does not run the VICAR optimizer.
+
+The generated recordings are approximately 0.6–0.95 MB each. The robot's visual
+meshes are simplified toward 1600 triangles per mesh; constrained meshes retain
+more detail (up to 8906 triangles). Kinematics are preserved.
+The included URDF is for visualization and omits collision and inertial elements.
+
+## Rebuild the initial imports from TT_PLayer
+
+Only needed when regenerating from the original checkout. Source selection is
+explicit in `visualization/tasks.json`; there is no broad data-directory glob.
+From the TT_PLayer checkout, retrieve the required LFS objects:
+
+```sh
+git lfs pull --include='robots/meshes/*,refined_serve_g1/base.pkl'
+```
+
+Then, from this website checkout:
+
+```sh
+python -m visualization.prepare --source-root /path/to/TT_PLayer \
+  --trust-pickle --replace-catalog
+python -m visualization export
+```
+
+`--replace-catalog` explicitly recreates the catalog from the audited imports,
+replacing later manual additions to it. Back up an edited catalog first. The
+source checkout is read only during preparation. Relative source names and
+hashes are retained; machine-specific absolute paths are not published.
+
+## Organization and checks
+
+```text
+visualization/
+  tasks.json              Per-task source map and audited import selections
+  source_inventory.json   All 32 Viser source files and entry-point line numbers
+  catalog.json            Current imported task/variant registry
+  data.py                 Validation, joint conventions, CSV/PKL migration
+  scene.py                Shared G1 renderer, hand paths, object/contact context
+  __main__.py             List, import, local player, static export commands
+  prepare.py              Mesh reduction and audited source import
+  motions/               Portable normalized NPZ motions with provenance
+  robot/                 Reduced visual-only URDF, meshes, provenance, license
+```
+
+```sh
+python -m unittest visualization.test_data -v
+npm install
+npx playwright install chromium
+npm test
+```
+
+Data checks cover quaternion conversion, joint remapping, invalid inputs, LFS
+pointers, and packaged robot/motion assets. Browser checks cover the video
+carousel, all nine recordings, all six missing-task states, reset, project
+prefixes, responsive widths, and missing-file recovery. `CHROME_CHANNEL=chrome`
+uses an existing Chrome installation.
+
+## References and notices
+
+[Gauss Gym](https://escontrela.me/gauss_gym/) is an example of a project website
+embedding offline Viser scenes. Viser's
+[official embedding guide](https://viser.studio/main/embedded_visualizations/)
+describes animated scene export and static hosting. The bundled client retains
+its MIT license. Rebuild it with `viser-build-client --out-dir viser-client/`
+if changing Viser versions, and regenerate recordings with the same version.
+
+G1 robot assets retain the Unitree BSD 3-Clause notice in
+`visualization/robot/LICENSE`; see [Unitree's source license](https://github.com/unitreerobotics/unitree_ros/blob/master/LICENSE).
+Research trajectories retain their owners' rights. Rendering is a motion
+preview, not a physics simulation or an independent evaluation of feasibility.

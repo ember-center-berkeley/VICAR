@@ -677,11 +677,11 @@ h3 {
   height:7px;
   border-radius:50%
 }
-.legend-original {
-  background:#a7b4c9
+.legend-left {
+  background:#3e7ce0
 }
-.legend-augmented {
-  background:#3672e4
+.legend-right {
+  background:#e17567
 }
 .legend-contact {
   background:#eeac4e
@@ -691,6 +691,25 @@ h3 {
   line-height:1.8;
   color:#768496;
   margin-top:20px
+}
+.motion-meta {
+  font-size:10px;
+  color:var(--muted);
+  margin-top:14px;
+  line-height:1.7
+}
+.viewer-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  align-items:center
+}
+.viewer-actions button {
+  font-size:11px
+}
+.viewer-actions button:disabled {
+  opacity:.4;
+  cursor:default
 }
 .demo-stage {
   position:relative;

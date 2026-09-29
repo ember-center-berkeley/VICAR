@@ -1,5 +1,5 @@
-// Edit project links, authors, video sources, and Viser recordings here.
-// Empty video sources display intentional placeholders; missing links point home.
+// Edit project links, authors, and video sources here.
+// Interactive recordings are generated in viewer-manifest.js.
 window.VICAR = {
   "links": {
     "arxiv": "./",
@@ -138,76 +138,5 @@ window.VICAR = {
       "poster": "",
       "captions": ""
     }
-  ],
-  "viewer": {
-    "client": "viser-client/",
-    "scenes": [
-      {
-        "id": "serve",
-        "title": "Table-tennis serve",
-        "description": "A schematic motion example to preview the interaction. Replace with VICAR recordings for research results.",
-        "illustrative": true,
-        "variants": [
-          {
-            "id": "original",
-            "label": "Original",
-            "recording": "assets/recordings/serve-original.viser"
-          },
-          {
-            "id": "left",
-            "label": "Shift left",
-            "recording": "assets/recordings/serve-left.viser"
-          },
-          {
-            "id": "right",
-            "label": "Shift right",
-            "recording": "assets/recordings/serve-right.viser"
-          },
-          {
-            "id": "forward",
-            "label": "Move forward",
-            "recording": "assets/recordings/serve-forward.viser"
-          },
-          {
-            "id": "higher",
-            "label": "Move higher",
-            "recording": "assets/recordings/serve-higher.viser"
-          }
-        ]
-      },
-      {
-        "id": "pickup",
-        "title": "Object pickup",
-        "description": "A schematic motion example to preview the interaction. Replace with VICAR recordings for research results.",
-        "illustrative": true,
-        "variants": [
-          {
-            "id": "original",
-            "label": "Original",
-            "recording": "assets/recordings/pickup-original.viser"
-          },
-          {
-            "id": "left",
-            "label": "Shift left",
-            "recording": "assets/recordings/pickup-left.viser"
-          },
-          {
-            "id": "right",
-            "label": "Shift right",
-            "recording": "assets/recordings/pickup-right.viser"
-          },
-          {
-            "id": "forward",
-            "label": "Move forward",
-            "recording": "assets/recordings/pickup-forward.viser"
-          },
-          {
-            "id": "higher",
-            "label": "Move higher",
-            "recording": "assets/recordings/pickup-higher.viser"
-          }
-        ]
-      }
-    ]
-  }
+  ]
 };

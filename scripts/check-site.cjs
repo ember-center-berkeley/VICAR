@@ -43,15 +43,43 @@ const server = http.createServer((req, res) => {
   await page.getByRole('button',{name:'Load 3D demo'}).click();
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor({timeout:20000});
   assert.match(await page.locator('#viser-frame').getAttribute('src'),/\/VICAR\/viser-client\//);
-  // Check both scenes and all variants. Await the actual recording response.
-  for(const scene of ['serve','pickup']) {
-   await page.locator('#demo-scene').selectOption(scene);
-   for(const variant of ['Original','Shift left','Shift right','Move forward','Move higher']) {
-    const response = page.waitForResponse(r=>r.url().includes('.viser') && r.request().method()==='GET' && r.status()===200);
-    await page.getByRole('button',{name:variant,exact:true}).click();
-    await response;
-    await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
+  // Exercise every task, including six deliberate missing-data states.
+  const scenes = await page.evaluate(() => window.VICAR.viewer.scenes);
+  assert.equal(scenes.length,10);
+  let recordings = 0;
+  for(const scene of scenes) {
+   const firstResponse = scene.variants.length ? page.waitForResponse(r=>r.url().includes(scene.variants[0].recording) && r.request().method()==='GET' && r.status()===200) : null;
+   await page.locator('#demo-scene').selectOption(scene.id);
+   if(!scene.variants.length) {
+    assert.equal(await page.locator('#viser-frame').isHidden(),true);
+    assert.equal(await page.locator('#load-demo').isHidden(),true);
+    assert.equal(await page.locator('#open-viewer').isHidden(),true);
+    assert.match(await page.locator('#motion-meta').textContent(),/coming soon/);
+    continue;
    }
+   await firstResponse;
+   for(const [i,variant] of scene.variants.entries()) {
+    if (i > 0) {
+     const response = page.waitForResponse(r=>r.url().includes(variant.recording) && r.request().method()==='GET' && r.status()===200);
+     await page.getByRole('button',{name:variant.label,exact:true}).click();
+     await response;
+    }
+    await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
+    // Wait for playback to advance, so checks don't stop at an empty canvas
+    // mounted before the recording messages have been applied.
+    const frame = page.frames().find(f=>f.url().includes('viser-client'));
+    await frame.waitForFunction(()=>Array.from(document.querySelectorAll('input')).some(input=>Number(input.value)>0.1),null,{timeout:15000});
+    assert.match(await page.locator('#motion-meta').textContent(),/frames.*fps/);
+    recordings++;
+   }
+  }
+  assert.equal(recordings,9);
+  await page.getByRole('button',{name:'Reset view',exact:true}).click();
+  await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
+  if(process.env.SCREENSHOT_DIR) {
+   fs.mkdirSync(process.env.SCREENSHOT_DIR,{recursive:true});
+   await page.waitForTimeout(1500); // Allow mesh buffers to upload before visual QA.
+   await page.locator('#interactive').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'motion-explorer.png')});
   }
   for(const width of [768,390,320]) {
    await page.setViewportSize({width,height:844});
@@ -59,11 +87,33 @@ const server = http.createServer((req, res) => {
   }
   // Missing-recording recovery should provide retry UI, not a broken iframe.
   await page.route('**/assets/recordings/**',route=>route.fulfill({status:404,body:''}));
-  await page.getByRole('button',{name:'Shift left',exact:true}).click();
+  await page.getByRole('button',{name:'Saved motion',exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('#demo-status').textContent.includes('could not be loaded'));
   assert.equal(await page.locator('#load-demo').isVisible(),true);
   assert.equal(await page.locator('#viser-frame').isHidden(),true);
+  // A scene switch while the initial HEAD request is pending must cancel it.
+  await page.unroute('**/assets/recordings/**');
+  await page.reload({waitUntil:'networkidle'});
+  let releaseHead;
+  const heldHead = new Promise(resolve=>{releaseHead=resolve;});
+  await page.route('**/assets/recordings/**',async route=>{
+   if(route.request().method()==='HEAD') await heldHead;
+   await route.continue();
+  });
+  const headStarted=page.waitForRequest(r=>r.url().includes('.viser') && r.method()==='HEAD');
+  await page.getByRole('button',{name:'Load 3D demo'}).click();
+  await headStarted;
+  await page.locator('#demo-scene').selectOption('backhand');
+  const headFinished=page.waitForResponse(r=>r.url().includes('.viser') && r.request().method()==='HEAD');
+  releaseHead();
+  await headFinished;
+  await page.waitForTimeout(100);
+  assert.equal(await page.locator('#viser-frame').getAttribute('src'),null);
+  assert.equal(await page.locator('#viser-frame').isHidden(),true);
+  await page.unroute('**/assets/recordings/**');
+  await page.locator('#demo-scene').selectOption('ladder-climbing');
+  await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
   assert.deepEqual(errors,[]);
-  console.log('PASS: 10 slots, 6 carousel selections, keyboard controls, 10 Viser recordings, /VICAR/ paths, 3 responsive widths, and missing-scene recovery.');
+  console.log('PASS: 10 slots, 6 carousel selections, keyboard controls, 9 real G1 recordings, 6 pending tasks, /VICAR/ paths, reset view, 3 responsive widths, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

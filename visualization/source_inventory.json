@@ -1,0 +1,297 @@
+{
+  "source_revision": "49ecadb2d98643075de33509b01ab467450a4661",
+  "files": [
+    {
+      "path": "augment_bimanual_pick_motions_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        206,
+        209
+      ]
+    },
+    {
+      "path": "augment_climbing_motions_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        258,
+        261
+      ]
+    },
+    {
+      "path": "augment_climbing_motions_g1_vis.py",
+      "viser_lines": [
+        4,
+        5,
+        144,
+        145,
+        167,
+        170
+      ]
+    },
+    {
+      "path": "augment_ground_pick_motions_left_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        201,
+        204
+      ]
+    },
+    {
+      "path": "augment_pick_motions_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        149,
+        152
+      ]
+    },
+    {
+      "path": "augment_pick_motions_left_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        197,
+        200
+      ]
+    },
+    {
+      "path": "augment_serves_backhand_chop_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        122,
+        125
+      ]
+    },
+    {
+      "path": "augment_serves_backhand_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        124,
+        127
+      ]
+    },
+    {
+      "path": "augment_serves_custom_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        125,
+        128
+      ]
+    },
+    {
+      "path": "augment_serves_forehand_chop_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        123,
+        126
+      ]
+    },
+    {
+      "path": "augment_serves_forehand_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        125,
+        128
+      ]
+    },
+    {
+      "path": "augment_serves_g1_vis.py",
+      "viser_lines": [
+        4,
+        5,
+        125,
+        130
+      ]
+    },
+    {
+      "path": "augment_serves_general_g1.py",
+      "viser_lines": [
+        4,
+        5,
+        106,
+        109
+      ]
+    },
+    {
+      "path": "coll_vis.py",
+      "viser_lines": [
+        4,
+        5,
+        149,
+        152
+      ]
+    },
+    {
+      "path": "coll_vis2.py",
+      "viser_lines": [
+        4,
+        5,
+        155,
+        161
+      ]
+    },
+    {
+      "path": "generate_67_motion.py",
+      "viser_lines": [
+        3,
+        4,
+        47,
+        50
+      ]
+    },
+    {
+      "path": "generate_denae_hi_motion.py",
+      "viser_lines": [
+        3,
+        4,
+        47,
+        50
+      ]
+    },
+    {
+      "path": "holosoma/src/holosoma_retargeting/data_conversion/viser_body_vel_player.py",
+      "viser_lines": [
+        9,
+        11,
+        118,
+        135
+      ]
+    },
+    {
+      "path": "holosoma/src/holosoma_retargeting/src/interaction_mesh_retargeter.py",
+      "viser_lines": [
+        12,
+        17,
+        35,
+        170,
+        191,
+        208
+      ]
+    },
+    {
+      "path": "holosoma/src/holosoma_retargeting/src/viser_utils.py",
+      "viser_lines": [
+        9,
+        10
+      ]
+    },
+    {
+      "path": "holosoma/src/holosoma_retargeting/viser_player.py",
+      "viser_lines": [
+        11,
+        13,
+        44,
+        52,
+        57,
+        84
+      ]
+    },
+    {
+      "path": "refine_backhand_chop_serve_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        140,
+        143
+      ]
+    },
+    {
+      "path": "refine_backhand_serve_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        140,
+        143
+      ]
+    },
+    {
+      "path": "refine_bimanual_pick_motion_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        151,
+        154
+      ]
+    },
+    {
+      "path": "refine_climbing_motion_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        219,
+        222
+      ]
+    },
+    {
+      "path": "refine_custom_serve_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        152,
+        155
+      ]
+    },
+    {
+      "path": "refine_custom_serve_g1_2.py",
+      "viser_lines": [
+        3,
+        4,
+        150,
+        153
+      ]
+    },
+    {
+      "path": "refine_forehand_chop_serve_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        123,
+        126
+      ]
+    },
+    {
+      "path": "refine_forehand_serve_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        123,
+        126
+      ]
+    },
+    {
+      "path": "refine_pick_ground_motion_left_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        135,
+        138
+      ]
+    },
+    {
+      "path": "refine_pick_motion_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        97,
+        100
+      ]
+    },
+    {
+      "path": "refine_pick_motion_left_g1.py",
+      "viser_lines": [
+        3,
+        4,
+        97,
+        100
+      ]
+    }
+  ]
+}

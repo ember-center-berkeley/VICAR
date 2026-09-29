@@ -136,25 +136,44 @@
 
   const sceneSelect = $('#demo-scene');
   const viewer = $('#viser-frame');
-  let scene = content.viewer.scenes[0];
+  let scene = content.viewer.scenes.find(item => item.id === content.viewer.defaultScene) || content.viewer.scenes[0];
   let variant = scene.variants[0];
   let loaded = false;
+  let activated = false;
   let loadVersion = 0;
   function viewerURL() {
+    if (!variant) return '';
     if (variant.embedUrl) return new URL(variant.embedUrl, document.baseURI).href;
     const url = new URL(content.viewer.client, document.baseURI);
     url.searchParams.set('playbackPath', new URL(variant.recording, document.baseURI).href);
     return url.href;
   }
   function updateViewerInfo() {
-    $('#open-viewer').href = viewerURL();
+    const available = Boolean(variant);
+    $('#open-viewer').hidden = !available;
+    if (available) $('#open-viewer').href = viewerURL();
+    else $('#open-viewer').removeAttribute('href');
+    $('#reset-viewer').disabled = !available || !loaded;
+    $('#load-demo').hidden = !available;
     $('#demo-description').textContent = scene.description;
-    $('.example-badge').hidden = !scene.illustrative;
-    viewer.title = `${scene.title}: ${variant.label} — interactive Viser scene`;
+    $('#motion-stage').textContent = variant?.stage || 'Coming soon';
+    $('#motion-meta').textContent = !available ? 'Recording coming soon' : Number.isFinite(variant.duration) ? `${variant.frames} frames · ${variant.fps} fps · ${variant.duration.toFixed(1)} s` : 'Interactive scene';
+    $('#demo-cover-title').textContent = available ? 'Step inside the motion' : `${scene.title}`;
+    $('#demo-cover-description').textContent = available ? 'Explore the saved G1 motion in an interactive 3D scene.' : 'The interactive recording for this skill is coming soon. Choose another skill to explore an available motion.';
+    viewer.title = available ? `${scene.title}: ${variant.label} — interactive Viser scene` : 'Interactive Viser scene';
   }
   async function loadViewer() {
+    activated = true;
     const version = ++loadVersion;
     updateViewerInfo();
+    if (!variant) {
+      viewer.hidden = true;
+      viewer.removeAttribute('src');
+      $('#demo-cover').hidden = false;
+      $('#load-demo').disabled = false;
+      $('#demo-status').textContent = 'Choose a skill with an available recording to continue exploring.';
+      return;
+    }
     $('#load-demo').disabled = true;
     $('#demo-status').textContent = 'Loading the 3D scene…';
     try {
@@ -171,12 +190,15 @@
       viewer.hidden = false;
       $('#demo-cover').hidden = true;
       loaded = true;
+      $('#reset-viewer').disabled = false;
       $('#demo-status').textContent = `${scene.title} · ${variant.label}. Drag to orbit; use the viewer timeline to play or pause. If your browser cannot render 3D, try Open viewer.`;
     } catch (error) {
       if (version !== loadVersion) return;
       viewer.hidden = true;
       viewer.removeAttribute('src');
       $('#demo-cover').hidden = false;
+      loaded = false;
+      $('#reset-viewer').disabled = true;
       $('#demo-status').textContent = 'This scene could not be loaded. Check the recording path or try again.';
     } finally {
       if (version === loadVersion) $('#load-demo').disabled = false;
@@ -193,7 +215,7 @@
         variant = item;
         list.querySelectorAll('button').forEach(el => el.setAttribute('aria-pressed', String(el === button)));
         updateViewerInfo();
-        if (loaded) loadViewer();
+        if (activated) loadViewer();
       });
       list.append(button);
     });
@@ -201,16 +223,19 @@
   }
   content.viewer.scenes.forEach(item => {
     const option = element('option', '', item.title);
+    if (!item.variants.length) option.textContent += ' · coming soon';
     option.value = item.id;
     sceneSelect.append(option);
   });
+  sceneSelect.value = scene.id;
   sceneSelect.addEventListener('change', () => {
     scene = content.viewer.scenes.find(item => item.id === sceneSelect.value);
     variant = scene.variants[0];
     renderVariants();
-    if (loaded) loadViewer();
+    if (activated) loadViewer();
   });
   $('#load-demo').addEventListener('click', loadViewer);
+  $('#reset-viewer').addEventListener('click', loadViewer);
   renderVariants();
 
   if (content.bibtex) {

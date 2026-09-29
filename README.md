@@ -39,7 +39,7 @@ Open **http://localhost:8000/**. Use a local HTTP server rather than opening `in
 
 ## Update the content
 
-Edit **`assets/content.js`**. All video sources, project links, authors, and demo recordings are centralized there.
+Edit **`assets/content.js`**. Video sources, project links, and authors are centralized there. The generated `assets/viewer-manifest.js` registers the interactive recordings.
 
 - **Links:** replace `links.arxiv`, `links.paper`, and `links.video`. Unknown links intentionally point to `./`, as requested. The code button points to the actual VICAR repository.
 - **Authors:** populate `authors` with `{ "name": "Author Name", "url": "https://…" }` objects and set `affiliations`. These are omitted initially because the supplied paper does not specify a byline.
@@ -76,26 +76,30 @@ The first six videos appear in a responsive carousel: three cards on desktop, tw
 
 Use browser-compatible H.264 MP4 with `yuv420p` and fast-start metadata. Keep individual files below GitHub's 100 MiB Git limit; for larger clips use a video/CDN URL in `src`. Do not use Git LFS pointer files as Pages media assets.
 
-## Interactive augmentation
+## Interactive motion explorer
 
-The page includes a **real, locally hosted Viser 1.1.1 viewer**. Click **Load 3D demo** to load it. The initial page makes no viewer or recording requests.
+The page includes a **locally hosted Viser 1.1.1 viewer** with the real G1 robot and nine saved trajectories across four tasks: forehand, initial under-table pickup, six bimanual versions, and ladder climbing. The other six task entries display “coming soon” until their trajectories are available. The initial under-table motion is explicitly labeled before contact refinement.
 
-Two **illustrative schematic scenes** are supplied (serve and object pickup), each with five contact presets. These are geometric animations to demonstrate the website's interaction, **not VICAR outputs or measured results**. The page labels them accordingly. Visitors can orbit, zoom, play/pause, scrub time, change playback speed, and inspect the scene tree.
+Click **Load 3D demo** to load a recording on demand. Visitors can orbit, zoom, play/pause, scrub time, change speed, switch saved versions, reset the view, and inspect the scene tree. Blue/coral traces follow the hands. Ladder contacts use the source script's schedule; the translucent bimanual box is inferred from the hands.
 
-See [docs/VISER.md](docs/VISER.md) to replace these scenes with real motion exports or connect a live Viser server. Precomputed variants work entirely on GitHub Pages. Online optimization and Python callback controls require a separate server.
+The organized `visualization/` package runs the same scene locally and exports it for Pages. See [docs/VISER.md](docs/VISER.md) for setup and import commands, and [docs/VISUALIZATION_SOURCES.md](docs/VISUALIZATION_SOURCES.md) for all 32 original Viser files, per-task mappings, and missing data. Original optimization scripts in TT_PLayer are preserved.
+
+Precomputed recordings work entirely on GitHub Pages. Online contact optimization needs a separate live server. Saved bimanual versions have no known offset labels and are not represented as continuous augmentation controls.
 
 ## Files
 
 ```text
 index.html                    Semantic page structure
-assets/content.js             Editable content and media manifest
+assets/content.js             Editable project content and video sources
+assets/viewer-manifest.js     Generated task/recording manifest
 assets/style.css              Responsive layout and visual design
 assets/site.js                Carousel, media, and viewer controls
 assets/images/overview.png    Paper overview figure
 assets/videos/                Your ten final clips go here
-assets/recordings/            Illustrative .viser exports; replace with real data
+assets/recordings/            Real G1 trajectory exports for static playback
 viser-client/                 Self-contained Viser 1.1.1 client and MIT license
-scripts/                     Viser generation and export helpers
+visualization/               Shared renderer, importer, local player, and source map
+scripts/                     Browser checks and generic export helper
 docs/VISER.md                Viser integration guide and project references
 ```
 
@@ -115,4 +119,4 @@ npx playwright install chromium
 npm test
 ```
 
-The checks exercise all six carousel selections, keyboard navigation, all ten illustrative Viser recordings, project-prefixed URLs, responsive widths, and missing-recording recovery. To use an existing Chrome installation, run `CHROME_CHANNEL=chrome npm test`.
+The checks exercise all six carousel selections, keyboard navigation, all nine real Viser recordings, six pending task entries, project-prefixed URLs, responsive widths, and missing-recording recovery. To use an existing Chrome installation, run `CHROME_CHANNEL=chrome npm test`.

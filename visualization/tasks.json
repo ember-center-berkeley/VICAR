@@ -1,0 +1,248 @@
+{
+  "source_repository": "ember-center-berkeley/TT_PLayer",
+  "source_revision": "49ecadb2d98643075de33509b01ab467450a4661",
+  "tasks": [
+    {
+      "id": "forehand",
+      "title": "Simple forehand",
+      "kind": "serve",
+      "description": "A saved forehand reference on the G1 robot. Contact-shift recordings will be added as they become available.",
+      "sources": [
+        "refine_forehand_serve_g1.py",
+        "augment_serves_general_g1.py",
+        "augment_serves_forehand_g1.py"
+      ],
+      "style": "forehand",
+      "expected": [
+        "refined_serve_g1/forehand.pkl",
+        "refined_augmented_all_serves_g1/t_*_forehand.pkl"
+      ],
+      "imports": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/base.pkl",
+          "fps": 30,
+          "stage": "Saved reference",
+          "fps_basis": "30 fps preview convention; legacy PKL has no embedded timestamps."
+        }
+      ]
+    },
+    {
+      "id": "backhand",
+      "title": "Simple backhand",
+      "kind": "serve",
+      "description": "Explore the retargeted racket motion from any angle.",
+      "sources": [
+        "refine_backhand_serve_g1.py",
+        "augment_serves_general_g1.py",
+        "augment_serves_backhand_g1.py"
+      ],
+      "style": "backhand",
+      "expected": [
+        "refined_serve_g1/backhand.pkl",
+        "refined_augmented_all_serves_g1/t_*_backhand.pkl"
+      ],
+      "imports": []
+    },
+    {
+      "id": "forehand-chop",
+      "title": "Forehand chop",
+      "kind": "serve",
+      "description": "Explore the retargeted racket motion from any angle.",
+      "sources": [
+        "refine_forehand_chop_serve_g1.py",
+        "augment_serves_general_g1.py",
+        "augment_serves_forehand_chop_g1.py"
+      ],
+      "style": "forehand_chop",
+      "expected": [
+        "refined_serve_g1/forehand_chop.pkl",
+        "refined_augmented_all_serves_g1/t_*_forehand_chop.pkl"
+      ],
+      "imports": []
+    },
+    {
+      "id": "backhand-chop",
+      "title": "Backhand chop",
+      "kind": "serve",
+      "description": "Explore the retargeted racket motion from any angle.",
+      "sources": [
+        "refine_backhand_chop_serve_g1.py",
+        "augment_serves_general_g1.py",
+        "augment_serves_backhand_chop_g1.py"
+      ],
+      "style": "backhand_chop",
+      "expected": [
+        "refined_serve_g1/backhand_chop.pkl",
+        "refined_augmented_all_serves_g1/t_*_backhand_chop.pkl"
+      ],
+      "imports": []
+    },
+    {
+      "id": "forehand-side-spin",
+      "title": "Forehand side-spin",
+      "kind": "serve",
+      "description": "Explore the retargeted racket motion from any angle.",
+      "sources": [
+        "refine_custom_serve_g1_2.py",
+        "augment_serves_general_g1.py",
+        "augment_serves_custom_g1.py"
+      ],
+      "style": "forehand_right_side_spin",
+      "expected": [
+        "refined_serve_g1/forehand_right_side_spin.pkl",
+        "refined_augmented_all_serves_g1/t_*_forehand_right_side_spin.pkl"
+      ],
+      "imports": []
+    },
+    {
+      "id": "backhand-side-spin",
+      "title": "Backhand side-spin",
+      "kind": "serve",
+      "description": "Explore the retargeted racket motion from any angle.",
+      "sources": [
+        "refine_custom_serve_g1.py",
+        "augment_serves_general_g1.py",
+        "augment_serves_custom_g1.py"
+      ],
+      "style": "backhand_right_side_spin",
+      "expected": [
+        "refined_serve_g1/backhand_right_side_spin.pkl",
+        "refined_augmented_all_serves_g1/t_*_backhand_right_side_spin.pkl"
+      ],
+      "imports": []
+    },
+    {
+      "id": "tabletop-pickup",
+      "title": "Tabletop pickup",
+      "kind": "tabletop",
+      "description": "The tabletop pickup recording is coming soon.",
+      "sources": [
+        "refine_pick_motion_g1.py",
+        "refine_pick_motion_left_g1.py",
+        "augment_pick_motions_g1.py",
+        "augment_pick_motions_left_g1.py"
+      ],
+      "expected": [
+        "refined_pick_g1/pick.pkl",
+        "refined_pick_g1/pick_left.pkl",
+        "refined_augmented_pick_g1/t_*.pkl"
+      ],
+      "imports": []
+    },
+    {
+      "id": "under-table-pickup",
+      "title": "Under-table pickup",
+      "kind": "under-table",
+      "description": "An initial retargeted motion, before the contact refinement stage. The reconstructed table and final augmentation recordings are coming soon.",
+      "sources": [
+        "refine_pick_ground_motion_left_g1.py",
+        "augment_ground_pick_motions_left_g1.py"
+      ],
+      "expected": [
+        "refined_ground_pick_g1/ground_pick_left.pkl",
+        "refined_augmented_ground_pick_left_g1/t_*.pkl"
+      ],
+      "imports": [
+        {
+          "id": "source",
+          "label": "Initial retargeting",
+          "source": "LAFAN1_Retargeting_Dataset/g1/pick_under_table.csv",
+          "fps": 60,
+          "stage": "Before contact refinement",
+          "fps_basis": "SOURCE_FPS=60 in refine_pick_ground_motion_left_g1.py."
+        }
+      ]
+    },
+    {
+      "id": "bimanual-pick-place",
+      "title": "Bimanual pick-and-place",
+      "kind": "bimanual",
+      "description": "Compare six saved motion versions. Blue and coral traces follow the hands; the box is inferred from their midpoint. These versions have no recorded contact-offset labels.",
+      "sources": [
+        "refine_bimanual_pick_motion_g1.py",
+        "augment_bimanual_pick_motions_g1.py"
+      ],
+      "expected": [
+        "refined_bimanual_pick_g1/bimanual_pick.pkl",
+        "refined_augmented_bimanual_pick_g1/t_*.pkl"
+      ],
+      "imports": [
+        {
+          "id": "version-1",
+          "label": "Version 1",
+          "source": "LAFAN1_Retargeting_Dataset/g1/bimanual_pick_corrected.csv",
+          "fps": 30,
+          "stage": "Saved motion",
+          "fps_basis": "30 fps convention in refinement and CSV playback scripts; CSV has no embedded timestamps."
+        },
+        {
+          "id": "version-2",
+          "label": "Version 2",
+          "source": "LAFAN1_Retargeting_Dataset/g1/bimanual_pick_corrected1.csv",
+          "fps": 30,
+          "stage": "Saved motion",
+          "fps_basis": "30 fps convention in refinement and CSV playback scripts; CSV has no embedded timestamps."
+        },
+        {
+          "id": "version-3",
+          "label": "Version 3",
+          "source": "LAFAN1_Retargeting_Dataset/g1/bimanual_pick_corrected2.csv",
+          "fps": 30,
+          "stage": "Saved motion",
+          "fps_basis": "30 fps convention in refinement and CSV playback scripts; CSV has no embedded timestamps."
+        },
+        {
+          "id": "version-4",
+          "label": "Version 4",
+          "source": "LAFAN1_Retargeting_Dataset/g1/bimanual_pick_corrected3.csv",
+          "fps": 30,
+          "stage": "Saved motion",
+          "fps_basis": "30 fps convention in refinement and CSV playback scripts; CSV has no embedded timestamps."
+        },
+        {
+          "id": "version-5",
+          "label": "Version 5",
+          "source": "LAFAN1_Retargeting_Dataset/g1/bimanual_pick_corrected4.csv",
+          "fps": 30,
+          "stage": "Saved motion",
+          "fps_basis": "30 fps convention in refinement and CSV playback scripts; CSV has no embedded timestamps."
+        },
+        {
+          "id": "version-6",
+          "label": "Version 6",
+          "source": "LAFAN1_Retargeting_Dataset/g1/bimanual_pick_corrected5.csv",
+          "fps": 30,
+          "stage": "Saved motion",
+          "fps_basis": "30 fps convention in refinement and CSV playback scripts; CSV has no embedded timestamps."
+        }
+      ]
+    },
+    {
+      "id": "ladder-climbing",
+      "title": "Ladder climbing",
+      "kind": "ladder",
+      "description": "Replay the saved climbing motion with the ladder geometry and scheduled hand and foot contacts from the augmentation code. Amber markers show active contacts.",
+      "sources": [
+        "refine_climbing_motion_g1.py",
+        "augment_climbing_motions_g1_vis.py",
+        "augment_climbing_motions_g1.py"
+      ],
+      "expected": [
+        "refined_climbing_pick_g1/climbing.pkl",
+        "refined_augmented_climbing_g1/t_*.pkl"
+      ],
+      "imports": [
+        {
+          "id": "reference",
+          "label": "Saved motion",
+          "source": "LAFAN1_Retargeting_Dataset/g1/climbing_corrected.csv",
+          "fps": 30,
+          "stage": "Saved motion",
+          "fps_basis": "30 fps in refine_climbing_motion_g1.py; CSV written by copy_motion_to_lafan.py."
+        }
+      ]
+    }
+  ]
+}
