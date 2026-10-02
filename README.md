@@ -43,8 +43,9 @@ Edit **`assets/content.js`**. Video sources, project links, and authors are cent
 
 - **Links:** replace `links.arxiv`, `links.paper`, and `links.video`. Unknown links intentionally point to `./`, as requested. The code button points to the actual VICAR repository.
 - **Authors:** populate `authors` with `{ "name": "Author Name", "url": "https://…" }` objects and set `affiliations`. These are omitted initially because the supplied paper does not specify a byline.
-- **Abstract:** copied from the supplied manuscript. Edit `abstract` to replace it.
+- **Abstract:** copied from the supplied manuscript. Edit `abstract` to replace it. It sits collapsed under three cards (the gap, the idea, the result) whose text is a summary written in `index.html`; check that wording against the paper. Their images, `assets/images/idea-*.jpg`, are crops of the overview figure and can be swapped for sharper frames.
 - **Overview figure:** replace `assets/images/overview.png`. The supplied image is rendered from `figures/overview1_rebuttal.pdf` in the manuscript workspace. Keep its aspect ratio or update the image dimensions in `index.html`.
+- **Hero background:** set `hero.video` (muted H.264 MP4 loop) and `hero.poster` (still image, also shown with reduced motion or data saver). Keep the subject in the right third of a 16:9 frame on a white background; the left side sits under the title. `hero.source` adds the human demonstration card beside the robot (`image`, `caption`, `alt`); remove it to hide the card. If neither the loop nor the poster loads, the hero falls back to a centred text layout. The current loop is a stand-in rendered from the bimanual box-pickup recording, paired with the crate photo from the overview figure.
 - **Citation:** set `bibtex` when the final citation is known. The citation section and copy button appear automatically.
 
 ## Add the ten videos
@@ -84,7 +85,7 @@ The other four tasks now use their canonical `augment_*` scripts: both tabletop 
 
 The organized `visualization/` package runs the same viewers locally and exports them for GitHub Pages. See [the serve augmentation guide](docs/SERVE_AUGMENTATION.md), [the other task guide](docs/TASK_AUGMENTATION.md), [general viewer instructions](docs/VISER.md), and [the source map](docs/VISUALIZATION_SOURCES.md).
 
-The browser loads geometry and the compact augmentation data once. Slider changes select actual optimized trajectories; they do not run the optimizer or reload the viewer. Other scene controls retain standard Viser playback.
+The viewer starts loading as its section approaches the screen; with the browser's data saver on, it waits for **Load 3D demo**. Scrolling over it moves the page until the visitor clicks the scene (then the wheel zooms); touch screens show a “Tap to interact” layer instead. The browser loads geometry and the compact augmentation data once. Slider changes select actual optimized trajectories; they do not run the optimizer or reload the viewer. Other scene controls retain standard Viser playback.
 
 ## Files
 

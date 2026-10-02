@@ -29,8 +29,22 @@ const server = http.createServer((req, res) => {
   await page.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
   assert.equal(await page.locator('#serve-track article').count(),6);
   assert.equal(await page.locator('#other-skills article').count(),4);
-  assert.equal(await page.locator('video').count(),0,'Empty slots must not request nonexistent clips');
-  assert.equal(requests.some(url=>url.includes('.viser')),false,'Viewer must load on demand');
+  assert.equal(await page.locator('.media-slot video').count(),0,'Empty slots must not request nonexistent clips');
+  // Hero: two actions, paper links in the nav, and a still poster under reduced motion.
+  assert.equal(await page.locator('.hero-actions a').count(),2);
+  assert.deepEqual(await page.locator('.nav-cta').allTextContents(),['arXiv','Paper','Code']);
+  assert.match(await page.locator('#hero-video').getAttribute('poster'),/hero-box-pickup-poster/);
+  assert.equal(await page.locator('#hero-video').getAttribute('src'),null,'Reduced motion must not play the hero loop');
+  assert.equal(await page.locator('#hero-toggle').isHidden(),true);
+  await page.waitForFunction(()=>document.querySelector('#hero-source img').naturalWidth>0);
+  assert.equal(await page.locator('#hero-source').isVisible(),true,'The human demonstration card must show');
+  assert.equal(await page.locator('.hero').getAttribute('class'),'hero');
+  // Abstract: gap, idea and result cards, with the full text collapsed until asked for.
+  assert.deepEqual(await page.locator('.idea-label').allTextContents(),['The gap','The idea','The result']);
+  assert.equal(await page.locator('#abstract-text').isVisible(),false);
+  await page.locator('.abstract-details summary').click();
+  assert.ok((await page.locator('#abstract-text').textContent()).split(/\s+/).length>200,'The full abstract must be available');
+  assert.equal(requests.some(url=>url.includes('.viser')),false,'Viewer must wait until its section is near');
   assert.equal(await page.locator('[data-resource=arxiv]').getAttribute('href'),'./');
   for (let i=0;i<6;i++) {
    await page.locator('#serve-dots button').nth(i).click();
@@ -40,10 +54,23 @@ const server = http.createServer((req, res) => {
   await page.locator('#serve-track').focus();
   await page.keyboard.press('ArrowLeft');
   await page.waitForFunction(()=>document.querySelectorAll('#serve-dots button')[4].getAttribute('aria-current')==='true');
-  await page.getByRole('button',{name:'Load 3D demo'}).click();
+  // Reaching the section loads the viewer without a click.
+  await page.locator('#demo-stage').scrollIntoViewIfNeeded();
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor({timeout:20000});
   assert.match(await page.locator('#viser-frame').getAttribute('src'),/\/VICAR\/viser-client\//);
   await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
+  // The wheel scrolls the page past the viewer until the scene is clicked, then zooms.
+  const stageBox=await page.locator('#demo-stage').boundingBox();
+  await page.mouse.move(stageBox.x+stageBox.width/2,stageBox.y+stageBox.height/2);
+  const beforeWheel=await page.evaluate(()=>scrollY);
+  await page.mouse.wheel(0,200);
+  await page.waitForFunction(y=>scrollY>y,beforeWheel);
+  await page.mouse.down();
+  await page.mouse.up();
+  const clickedAt=await page.evaluate(()=>scrollY);
+  await page.mouse.wheel(0,200);
+  await page.waitForTimeout(300);
+  assert.equal(await page.evaluate(()=>scrollY),clickedAt,'After a click the wheel must zoom, not scroll');
   const forehandFrame=page.frames().find(frame=>frame.url().includes('viser-client'));
   await forehandFrame.getByRole('button',{name:'Pause motion',exact:true}).click();
   const timeInput=forehandFrame.getByRole('textbox',{name:'Playback time',exact:true});
@@ -56,6 +83,42 @@ const server = http.createServer((req, res) => {
   assert.equal(await timeInput.inputValue(),'4.5','Sliders must preserve paused playback time');
   await page.locator('#reset-shift').click();
   await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
+  // With data saver on, the viewer waits for the button.
+  const saver=await browser.newPage({viewport:{width:1440,height:1000}});
+  await saver.addInitScript(()=>Object.defineProperty(navigator,'connection',{value:{saveData:true}}));
+  await saver.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
+  await saver.locator('#demo-stage').scrollIntoViewIfNeeded();
+  await saver.waitForTimeout(500);
+  assert.equal(await saver.locator('#viser-frame').getAttribute('src'),null,'Data saver must wait for the button');
+  await saver.getByRole('button',{name:'Load 3D demo'}).click();
+  await saver.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor({timeout:20000});
+  await saver.close();
+  // Without a loop or poster, the hero falls back to centred text.
+  const broken=await browser.newPage({viewport:{width:1440,height:900}});
+  await broken.route(/hero-box-pickup/,route=>route.fulfill({status:404,body:''}));
+  await broken.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
+  await broken.waitForFunction(()=>document.querySelector('.hero').classList.contains('hero-centered'));
+  assert.equal(await broken.locator('.hero-media').isHidden(),true);
+  assert.equal(await broken.locator('#hero-toggle').isHidden(),true);
+  await broken.close();
+  // Touch screens get a tap-to-interact shield so swipes scroll the page.
+  const phone=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+  const touch=await phone.newPage();
+  await touch.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
+  // Without reduced motion the hero loop plays and its button pauses it.
+  assert.match(await touch.locator('#hero-video').getAttribute('src'),/hero-box-pickup\.mp4/);
+  if (await touch.evaluate(()=>document.createElement('video').canPlayType('video/mp4; codecs="avc1.640028"'))) {
+   await touch.waitForFunction(()=>!document.querySelector('#hero-video').paused);
+   await touch.locator('#hero-toggle').tap();
+   assert.equal(await touch.evaluate(()=>document.querySelector('#hero-video').paused),true);
+   assert.equal(await touch.locator('#hero-toggle').getAttribute('aria-label'),'Play background video');
+  }
+  await touch.locator('#demo-stage').scrollIntoViewIfNeeded();
+  await touch.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor({timeout:20000});
+  assert.equal(await touch.locator('#viewer-shield').isVisible(),true);
+  await touch.locator('#viewer-shield').tap();
+  assert.equal(await touch.locator('#viewer-shield').isVisible(),false);
+  await phone.close();
   // Exercise all ten tasks, both tabletop hands, each actual sampled axis,
   // fixed dimensions, independent scene layers, and standalone playback.
   const scenes = await page.evaluate(() => window.VICAR.viewer.scenes);
@@ -175,7 +238,6 @@ const server = http.createServer((req, res) => {
   assert.equal(await page.locator('#viser-frame').isHidden(),true);
   // A scene switch while the initial HEAD request is pending must cancel it.
   await page.unroute('**/assets/augmentation/tasks/*.viser');
-  await page.reload({waitUntil:'networkidle'});
   let releaseHead;
   const heldHead = new Promise(resolve=>{releaseHead=resolve;});
   await page.route('**/assets/augmentation/serves/*.viser',async route=>{
@@ -183,7 +245,8 @@ const server = http.createServer((req, res) => {
    await route.continue();
   });
   const headStarted=page.waitForRequest(r=>r.url().includes('.viser') && r.method()==='HEAD');
-  await page.getByRole('button',{name:'Load 3D demo'}).click();
+  await page.reload({waitUntil:'load'});
+  await page.locator('#demo-stage').scrollIntoViewIfNeeded();
   await headStarted;
   await page.locator('#demo-scene').selectOption('backhand');
   const headFinished=page.waitForResponse(r=>r.url().includes('.viser') && r.request().method()==='HEAD');
@@ -196,6 +259,6 @@ const server = http.createServer((req, res) => {
   await page.locator('#demo-scene').selectOption('ladder-climbing');
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
   assert.deepEqual(errors,[]);
-  console.log('PASS: all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, both tabletop hands, scene layers, preserved playback, standalone controls, 10 video slots, responsive widths, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: hero actions, nav links, background loop, human card and centred fallback, abstract cards and full text, auto-load on approach, wheel passes through until clicked, data-saver button, touch shield, all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, both tabletop hands, scene layers, preserved playback, standalone controls, 10 video slots, responsive widths, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

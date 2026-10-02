@@ -5,6 +5,7 @@
   if (!content) return;
   const $ = (selector) => document.querySelector(selector);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const saveData = Boolean(navigator.connection?.saveData);
   const element = (tag, className, text) => {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -28,6 +29,64 @@
   if (content.affiliations) {
     $('#affiliations').textContent = content.affiliations;
     $('#affiliations').hidden = false;
+  }
+  // Hero background: a muted loop, or just the poster with reduced motion or
+  // data saver. It pauses off screen, and the corner button pauses it for good.
+  // If neither the loop nor the poster loads, the hero falls back to centred text.
+  const heroVideo = $('#hero-video');
+  const heroToggle = $('#hero-toggle');
+  const hero = content.hero || {};
+  let videoFailed = !hero.video || reducedMotion.matches || saveData;
+  let posterFailed = !hero.poster;
+  const checkHeroMedia = () => {
+    if (!videoFailed || !posterFailed) return;
+    $('.hero').classList.add('hero-centered');
+    heroToggle.hidden = true;
+  };
+  if (hero.poster) {
+    heroVideo.poster = hero.poster;
+    const probe = new Image();
+    probe.addEventListener('error', () => { posterFailed = true; checkHeroMedia(); });
+    probe.src = hero.poster;
+  }
+  if (!videoFailed) {
+    let heroPaused = false;
+    heroVideo.src = hero.video;
+    heroToggle.hidden = false;
+    const syncToggle = () => {
+      heroToggle.classList.toggle('is-paused', heroVideo.paused);
+      heroToggle.setAttribute('aria-label', heroVideo.paused ? 'Play background video' : 'Pause background video');
+    };
+    heroVideo.addEventListener('play', syncToggle);
+    heroVideo.addEventListener('pause', syncToggle);
+    heroVideo.addEventListener('error', () => {
+      videoFailed = true;
+      heroToggle.hidden = true;
+      heroVideo.removeAttribute('src');
+      heroVideo.load(); // Show the poster instead.
+      checkHeroMedia();
+    }, {once: true});
+    heroToggle.addEventListener('click', () => {
+      heroPaused = !heroVideo.paused;
+      if (heroPaused) heroVideo.pause();
+      else heroVideo.play().catch(() => {});
+      syncToggle();
+    });
+    new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) heroVideo.pause();
+      else if (!heroPaused) heroVideo.play().catch(() => {});
+    }).observe(heroVideo);
+  }
+  checkHeroMedia();
+  // The human demonstration the robot's motion was retargeted from.
+  if (hero.source?.image) {
+    const card = $('#hero-source');
+    const image = card.querySelector('img');
+    image.alt = hero.source.alt || '';
+    image.addEventListener('error', () => { card.hidden = true; }, {once: true});
+    image.src = hero.source.image;
+    card.querySelector('figcaption').textContent = hero.source.caption || '';
+    card.hidden = false;
   }
   const artPaths = {
     serve: '<path d="M8 52h79M15 52l-4 17m67-17 5 17M47 41v14M10 58h73"/><path d="m67 23 9-11c6-7 17 3 11 10L76 33zM69 29l-9 12"/><circle cx="35" cy="26" r="4"/><path d="M17 34c4-10 11-14 18-14" stroke-dasharray="3 5"/>',
@@ -132,10 +191,11 @@
   const mediaObserver = new IntersectionObserver(entries => entries.forEach(entry => {
     if (!entry.isIntersecting) entry.target.pause();
   }), {threshold: .15});
-  document.querySelectorAll('video').forEach(video => mediaObserver.observe(video));
+  document.querySelectorAll('.media-slot video').forEach(video => mediaObserver.observe(video));
 
   const sceneSelect = $('#demo-scene');
   const viewer = $('#viser-frame');
+  const stage = $('#demo-stage');
   let scene = content.viewer.scenes.find(item => item.id === content.viewer.defaultScene) || content.viewer.scenes[0];
   let variant = scene.variants[0];
   let loaded = false;
@@ -278,6 +338,34 @@
   });
   $('#load-demo').addEventListener('click', loadViewer);
   $('#reset-viewer').addEventListener('click', loadViewer);
+  // Load the scene as it approaches the viewport rather than on page open; with
+  // data saver on, wait for the button. Until someone clicks or taps the scene,
+  // the wheel scrolls the page instead of zooming, so the viewer never traps a
+  // reader scrolling past it. Touch screens get a tap-to-interact shield.
+  const setLocked = locked => stage.classList.toggle('is-locked', locked);
+  let hintTimer;
+  new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) setLocked(true);
+    else if (!activated && variant && !saveData) loadViewer();
+  }, {rootMargin: '300px 0px'}).observe(stage);
+  viewer.addEventListener('load', () => {
+    setLocked(true);
+    const doc = viewer.contentDocument;
+    if (!doc) return; // Cross-origin embeds keep their own scroll handling.
+    doc.defaultView.addEventListener('wheel', event => {
+      if (!stage.classList.contains('is-locked')) return;
+      event.stopPropagation();
+      stage.classList.add('show-hint');
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => stage.classList.remove('show-hint'), 1500);
+    }, {capture: true});
+    doc.defaultView.addEventListener('pointerdown', () => setLocked(false), {capture: true});
+    doc.documentElement.addEventListener('mouseleave', () => setLocked(true));
+  });
+  $('#viewer-shield').addEventListener('click', () => setLocked(false));
+  document.addEventListener('pointerdown', event => {
+    if (!stage.contains(event.target)) setLocked(true);
+  });
   function sendShift() {
     if (!variant?.augmentationPath || !viewer.contentWindow) return;
     const layers = Object.fromEntries(Array.from($('#scene-layers').querySelectorAll('input')).map(input => [input.dataset.layer, input.checked]));
