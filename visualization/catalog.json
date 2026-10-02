@@ -1,12 +1,12 @@
 {
   "source_repository": "ember-center-berkeley/TT_PLayer",
-  "source_revision": "49ecadb2d98643075de33509b01ab467450a4661",
+  "source_revision": "b377ba951d2bd12bef45e23a5e623342038121e0",
   "tasks": [
     {
       "id": "forehand",
       "title": "Simple forehand",
       "kind": "serve",
-      "description": "A saved forehand reference on the G1 robot. Contact-shift recordings will be added as they become available.",
+      "description": "Move the contact point in X, Y, and Z using this serve\u2019s own augmentation ranges. Explore the racket, contact trajectory, and hit region from any angle.",
       "sources": [
         "refine_forehand_serve_g1.py",
         "augment_serves_general_g1.py",
@@ -21,21 +21,21 @@
         {
           "id": "reference",
           "label": "Reference",
-          "source": "refined_serve_g1/base.pkl",
-          "fps": 30,
-          "stage": "Saved reference",
-          "fps_basis": "30 fps preview convention; legacy PKL has no embedded timestamps."
+          "source": "refined_serve_g1/forehand.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop."
         }
       ],
       "variants": [
         {
           "id": "reference",
           "label": "Reference",
-          "source": "refined_serve_g1/base.pkl",
-          "fps": 30,
-          "stage": "Saved reference",
-          "fps_basis": "30 fps preview convention; legacy PKL has no embedded timestamps.",
-          "file": "motions/forehand-reference.npz"
+          "source": "refined_serve_g1/forehand.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop.",
+          "file": "motions/serves/forehand-reference.npz"
         }
       ]
     },
@@ -43,7 +43,7 @@
       "id": "backhand",
       "title": "Simple backhand",
       "kind": "serve",
-      "description": "Explore the retargeted racket motion from any angle.",
+      "description": "Move the contact point in X, Y, and Z using this serve\u2019s own augmentation ranges. Explore the racket, contact trajectory, and hit region from any angle.",
       "sources": [
         "refine_backhand_serve_g1.py",
         "augment_serves_general_g1.py",
@@ -54,14 +54,33 @@
         "refined_serve_g1/backhand.pkl",
         "refined_augmented_all_serves_g1/t_*_backhand.pkl"
       ],
-      "imports": [],
-      "variants": []
+      "imports": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/backhand.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop."
+        }
+      ],
+      "variants": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/backhand.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop.",
+          "file": "motions/serves/backhand-reference.npz"
+        }
+      ]
     },
     {
       "id": "forehand-chop",
       "title": "Forehand chop",
       "kind": "serve",
-      "description": "Explore the retargeted racket motion from any angle.",
+      "description": "Move the contact point in X, Y, and Z using this serve\u2019s own augmentation ranges. Explore the racket, contact trajectory, and hit region from any angle.",
       "sources": [
         "refine_forehand_chop_serve_g1.py",
         "augment_serves_general_g1.py",
@@ -72,14 +91,33 @@
         "refined_serve_g1/forehand_chop.pkl",
         "refined_augmented_all_serves_g1/t_*_forehand_chop.pkl"
       ],
-      "imports": [],
-      "variants": []
+      "imports": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/forehand_chop.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop."
+        }
+      ],
+      "variants": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/forehand_chop.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop.",
+          "file": "motions/serves/forehand-chop-reference.npz"
+        }
+      ]
     },
     {
       "id": "backhand-chop",
       "title": "Backhand chop",
       "kind": "serve",
-      "description": "Explore the retargeted racket motion from any angle.",
+      "description": "Move the contact point in X, Y, and Z using this serve\u2019s own augmentation ranges. Explore the racket, contact trajectory, and hit region from any angle.",
       "sources": [
         "refine_backhand_chop_serve_g1.py",
         "augment_serves_general_g1.py",
@@ -90,14 +128,33 @@
         "refined_serve_g1/backhand_chop.pkl",
         "refined_augmented_all_serves_g1/t_*_backhand_chop.pkl"
       ],
-      "imports": [],
-      "variants": []
+      "imports": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/backhand_chop.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop."
+        }
+      ],
+      "variants": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/backhand_chop.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop.",
+          "file": "motions/serves/backhand-chop-reference.npz"
+        }
+      ]
     },
     {
       "id": "forehand-side-spin",
       "title": "Forehand side-spin",
       "kind": "serve",
-      "description": "Explore the retargeted racket motion from any angle.",
+      "description": "Move the contact point in X, Y, and Z using this serve\u2019s own augmentation ranges. Explore the racket, contact trajectory, and hit region from any angle.",
       "sources": [
         "refine_custom_serve_g1_2.py",
         "augment_serves_general_g1.py",
@@ -108,14 +165,33 @@
         "refined_serve_g1/forehand_right_side_spin.pkl",
         "refined_augmented_all_serves_g1/t_*_forehand_right_side_spin.pkl"
       ],
-      "imports": [],
-      "variants": []
+      "imports": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/forehand_right_side_spin.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop."
+        }
+      ],
+      "variants": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/forehand_right_side_spin.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop.",
+          "file": "motions/serves/forehand-side-spin-reference.npz"
+        }
+      ]
     },
     {
       "id": "backhand-side-spin",
       "title": "Backhand side-spin",
       "kind": "serve",
-      "description": "Explore the retargeted racket motion from any angle.",
+      "description": "Move the contact point in X, Y, and Z using this serve\u2019s own augmentation ranges. Explore the racket, contact trajectory, and hit region from any angle.",
       "sources": [
         "refine_custom_serve_g1.py",
         "augment_serves_general_g1.py",
@@ -126,8 +202,27 @@
         "refined_serve_g1/backhand_right_side_spin.pkl",
         "refined_augmented_all_serves_g1/t_*_backhand_right_side_spin.pkl"
       ],
-      "imports": [],
-      "variants": []
+      "imports": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/backhand_right_side_spin.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop."
+        }
+      ],
+      "variants": [
+        {
+          "id": "reference",
+          "label": "Reference",
+          "source": "refined_serve_g1/backhand_right_side_spin.pkl",
+          "fps": 10,
+          "stage": "General serve reference",
+          "fps_basis": "10 fps from augment_serves_general_g1.py visualization loop.",
+          "file": "motions/serves/backhand-side-spin-reference.npz"
+        }
+      ]
     },
     {
       "id": "tabletop-pickup",

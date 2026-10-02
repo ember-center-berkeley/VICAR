@@ -50,28 +50,13 @@ const server = http.createServer((req, res) => {
   await timeInput.fill('4.5');
   await timeInput.press('Tab');
   const iframeSource=await page.locator('#viser-frame').getAttribute('src');
-  const grid=JSON.parse(fs.readFileSync(path.join(root,'assets/augmentation/forehand.json'),'utf8'));
-  let shift=[-.08,0,0];
-  for(const [axisIndex,axis] of ['x','y','z'].entries()) {
-   for(let step=0;step<9;step++) {
-    shift[axisIndex]=Number((grid.axes[axis].min+step*.01).toFixed(2));
-    await page.locator('#shift-'+axis).fill(String(shift[axisIndex]));
-    const index=grid.shifts.findIndex(s=>s.every((value,i)=>Math.abs(value-shift[i])<1e-6));
-    await page.waitForFunction(index=>document.querySelector('#augmentation-controls').dataset.selectedIndex===String(index),index);
-   }
-  }
+  await page.locator('#shift-x').fill('-0.16');
+  await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='400');
   assert.equal(await page.locator('#viser-frame').getAttribute('src'),iframeSource,'Sliders must not reload the viewer');
   assert.equal(await timeInput.inputValue(),'4.5','Sliders must preserve paused playback time');
   await page.locator('#reset-shift').click();
   await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
-  // Standalone Open viewer has the same sliders within the Viser window.
-  const standalone=await browser.newPage();
-  await standalone.goto(await page.locator('#open-viewer').getAttribute('href'));
-  await standalone.getByRole('slider',{name:'X contact shift'}).waitFor();
-  await standalone.getByRole('slider',{name:'X contact shift'}).fill('-0.12');
-  await standalone.waitForFunction(()=>document.documentElement.dataset.augmentationIndex==='400');
-  await standalone.close();
-  // Exercise every task, including six deliberate missing-data states.
+  // Exercise every task, all six serve grids, and the remaining pending task.
   const scenes = await page.evaluate(() => window.VICAR.viewer.scenes);
   assert.equal(scenes.length,10);
   let recordings = 0;
@@ -98,10 +83,57 @@ const server = http.createServer((req, res) => {
     const frame = page.frames().find(f=>f.url().includes('viser-client'));
     await frame.waitForFunction(()=>Array.from(document.querySelectorAll('input')).some(input=>Number(input.value)>0.1),null,{timeout:15000});
     assert.match(await page.locator('#motion-meta').textContent(),/frames.*fps/);
+    if (variant.augmentationPath) {
+     const grid=JSON.parse(fs.readFileSync(path.join(root,variant.augmentationPath),'utf8'));
+     await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
+     if (await frame.getByRole('button',{name:'Pause motion',exact:true}).count()) {
+      await frame.getByRole('button',{name:'Pause motion',exact:true}).click();
+     }
+     const time=frame.getByRole('textbox',{name:'Playback time',exact:true});
+     await time.fill(String(grid.hitFrame/grid.fps)); await time.press('Tab');
+     const src=await page.locator('#viser-frame').getAttribute('src');
+     const shift=['x','y','z'].map(axis=>grid.axes[axis].default);
+     for (const [axisIndex,axis] of ['x','y','z'].entries()) {
+      const input=page.locator('#shift-'+axis);
+      for(const attribute of ['min','max','step']) assert.equal(Number(await input.getAttribute(attribute)),grid.axes[axis][attribute]);
+      for(let step=0;step<9;step++) {
+       shift[axisIndex]=Number((grid.axes[axis].min+step*grid.axes[axis].step).toFixed(6));
+       await input.fill(String(shift[axisIndex]));
+       const index=grid.shifts.findIndex(s=>s.every((value,i)=>Math.abs(value-shift[i])<1e-6));
+       assert.notEqual(index,-1,'Every displayed slider position must have a solved motion');
+       await page.waitForFunction(index=>document.querySelector('#augmentation-controls').dataset.selectedIndex===String(index),index);
+      }
+     }
+     assert.equal(await page.locator('#viser-frame').getAttribute('src'),src);
+     assert.equal(Number(await time.inputValue()),grid.hitFrame/grid.fps);
+     assert.match(await page.locator('#demo-status').textContent(),new RegExp(scene.title));
+     await page.locator('#show-hit-box').uncheck();
+     await frame.waitForFunction(()=>document.documentElement.dataset.hitBoxVisible==='false');
+     await page.locator('#show-hit-box').check();
+     await frame.waitForFunction(()=>document.documentElement.dataset.hitBoxVisible==='true');
+     await page.locator('#reset-shift').click();
+     await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
+     if(process.env.SCREENSHOT_DIR) {
+      fs.mkdirSync(process.env.SCREENSHOT_DIR,{recursive:true});
+      await page.waitForTimeout(350);
+      await page.locator('#interactive').screenshot({path:path.join(process.env.SCREENSHOT_DIR,scene.id+'.png')});
+     }
+     // Open viewer must use this style's exact ranges and provide its own UI.
+     const standalone=await browser.newPage();
+     await standalone.goto(await page.locator('#open-viewer').getAttribute('href'));
+     const input=standalone.getByRole('slider',{name:'X contact shift'});
+     await input.waitFor();
+     assert.equal(Number(await input.getAttribute('step')),grid.axes.x.step);
+     await input.fill(String(grid.axes.x.min));
+     await standalone.waitForFunction(()=>document.documentElement.dataset.augmentationIndex==='400');
+     await standalone.getByRole('checkbox',{name:'Show hit box'}).uncheck();
+     await standalone.waitForFunction(()=>document.documentElement.dataset.hitBoxVisible==='false');
+     await standalone.close();
+    }
     recordings++;
    }
   }
-  assert.equal(recordings,9);
+  assert.equal(recordings,14);
   const resetResponse=page.waitForResponse(r=>r.url().includes('.viser') && r.request().method()==='GET' && r.status()===200);
   await page.getByRole('button',{name:'Reset view',exact:true}).click();
   await resetResponse;
@@ -126,24 +158,24 @@ const server = http.createServer((req, res) => {
   await page.reload({waitUntil:'networkidle'});
   let releaseHead;
   const heldHead = new Promise(resolve=>{releaseHead=resolve;});
-  await page.route('**/assets/augmentation/*.viser',async route=>{
+  await page.route('**/assets/augmentation/serves/*.viser',async route=>{
    if(route.request().method()==='HEAD') await heldHead;
    await route.continue();
   });
   const headStarted=page.waitForRequest(r=>r.url().includes('.viser') && r.method()==='HEAD');
   await page.getByRole('button',{name:'Load 3D demo'}).click();
   await headStarted;
-  await page.locator('#demo-scene').selectOption('backhand');
+  await page.locator('#demo-scene').selectOption('tabletop-pickup');
   const headFinished=page.waitForResponse(r=>r.url().includes('.viser') && r.request().method()==='HEAD');
   releaseHead();
   await headFinished;
   await page.waitForTimeout(100);
   assert.equal(await page.locator('#viser-frame').getAttribute('src'),null);
   assert.equal(await page.locator('#viser-frame').isHidden(),true);
-  await page.unroute('**/assets/augmentation/*.viser');
+  await page.unroute('**/assets/augmentation/serves/*.viser');
   await page.locator('#demo-scene').selectOption('ladder-climbing');
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
   assert.deepEqual(errors,[]);
-  console.log('PASS: X/Y/Z sliders at all 9 positions, preserved playback time, standalone controls, 10 video slots, all 9 recordings, 6 pending tasks, responsive widths, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: X/Y/Z sliders at all 9 positions, preserved playback time, standalone controls, 10 video slots, all 14 recordings, all six serve grids, 1 pending task, responsive widths, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

@@ -20,6 +20,10 @@ def export(catalog, task_id=None):
         for task in catalog['tasks']:
             if task_id and task['id'] != task_id:
                 continue
+            if task['kind'] == 'serve' and (ROOT / f"motions/serves/{task['id']}-grid.npz").exists():
+                from .export_serves import export_task
+                export_task(server, task)
+                continue
             for variant in task['variants']:
                 motion = Motion.load(ROOT / variant['file'])
                 scene = MotionScene(server, motion, task)
@@ -46,15 +50,16 @@ def export(catalog, task_id=None):
                              'duration': round(len(motion.joints) / motion.fps, 2),
                              'stage': item['stage']})
         description = task['description']
-        augmentation_file = ROOT.parent / 'assets/augmentation/forehand.json'
-        if task['id'] == 'forehand' and augmentation_file.exists():
+        augmentation_path = f"assets/augmentation/serves/{task['id']}"
+        augmentation_file = ROOT.parent / f'{augmentation_path}.json'
+        if task['kind'] == 'serve' and augmentation_file.exists():
             grid = json.loads(augmentation_file.read_text())
             variants = [{'id': 'augmentation', 'label': 'Contact augmentation',
-                         'recording': 'assets/augmentation/forehand-base.viser',
-                         'augmentationPath': 'assets/augmentation/forehand.json', 'axes': grid['axes'],
+                         'recording': f'{augmentation_path}-base.viser',
+                         'augmentationPath': f'{augmentation_path}.json', 'axes': grid['axes'],
                          'frames': grid['frames'], 'fps': grid['fps'],
                          'duration': grid['frames'] / grid['fps'], 'stage': 'Augmented serve'}]
-            description = 'Move the contact point in X, Y, and Z. The right arm adapts using the forehand augmentation while the rest of the motion stays fixed. Amber marks the hit target.'
+            description = 'Move the contact point in X, Y, and Z. The right arm adapts while the rest of the motion stays fixed. Blue bounds the hit region, green traces the contact trajectory, and orange marks the hit point.'
         scenes.append({'id': task['id'], 'title': task['title'], 'description': description,
                        'variants': variants})
     config = {'client': 'viser-client/', 'defaultScene': 'forehand', 'scenes': scenes}
@@ -64,6 +69,9 @@ def export(catalog, task_id=None):
 
 
 def view(task, variant_id, host, port):
+    if task['kind'] == 'serve' and variant_id is None and (ROOT / f"motions/serves/{task['id']}-grid.npz").exists():
+        from .export_serves import view_serve
+        return view_serve(task, host, port)
     if task['id'] == 'forehand' and variant_id is None and (ROOT / 'motions/forehand-grid.npz').exists():
         from .forehand_view import view_forehand
         return view_forehand(host, port)

@@ -1,3 +1,7 @@
 -r requirements.txt
 torch>=2.6,<3
 pytorch-kinematics==0.10.0
+tqdm>=4.66,<5
+# Needed only when importing TT_PLayer's legacy pickles.
+jax>=0.4
+jaxlie>=1.4

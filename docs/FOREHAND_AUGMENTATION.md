@@ -1,4 +1,6 @@
-# Forehand augmentation and X/Y/Z sliders
+# Historical forehand augmentation
+
+**Superseded:** the live website now uses `augment_serves_general_g1.py` for all six serves. See [SERVE_AUGMENTATION.md](SERVE_AUGMENTATION.md). This document and the older forehand files are retained for reproducibility; the commands below rebuild the historical experiment only.
 
 The forehand scene follows **`augment_serves_forehand_g1.py`** from TT_PLayer
 revision `49ecadb2d98643075de33509b01ab467450a4661`. It replaces the previous

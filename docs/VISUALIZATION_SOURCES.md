@@ -1,5 +1,8 @@
 # VICAR visualization source map
 
+**Current serve update (b377ba95):** All six serves now use the named `refined_serve_g1/<style>.pkl` inputs, `urdf/g1/g1_racket.urdf`, and `augment_serves_general_g1.py`. Each has 729 regenerated motions. See [SERVE_AUGMENTATION.md](SERVE_AUGMENTATION.md) for ranges and diagnostics. `source_inventory.json` has current line references. The audit below describes the earlier import: its missing-file statements are historical. Newly pulled non-serve PKLs also exist; those viewers retain their previous previews in this serve-focused update.
+
+
 Audited on 2026-09-28 against `ember-center-berkeley/TT_PLayer`, revision
 `49ecadb2d98643075de33509b01ab467450a4661`.
 The original training, refinement, and augmentation scripts are retained in that

@@ -78,11 +78,11 @@ Use browser-compatible H.264 MP4 with `yuv420p` and fast-start metadata. Keep in
 
 ## Interactive motion explorer
 
-The page starts with **forehand contact augmentation**, matching `augment_serves_forehand_g1.py`. X/Y/Z sliders select 729 optimized motions on the original 1 cm grid. It uses the G1 model with hands, the original display lift, and 10 fps preview timing. Changing a slider preserves the camera and playback position.
+All **six serve styles** use `augment_serves_general_g1.py`, with 729 motions each and X/Y/Z ranges derived from each style’s `augment_ranges` plus the script’s 4 cm padding. The G1 carries the racket and ball holder; a blue hit box, green contact spline, and orange hit marker match the source viewer. Slider changes preserve camera and playback position.
 
-Eight other saved recordings remain available: initial under-table pickup, six bimanual versions, and ladder climbing. Six task entries show “coming soon” until their trajectories are available. Under-table is labeled before contact refinement.
+Eight other saved recordings remain available: initial under-table pickup, six bimanual versions, and ladder climbing. Tabletop pickup remains “coming soon”; these non-serve entries retain their previous data and labels.
 
-The organized `visualization/` package runs the same augmentation locally and exports it for GitHub Pages. See [the forehand augmentation guide](docs/FOREHAND_AUGMENTATION.md), [general viewer instructions](docs/VISER.md), and [the source map](docs/VISUALIZATION_SOURCES.md) covering all 32 original Viser files.
+The organized `visualization/` package runs the same viewers locally and exports them for GitHub Pages. See [the serve augmentation guide](docs/SERVE_AUGMENTATION.md), [general viewer instructions](docs/VISER.md), and [the source map](docs/VISUALIZATION_SOURCES.md).
 
 The browser loads geometry and the compact augmentation data once. Slider changes select actual optimized trajectories; they do not run the optimizer or reload the viewer. Other scene controls retain standard Viser playback.
 
@@ -119,4 +119,4 @@ npx playwright install chromium
 npm test
 ```
 
-The checks exercise all six carousel selections, keyboard navigation, all nine real Viser recordings, six pending task entries, project-prefixed URLs, responsive widths, and missing-recording recovery. To use an existing Chrome installation, run `CHROME_CHANNEL=chrome npm test`.
+The checks exercise all six carousel selections, keyboard navigation, all fourteen Viser recording variants, all six serve grids and their XYZ ranges, one pending task entry, project-prefixed URLs, responsive widths, and missing-recording recovery. To use an existing Chrome installation, run `CHROME_CHANNEL=chrome npm test`.

@@ -143,6 +143,7 @@
   let loadVersion = 0;
   let shift = [-.08, 0, 0];
   let shiftRequest = 0;
+  const formatShift = value => value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 5});
   function viewerURL(externalControls = false) {
     if (!variant) return '';
     if (variant.embedUrl) return new URL(variant.embedUrl, document.baseURI).href;
@@ -215,6 +216,9 @@
     }
   }
   function renderVariants() {
+    ++shiftRequest;
+    delete $('#augmentation-controls').dataset.selectedIndex;
+    $('#show-hit-box').checked = true;
     const list = $('#demo-variants');
     list.replaceChildren();
     scene.variants.forEach(item => {
@@ -234,8 +238,10 @@
       ['x', 'y', 'z'].forEach((axis, i) => {
         const input = $(`#shift-${axis}`);
         Object.assign(input, {min: variant.axes[axis].min, max: variant.axes[axis].max, step: variant.axes[axis].step, value: shift[i]});
-        $(`#shift-${axis}-value`).textContent = `${shift[i].toFixed(2)} m`;
+        $(`#shift-${axis}-value`).textContent = `${formatShift(shift[i])} m`;
+        $(`#shift-${axis}-range`).textContent = `${formatShift(variant.axes[axis].min)} to ${formatShift(variant.axes[axis].max)} m`;
       });
+      $('.augmentation-note').textContent = '729 motions · 9 positions per axis';
     }
     updateViewerInfo();
   }
@@ -256,29 +262,31 @@
   $('#reset-viewer').addEventListener('click', loadViewer);
   function sendShift() {
     if (!variant?.augmentationPath || !viewer.contentWindow) return;
-    viewer.contentWindow.postMessage({type: 'vicar:set-shift', shift, requestId: ++shiftRequest}, location.origin);
+    viewer.contentWindow.postMessage({type: 'vicar:set-shift', shift, showBox: $('#show-hit-box').checked, requestId: ++shiftRequest}, location.origin);
   }
   ['x', 'y', 'z'].forEach((axis, i) => {
     $(`#shift-${axis}`).addEventListener('input', event => {
       shift[i] = Number(event.target.value);
-      $(`#shift-${axis}-value`).textContent = `${shift[i].toFixed(2)} m`;
+      $(`#shift-${axis}-value`).textContent = `${formatShift(shift[i])} m`;
       sendShift();
     });
   });
+  $('#show-hit-box').addEventListener('change', sendShift);
   $('#reset-shift').addEventListener('click', () => {
     if (!variant?.axes) return;
     ['x', 'y', 'z'].forEach((axis, i) => {
       shift[i] = variant.axes[axis].default;
       $(`#shift-${axis}`).value = shift[i];
-      $(`#shift-${axis}-value`).textContent = `${shift[i].toFixed(2)} m`;
+      $(`#shift-${axis}-value`).textContent = `${formatShift(shift[i])} m`;
     });
     sendShift();
   });
   window.addEventListener('message', event => {
     if (event.origin !== location.origin || event.source !== viewer.contentWindow || !variant?.augmentationPath) return;
+    if (event.data?.gridUrl !== new URL(variant.augmentationPath, document.baseURI).href) return;
     if (event.data?.type === 'vicar:augmentation-ready') sendShift();
     if (event.data?.type === 'vicar:shift-applied' && event.data.requestId === shiftRequest) {
-      $('#demo-status').textContent = `Forehand contact shift · X ${shift[0].toFixed(2)} m · Y ${shift[1].toFixed(2)} m · Z ${shift[2].toFixed(2)} m. Drag to orbit; pause or scrub to compare poses.`;
+      $('#demo-status').textContent = `${scene.title} · X ${formatShift(shift[0])} m · Y ${formatShift(shift[1])} m · Z ${formatShift(shift[2])} m. Drag to orbit; pause or scrub to compare poses.`;
       $('#augmentation-controls').dataset.selectedIndex = event.data.index;
     }
     if (event.data?.type === 'vicar:augmentation-error') {

@@ -6,31 +6,31 @@ window.VICAR.viewer = {
     {
       "id": "forehand",
       "title": "Simple forehand",
-      "description": "Move the contact point in X, Y, and Z. The right arm adapts using the forehand augmentation while the rest of the motion stays fixed. Amber marks the hit target.",
+      "description": "Move the contact point in X, Y, and Z. The right arm adapts while the rest of the motion stays fixed. Blue bounds the hit region, green traces the contact trajectory, and orange marks the hit point.",
       "variants": [
         {
           "id": "augmentation",
           "label": "Contact augmentation",
-          "recording": "assets/augmentation/forehand-base.viser",
-          "augmentationPath": "assets/augmentation/forehand.json",
+          "recording": "assets/augmentation/serves/forehand-base.viser",
+          "augmentationPath": "assets/augmentation/serves/forehand.json",
           "axes": {
             "x": {
-              "min": -0.12,
-              "max": -0.04,
-              "step": 0.01,
+              "min": -0.16,
+              "max": 0.0,
+              "step": 0.02,
               "default": -0.08
             },
             "y": {
-              "min": -0.04,
-              "max": 0.04,
-              "step": 0.01,
-              "default": 0
+              "min": -0.08,
+              "max": 0.08,
+              "step": 0.02,
+              "default": 0.0
             },
             "z": {
-              "min": -0.04,
-              "max": 0.04,
-              "step": 0.01,
-              "default": 0
+              "min": -0.08,
+              "max": 0.08,
+              "step": 0.02,
+              "default": 0.0
             }
           },
           "frames": 63,
@@ -43,32 +43,187 @@ window.VICAR.viewer = {
     {
       "id": "backhand",
       "title": "Simple backhand",
-      "description": "Explore the retargeted racket motion from any angle.",
-      "variants": []
+      "description": "Move the contact point in X, Y, and Z. The right arm adapts while the rest of the motion stays fixed. Blue bounds the hit region, green traces the contact trajectory, and orange marks the hit point.",
+      "variants": [
+        {
+          "id": "augmentation",
+          "label": "Contact augmentation",
+          "recording": "assets/augmentation/serves/backhand-base.viser",
+          "augmentationPath": "assets/augmentation/serves/backhand.json",
+          "axes": {
+            "x": {
+              "min": -0.09,
+              "max": 0.04,
+              "step": 0.01625,
+              "default": -0.025
+            },
+            "y": {
+              "min": -0.08,
+              "max": 0.06,
+              "step": 0.0175,
+              "default": -0.01
+            },
+            "z": {
+              "min": -0.04,
+              "max": 0.08,
+              "step": 0.015,
+              "default": 0.02
+            }
+          },
+          "frames": 63,
+          "fps": 10,
+          "duration": 6.3,
+          "stage": "Augmented serve"
+        }
+      ]
     },
     {
       "id": "forehand-chop",
       "title": "Forehand chop",
-      "description": "Explore the retargeted racket motion from any angle.",
-      "variants": []
+      "description": "Move the contact point in X, Y, and Z. The right arm adapts while the rest of the motion stays fixed. Blue bounds the hit region, green traces the contact trajectory, and orange marks the hit point.",
+      "variants": [
+        {
+          "id": "augmentation",
+          "label": "Contact augmentation",
+          "recording": "assets/augmentation/serves/forehand-chop-base.viser",
+          "augmentationPath": "assets/augmentation/serves/forehand-chop.json",
+          "axes": {
+            "x": {
+              "min": -0.18,
+              "max": -0.02,
+              "step": 0.02,
+              "default": -0.1
+            },
+            "y": {
+              "min": 0.03,
+              "max": 0.19,
+              "step": 0.02,
+              "default": 0.11
+            },
+            "z": {
+              "min": -0.04,
+              "max": 0.14,
+              "step": 0.0225,
+              "default": 0.05
+            }
+          },
+          "frames": 63,
+          "fps": 10,
+          "duration": 6.3,
+          "stage": "Augmented serve"
+        }
+      ]
     },
     {
       "id": "backhand-chop",
       "title": "Backhand chop",
-      "description": "Explore the retargeted racket motion from any angle.",
-      "variants": []
+      "description": "Move the contact point in X, Y, and Z. The right arm adapts while the rest of the motion stays fixed. Blue bounds the hit region, green traces the contact trajectory, and orange marks the hit point.",
+      "variants": [
+        {
+          "id": "augmentation",
+          "label": "Contact augmentation",
+          "recording": "assets/augmentation/serves/backhand-chop-base.viser",
+          "augmentationPath": "assets/augmentation/serves/backhand-chop.json",
+          "axes": {
+            "x": {
+              "min": -0.09,
+              "max": 0.04,
+              "step": 0.01625,
+              "default": -0.025
+            },
+            "y": {
+              "min": -0.1,
+              "max": 0.04,
+              "step": 0.0175,
+              "default": -0.03
+            },
+            "z": {
+              "min": 0.02,
+              "max": 0.14,
+              "step": 0.015,
+              "default": 0.08
+            }
+          },
+          "frames": 63,
+          "fps": 10,
+          "duration": 6.3,
+          "stage": "Augmented serve"
+        }
+      ]
     },
     {
       "id": "forehand-side-spin",
       "title": "Forehand side-spin",
-      "description": "Explore the retargeted racket motion from any angle.",
-      "variants": []
+      "description": "Move the contact point in X, Y, and Z. The right arm adapts while the rest of the motion stays fixed. Blue bounds the hit region, green traces the contact trajectory, and orange marks the hit point.",
+      "variants": [
+        {
+          "id": "augmentation",
+          "label": "Contact augmentation",
+          "recording": "assets/augmentation/serves/forehand-side-spin-base.viser",
+          "augmentationPath": "assets/augmentation/serves/forehand-side-spin.json",
+          "axes": {
+            "x": {
+              "min": -0.08,
+              "max": 0.14,
+              "step": 0.0275,
+              "default": 0.03
+            },
+            "y": {
+              "min": -0.18,
+              "max": 0.08,
+              "step": 0.0325,
+              "default": -0.05
+            },
+            "z": {
+              "min": -0.08,
+              "max": 0.08,
+              "step": 0.02,
+              "default": 0.0
+            }
+          },
+          "frames": 63,
+          "fps": 10,
+          "duration": 6.3,
+          "stage": "Augmented serve"
+        }
+      ]
     },
     {
       "id": "backhand-side-spin",
       "title": "Backhand side-spin",
-      "description": "Explore the retargeted racket motion from any angle.",
-      "variants": []
+      "description": "Move the contact point in X, Y, and Z. The right arm adapts while the rest of the motion stays fixed. Blue bounds the hit region, green traces the contact trajectory, and orange marks the hit point.",
+      "variants": [
+        {
+          "id": "augmentation",
+          "label": "Contact augmentation",
+          "recording": "assets/augmentation/serves/backhand-side-spin-base.viser",
+          "augmentationPath": "assets/augmentation/serves/backhand-side-spin.json",
+          "axes": {
+            "x": {
+              "min": -0.05,
+              "max": 0.08,
+              "step": 0.01625,
+              "default": 0.015
+            },
+            "y": {
+              "min": -0.06,
+              "max": 0.08,
+              "step": 0.0175,
+              "default": 0.01
+            },
+            "z": {
+              "min": -0.02,
+              "max": 0.1,
+              "step": 0.015,
+              "default": 0.04
+            }
+          },
+          "frames": 63,
+          "fps": 10,
+          "duration": 6.3,
+          "stage": "Augmented serve"
+        }
+      ]
     },
     {
       "id": "tabletop-pickup",

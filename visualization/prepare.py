@@ -9,10 +9,10 @@ import trimesh
 from .data import ROOT, check_file, import_motion, write_catalog
 
 
-def prepare_robot(source, with_hands=False):
-    original = source / ('robots/g1_29dof_with_hand.urdf' if with_hands else 'g1_29dof.urdf')
+def prepare_robot(source, with_hands=False, racket=False):
+    original = source / ('urdf/g1/g1_racket.urdf' if racket else 'robots/g1_29dof_with_hand.urdf' if with_hands else 'g1_29dof.urdf')
     tree = ET.parse(original)
-    out = ROOT / ('robot-hands' if with_hands else 'robot')
+    out = ROOT / ('robot-racket' if racket else 'robot-hands' if with_hands else 'robot')
     (out / 'meshes').mkdir(parents=True, exist_ok=True)
     # This model is for visualization only. Preserve every joint/origin/axis;
     # omit collision/inertial data, including non-standard capsule geometry.
@@ -26,7 +26,7 @@ def prepare_robot(source, with_hands=False):
     records = []
     for element in tree.findall('.//mesh'):
         name = Path(element.attrib['filename']).name
-        mesh_path = check_file(source / 'robots' / 'meshes' / name)
+        mesh_path = check_file(source / element.attrib['filename'] if racket else source / 'robots' / 'meshes' / name)
         destination = out / 'meshes' / (Path(name).stem + '.ply')
         mesh = trimesh.load_mesh(mesh_path, process=True)
         before = len(mesh.faces)
@@ -34,7 +34,7 @@ def prepare_robot(source, with_hands=False):
             mesh = mesh.simplify_quadric_decimation(face_count=1600)
         mesh.export(destination)
         element.set('filename', f'meshes/{destination.name}')
-        records.append({'source': f'robots/meshes/{name}',
+        records.append({'source': str(mesh_path.relative_to(source)),
                         'sha256': hashlib.sha256(mesh_path.read_bytes()).hexdigest(),
                         'faces_before': before, 'faces_after': len(mesh.faces)})
     ET.indent(tree)
@@ -51,8 +51,12 @@ def main():
     parser.add_argument('--source-root', type=Path, required=True)
     parser.add_argument('--trust-pickle', action='store_true')
     parser.add_argument('--robot-hands-only', action='store_true', help='Prepare the source forehand hand model without replacing the motion catalog')
+    parser.add_argument('--robot-racket-only', action='store_true', help='Prepare the general-serve racket model without replacing the catalog')
     parser.add_argument('--replace-catalog', action='store_true', help='Recreate the catalog from tasks.json, replacing later manual imports')
     args = parser.parse_args()
+    if args.robot_racket_only:
+        prepare_robot(args.source_root.resolve(), racket=True)
+        return
     if args.robot_hands_only:
         prepare_robot(args.source_root.resolve(), with_hands=True)
         return
@@ -72,7 +76,8 @@ def main():
             motion.metadata['source_revision'] = catalog['source_revision']
             motion.metadata['stage'] = candidate['stage']
             motion.metadata['fps_basis'] = candidate['fps_basis']
-            file = f"motions/{task['id']}-{candidate['id']}.npz"
+            folder = 'motions/serves' if task['kind'] == 'serve' else 'motions'
+            file = f"{folder}/{task['id']}-{candidate['id']}.npz"
             motion.save(ROOT / file)
             task['variants'].append({**candidate, 'file': file})
             print(f"{task['id']}/{candidate['id']}: {len(motion.joints)} frames at {motion.fps:g} fps")

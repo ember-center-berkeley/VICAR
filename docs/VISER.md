@@ -1,12 +1,11 @@
 # VICAR motion explorer
 
 The website uses **Viser 1.1.1** with a local static playback client. It now shows
-the actual G1 robot and contact augmentation for forehand, plus saved motions for
-initial under-table pickup, six bimanual versions, and ladder climbing. Forehand
-has X/Y/Z sliders selecting all 729 optimized grid motions from
-`augment_serves_forehand_g1.py`; see [FOREHAND_AUGMENTATION.md](FOREHAND_AUGMENTATION.md)
-for its matching hand model, generation settings, and browser implementation.
-Six task entries remain pending until their motion files are available.
+the G1 robot and contact augmentation for all six serves, plus saved motions for
+initial under-table pickup, six bimanual versions, and ladder climbing. Every
+serve has X/Y/Z sliders selecting 729 motions from `augment_serves_general_g1.py`
+with its own ranges and hit frame; see [SERVE_AUGMENTATION.md](SERVE_AUGMENTATION.md)
+for the exact source mapping, regeneration commands, and numerical diagnostics.
 
 See [VISUALIZATION_SOURCES.md](VISUALIZATION_SOURCES.md) for the complete source
 map, task-specific scripts, missing data, and interpretation limits.
@@ -148,7 +147,7 @@ npm test
 
 Data checks cover quaternion conversion, joint remapping, invalid inputs, LFS
 pointers, and packaged robot/motion assets. Browser checks cover the video
-carousel, all nine recordings, all six missing-task states, reset, project
+carousel, all fourteen recording variants, six serve grids, the remaining missing-task state, reset, project
 prefixes, responsive widths, and missing-file recovery. `CHROME_CHANNEL=chrome`
 uses an existing Chrome installation.
 

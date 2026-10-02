@@ -15,11 +15,15 @@ interface Grid {
   displayLift: number;
   shifts: number[][];
   targets: number[][];
+  trajectoryNode?: string;
+  trajectories?: number[][][];
+  boxNodes?: string[];
   axes: Record<string, { min: number; max: number; step: number; default: number }>;
 }
 
 export class AugmentationPlayback {
   index: number;
+  showBox = true;
   constructor(public grid: Grid, private rotations: Float32Array) {
     this.index = grid.defaultIndex;
   }
@@ -47,6 +51,12 @@ export class AugmentationPlayback {
     const target = this.grid.targets[this.index];
     batch.push({ type: "SetPositionMessage", name: this.grid.targetNode, owner: this.grid.owner,
       position: [target[0], target[1], target[2] + this.grid.displayLift] });
+    if (this.grid.trajectoryNode && this.grid.trajectories) {
+      batch.push({ type: "SceneNodeUpdateMessage", name: this.grid.trajectoryNode, owner: this.grid.owner,
+        updates: { points: new Float32Array(this.grid.trajectories[this.index].flat()) } });
+    }
+    this.grid.boxNodes?.forEach(name => batch.push({ type: "SetSceneNodeVisibilityMessage",
+      name, owner: this.grid.owner, visible: this.showBox }));
   }
 }
 
@@ -62,7 +72,8 @@ export function attachAugmentation(
   const abort = new AbortController();
   let removeListener = () => {};
   let panel: HTMLElement | null = null;
-  const notify = (data: object) => window.parent.postMessage(data, window.location.origin);
+  const gridUrl = new URL(path, window.location.href).href;
+  const notify = (data: object) => window.parent.postMessage({ ...data, gridUrl }, window.location.origin);
   async function load() {
     const url = new URL(path!, window.location.href);
     if (url.origin !== window.location.origin) throw new Error("Augmentation data must be on the same origin.");
@@ -87,7 +98,11 @@ export function attachAugmentation(
     };
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin || event.source !== window.parent) return;
-      if (event.data?.type === "vicar:set-shift") select(event.data.shift, event.data.requestId);
+      if (event.data?.type === "vicar:set-shift") {
+        if (typeof event.data.showBox === "boolean") playback.showBox = event.data.showBox;
+        document.documentElement.dataset.hitBoxVisible = String(playback.showBox);
+        select(event.data.shift, event.data.requestId);
+      }
     };
     window.addEventListener("message", onMessage);
     removeListener = () => window.removeEventListener("message", onMessage);
@@ -99,17 +114,28 @@ export function attachAugmentation(
       panel.style.cssText = "position:fixed;right:14px;top:14px;width:200px;padding:16px;background:#ffffffed;border:1px solid #dce3ee;border-radius:10px;z-index:5;font:12px system-ui;color:#25344a;box-shadow:0 3px 16px #22335515";
       const heading = document.createElement("strong"); heading.textContent = "Contact shift (m)"; panel.append(heading);
       const values = grid.shifts[playback.index].slice();
+      const format = (value: number) => value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 5 });
       ["x", "y", "z"].forEach((axis, i) => {
         const label = document.createElement("label"); label.style.cssText = "display:block;margin-top:14px";
         const output = document.createElement("span"); output.style.cssText = "float:right;font-variant-numeric:tabular-nums";
-        output.textContent = values[i].toFixed(2);
+        output.textContent = format(values[i]);
         const input = document.createElement("input"); input.type = "range";
         input.min = String(grid.axes[axis].min); input.max = String(grid.axes[axis].max); input.step = String(grid.axes[axis].step);
         input.value = String(values[i]); input.setAttribute("aria-label", `${axis.toUpperCase()} contact shift`);
         input.style.cssText = "display:block;width:100%;margin-top:8px;accent-color:#356fe2";
-        input.addEventListener("input", () => { values[i] = Number(input.value); output.textContent = values[i].toFixed(2); select(values); });
+        input.addEventListener("input", () => { values[i] = Number(input.value); output.textContent = format(values[i]); select(values); });
         label.append(axis.toUpperCase(), output, input); panel!.append(label);
       });
+      if (grid.boxNodes?.length) {
+        const label = document.createElement("label"); label.style.cssText = "display:block;margin-top:14px";
+        const input = document.createElement("input"); input.type = "checkbox"; input.checked = true;
+        input.addEventListener("change", () => {
+          playback.showBox = input.checked;
+          document.documentElement.dataset.hitBoxVisible = String(playback.showBox);
+          refresh();
+        });
+        label.append(input, " Show hit box"); panel.append(label);
+      }
       document.body.append(panel);
     }
     notify({ type: "vicar:augmentation-ready" });
