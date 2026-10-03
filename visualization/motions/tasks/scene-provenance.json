@@ -1,0 +1,21 @@
+{
+  "source_revision": "b377ba951d2bd12bef45e23a5e623342038121e0",
+  "assets": [
+    {
+      "role": "table_point_cloud",
+      "path": "mega-sam/UniDepth/pointclouds/bimanual_pick_place/table_00000.ply",
+      "sha256": "19595dc9b45888df5f49b0eadfe2fc17f90967ab31d8c5b4b351d0386f87616d"
+    },
+    {
+      "role": "capture_camera",
+      "path": "holosoma/src/holosoma_retargeting/demo_data/cameras_refined/bimanual_pick_place_new.npy",
+      "sha256": "a29076aaccf6282936ef4690336e90155cb1315a8d7c81343ad64cbd2f856910"
+    },
+    {
+      "role": "visual_robot",
+      "path": "robots/g1_29dof_with_hand.urdf",
+      "sha256": "1333b3e21acd2bea0810a36ffa39cf84f104f975e42b63b44e4ec652dbe488f9"
+    }
+  ],
+  "alignment": "Table alignment, voxelization, camera transform, and collision geometry use each canonical augment_* script. Display meshes use the existing reduced robot-hands model."
+}

@@ -1,109 +1,98 @@
 # VICAR visualization source map
 
-**Current serve update (b377ba95):** All six serves now use the named `refined_serve_g1/<style>.pkl` inputs, `urdf/g1/g1_racket.urdf`, and `augment_serves_general_g1.py`. Each has 729 regenerated motions. See [SERVE_AUGMENTATION.md](SERVE_AUGMENTATION.md) for ranges and diagnostics. `source_inventory.json` has current line references. The audit below describes the earlier import: its missing-file statements are historical. Newly pulled non-serve PKLs also exist; those viewers retain their previous previews in this serve-focused update.
+Current audit: TT_PLayer revision `b377ba951d2bd12bef45e23a5e623342038121e0`.
+All ten website task categories now use the canonical augmentation scripts.
+Paths below are relative to the TT_PLayer checkout. The original training,
+refinement, and augmentation code remains there; `visualization/` contains the
+portable data preparation, renderer, local player, and static web exporter.
 
+## Current task entry points
 
-Audited on 2026-09-28 against `ember-center-berkeley/TT_PLayer`, revision
-`49ecadb2d98643075de33509b01ab467450a4661`.
-The original training, refinement, and augmentation scripts are retained in that
-repository. This website contains a standalone viewer/exporter in `visualization/`.
-
-## Task entry points
-
-Paths below are relative to the **TT_PLayer checkout**, not the website repository.
-Most task scripts contain their own Viser setup and playback loop inside the
-optimization program. `--vis` often also runs optimization and loads training
-dependencies; it is not a lightweight playback command.
-
-| Website task | Refinement / visualization source | Augmentation / visualization source | Available in this checkout |
+| Website task | Augmentation source | Input | Published motions |
 | --- | --- | --- | --- |
-| Simple forehand | `refine_forehand_serve_g1.py` | `augment_serves_forehand_g1.py`; `augment_serves_general_g1.py --serve_style forehand` | `refined_serve_g1/base.pkl`, 63 frames; all 729 contact augmentations now regenerated for X/Y/Z sliders. |
-| Simple backhand | `refine_backhand_serve_g1.py` | `augment_serves_backhand_g1.py`; general script with `backhand` | Final robot trajectory missing. |
-| Forehand chop | `refine_forehand_chop_serve_g1.py` | `augment_serves_forehand_chop_g1.py`; general script with `forehand_chop` | Final robot trajectory missing. |
-| Backhand chop | `refine_backhand_chop_serve_g1.py` | `augment_serves_backhand_chop_g1.py`; general script with `backhand_chop` | Final robot trajectory missing. |
-| Forehand side-spin | `refine_custom_serve_g1_2.py` (default style) | `augment_serves_custom_g1.py`; general script with `forehand_right_side_spin` | Raw racket/ball capture exists; robot trajectory missing. |
-| Backhand side-spin | `refine_custom_serve_g1.py` (default style) | `augment_serves_custom_g1.py`; general script with `backhand_right_side_spin` | Raw racket/ball capture exists; robot trajectory missing. |
-| Tabletop pickup | `refine_pick_motion_g1.py`, `refine_pick_motion_left_g1.py` | `augment_pick_motions_g1.py`, `augment_pick_motions_left_g1.py` | Final trajectories missing for both hand variants. |
-| Under-table pickup | `refine_pick_ground_motion_left_g1.py` | `augment_ground_pick_motions_left_g1.py` | Initial `pick_under_table.csv`, 600 frames at 60 fps. Final refined/augmented trajectories missing. |
-| Bimanual pick-and-place | `refine_bimanual_pick_motion_g1.py` | `augment_bimanual_pick_motions_g1.py` | Six `bimanual_pick_corrected*.csv` files, 460–480 frames. |
-| Ladder climbing | `refine_climbing_motion_g1.py` | `augment_climbing_motions_g1_vis.py` | `climbing_corrected.csv`, 364 frames. |
+| Simple forehand | `augment_serves_general_g1.py --serve_style forehand` | `refined_serve_g1/forehand.pkl` | 729 |
+| Simple backhand | General script, `backhand` | `refined_serve_g1/backhand.pkl` | 729 |
+| Forehand chop | General script, `forehand_chop` | `refined_serve_g1/forehand_chop.pkl` | 729 |
+| Backhand chop | General script, `backhand_chop` | `refined_serve_g1/backhand_chop.pkl` | 729 |
+| Forehand side-spin | General script, `forehand_right_side_spin` | `refined_serve_g1/forehand_right_side_spin.pkl` | 729 |
+| Backhand side-spin | General script, `backhand_right_side_spin` | `refined_serve_g1/backhand_right_side_spin.pkl` | 729 |
+| Tabletop, left hand | `augment_pick_motions_left_g1.py` | `refined_pick_g1/pick_left.pkl` | 306 |
+| Tabletop, right hand | `augment_pick_motions_g1.py` | `refined_pick_g1/pick.pkl` | 306 |
+| Under-table pickup | `augment_ground_pick_motions_left_g1.py` | `refined_ground_pick_g1/ground_pick_left.pkl` | 250 |
+| Bimanual pick/place | `augment_bimanual_pick_motions_g1.py` | `refined_bimanual_pick_g1/bimanual_pick.pkl` | 50 |
+| Ladder climbing | `augment_climbing_motions_g1.py` | `refined_climbing_pick_g1/climbing.pkl` | 1 fixed contact solution |
 
-CSV files above are in `LAFAN1_Retargeting_Dataset/g1/`. The robot is the G1
-29-DOF model in `g1_29dof.urdf`, with meshes from `robots/meshes/`.
-The forehand augmentation viewer instead uses the source script’s 43-joint
-`robots/g1_29dof_with_hand.urdf`; see [FOREHAND_AUGMENTATION.md](FOREHAND_AUGMENTATION.md).
-Using the 29-DOF model for the other task previews preserves the `left_rubber_hand` and `right_rubber_hand`
-frames used by the task optimizers. No finger articulation is invented for
-29-joint motions.
+Most source scripts contain their Viser setup and replay loop inside the
+optimization program. `--vis` also runs optimization and loads optional
+training dependencies. For lightweight playback use `python -m visualization
+view --task <id>` from this website checkout.
 
-`visualization/tasks.json` records the per-task mapping, expected missing output
-paths, explicit import selections, and frame-rate rationale. The generated
-`catalog.json` lists the motions currently packaged with this website.
+The serve model is `urdf/g1/g1_racket.urdf`, with a right racket and left ball
+holder. The other tasks display `g1_29dof_with_hand.urdf`, using the source's
+43-joint mapping and finger timelines. They optimize with `g1_29dof.urdf`, or
+`g1_29dof_feet_edge.urdf` for climbing. See
+[SERVE_AUGMENTATION.md](SERVE_AUGMENTATION.md) and
+[TASK_AUGMENTATION.md](TASK_AUGMENTATION.md) for exact ranges, geometry,
+rendering adaptations, regeneration, and solver diagnostics.
+
+`visualization/tasks.json` keeps the source map and initial import selections;
+`catalog.json` includes those retained imports plus the current `augmentations`
+registry. Input/script/solver/URDF hashes are stored in each generated NPZ and
+public JSON. The reconstructed table and camera hashes are recorded in
+[`scene-provenance.json`](../visualization/motions/tasks/scene-provenance.json).
 
 ## Other Viser code
 
-The search found **32 Python files** importing Viser. All paths and Viser-related
-line numbers are recorded in [source_inventory.json](../visualization/source_inventory.json).
-In addition to the task entry points above:
+The indexed Viser-related files and source line numbers are recorded in
+[source_inventory.json](../visualization/source_inventory.json). Other entries
+include:
 
+- `augment_serves_forehand_g1.py` and the other style-specific scripts:
+  earlier per-style augmenters. The old forehand export is retained for
+  reproduction; it does not replace the live general-script forehand.
+- `augment_pick_motions_left_g1_.py`: an earlier left-pick variant. The current
+  canonical filename has no trailing underscore.
+- `augment_climbing_motions_g1_vis.py`: a climbing variant with a different
+  contact schedule. The current website follows `augment_climbing_motions_g1.py`.
+  Its historical output-directory naming overlaps another task; the headless
+  exporter disables source saving and writes uniquely named website NPZs.
 - `augment_serves_g1_vis.py`: older multi-motion serve overlay.
-- `augment_climbing_motions_g1.py`: older climbing augmenter. Its output directory
-  is named `refined_augmented_bimanual_pick_g1`, which conflicts with the bimanual
-  task. Prefer the `_vis.py` variant with `refined_augmented_climbing_g1`.
-- `coll_vis.py`, `coll_vis2.py`: collision/optimization experiments that read
-  `10.pkl`; not the canonical task players.
-- `generate_67_motion.py`, `generate_denae_hi_motion.py`: additional motion
-  generation experiments with Viser playback; outside the ten paper tasks.
-- `holosoma/src/holosoma_retargeting/viser_player.py`: reusable retargeted-motion player.
-- `holosoma/src/holosoma_retargeting/data_conversion/viser_body_vel_player.py`:
-  player for the body-velocity conversion format.
-- `holosoma/src/holosoma_retargeting/src/viser_utils.py`: shared Viser utilities.
-- `holosoma/src/holosoma_retargeting/src/interaction_mesh_retargeter.py`:
-  retargeting/scene visualization integration.
+- `coll_vis.py`, `coll_vis2.py`: collision/optimization experiments reading
+  `10.pkl`, outside the ten task players.
+- `generate_67_motion.py`, `generate_denae_hi_motion.py`: additional generation
+  experiments outside the ten paper tasks.
+- `holosoma/src/holosoma_retargeting/viser_player.py` and
+  `data_conversion/viser_body_vel_player.py`: general retargeted-motion players.
+- `holosoma/src/holosoma_retargeting/src/viser_utils.py` and
+  `interaction_mesh_retargeter.py`: shared visualization and scene integration.
 
-## Data findings and limits
+## Retained legacy imports
 
-1. Many meshes and serialized motions initially contained Git LFS pointer text.
-   The needed G1 meshes and `refined_serve_g1/base.pkl` were hydrated from the
-   source repository. Pointer text is rejected by the new importer.
-2. `pick_under_table_corrected.csv` is byte-identical to
-   `bimanual_pick_corrected.csv` (SHA-256 prefix `72f65eee19e3dfdc`). It is excluded
-   from the under-table task. The initial under-table motion is labeled
-   **Before contact refinement** on the website.
-3. Side-spin root CSVs are OptiTrack racket/ball captures, not 36-column robot
-   joint trajectories. `extract_serve_racket_ball.py` processes those captures.
-   They are not substituted for robot motions.
-4. `refined_serve_g1/{style}.pkl`, most other `refined_*` and
-   `refined_augmented_*` outputs, retargeting `demo_results`, and the relevant
-   refined camera matrices are absent. Reconstructed table point clouds cannot
-   be placed reliably without the corresponding alignment information.
-5. The six bimanual CSVs differ, but their contact offsets and generation
-   history are not embedded in the files. They are labeled **Version 1–6**, not
-   “left/right/higher” or quantitative augmentation results.
-6. World positions and joint trajectories are preserved. CSV quaternions are
-   converted from `xyzw` to `wxyz`, normalized, and made sign-continuous. Some
-   bimanual quaternion norms are approximately 0.995. CSVs and the legacy PKL
-   have no timestamps; 30 fps follows the refinement/playback convention,
-   except the initial under-table CSV, whose source script specifies 60 fps.
-7. The translucent box is inferred from the hand midpoint using the bimanual
-   script's dimensions and contact interval, not a measured object trajectory.
-   Ladder rungs and contact schedules come from the climbing visualization
-   script. They are schematic task context, not a reconstructed scene or
-   independent evidence of achieved contacts.
+The first website import used revision
+`49ecadb2d98643075de33509b01ab467450a4661`, before the final named PKLs and table
+alignment were available. Those previews remain in the repository for local
+inspection, but no longer supply the public task explorer.
 
-Each packaged NPZ contains its source filename, full SHA-256, coordinate
-convention, processing description, source revision, stage, and frame-rate
-basis. Robot asset hashes and mesh reduction counts are in
-`visualization/robot/provenance.json`. The imported reference trajectory values are preserved. Forehand augmentations
-are newly optimized from the original reference following the source script;
-their 3.5 cm visualization lift affects only the displayed scene.
+- Initial under-table pickup: `LAFAN1_Retargeting_Dataset/g1/pick_under_table.csv`,
+  600 frames at the source's 60 fps, labeled **Before contact refinement**.
+- Bimanual: six `bimanual_pick_corrected*.csv` motions, 460–480 frames, labeled
+  **Version 1–6** because their generation offsets are not recorded in the CSVs.
+- Climbing: `climbing_corrected.csv`, 364 frames.
+- Historical forehand: `refined_serve_g1/base.pkl` and its earlier augmentation.
 
-## Files needed to complete the remaining scenes
+`pick_under_table_corrected.csv` is byte-identical to
+`bimanual_pick_corrected.csv` (SHA-256 prefix `72f65eee19e3dfdc`), so it was not
+used for under-table pickup. Side-spin root CSVs are OptiTrack racket/ball
+captures rather than 36-column robot trajectories and were not substituted for
+robot motions. CSV imports convert `xyzw` to normalized, sign-continuous `wxyz`.
 
-Supply the final named serve PKLs, tabletop pickup PKL(s), final under-table
-pickup PKL, and selected augmentation outputs for each task. Include contact
-offsets, timing, and frame rates where available. For reconstructed scenes,
-include both scene geometry and the camera/world alignment used by the source
-viewer. Exact expected paths are listed per task in `visualization/tasks.json`.
+Many original assets use Git LFS. The importer rejects pointer text, and the
+required motion and reconstruction assets have now been hydrated. The website
+serves actual meshes, motion data, and Viser recordings directly from GitHub
+Pages. It does not depend on LFS downloads at runtime.
 
-Import/export instructions: [VISER.md](VISER.md).
+Rendering remains a kinematic motion preview. Original solver convergence flags
+and contact residuals are retained, rather than inferred from an attractive
+render. Detailed limitations are in the two augmentation guides above.
+
+Playback, import, export, and publishing: [VISER.md](VISER.md).

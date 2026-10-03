@@ -129,5 +129,5 @@ Checks cover every grid's ranges and unique samples, source-style hit windows,
 marker midpoint, source/model provenance, independent URDF poses, normalized
 browser rotations, and matching full/pruned kinematic gradients. Browser tests
 exercise all nine slider values on every axis of all six styles, standalone
-controls, hit-box toggling, preserved playback, scene switching, fourteen
-recording variants, and missing-file recovery under a `/VICAR/` URL prefix.
+controls, hit-box toggling, preserved playback, scene switching, all ten tasks and eleven
+viewers, and missing-file recovery under a `/VICAR/` URL prefix.

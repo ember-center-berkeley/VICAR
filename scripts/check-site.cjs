@@ -56,84 +56,104 @@ const server = http.createServer((req, res) => {
   assert.equal(await timeInput.inputValue(),'4.5','Sliders must preserve paused playback time');
   await page.locator('#reset-shift').click();
   await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
-  // Exercise every task, all six serve grids, and the remaining pending task.
+  // Exercise all ten tasks, both tabletop hands, each actual sampled axis,
+  // fixed dimensions, independent scene layers, and standalone playback.
   const scenes = await page.evaluate(() => window.VICAR.viewer.scenes);
   assert.equal(scenes.length,10);
   let recordings = 0;
   for(const scene of scenes) {
-   const firstResponse = scene.variants.length ? page.waitForResponse(r=>r.url().includes(scene.variants[0].recording) && r.request().method()==='GET' && r.status()===200) : null;
+   assert.ok(scene.variants.length,`${scene.id} must have a populated viewer`);
+   const firstResponse=page.waitForResponse(r=>r.url().includes(scene.variants[0].recording) && r.request().method()==='GET' && r.status()===200);
    await page.locator('#demo-scene').selectOption(scene.id);
-   if(!scene.variants.length) {
-    assert.equal(await page.locator('#viser-frame').isHidden(),true);
-    assert.equal(await page.locator('#load-demo').isHidden(),true);
-    assert.equal(await page.locator('#open-viewer').isHidden(),true);
-    assert.match(await page.locator('#motion-meta').textContent(),/coming soon/);
-    continue;
-   }
    await firstResponse;
+   assert.equal(await page.locator('#demo-variants').isVisible(),scene.variants.length>1);
    for(const [i,variant] of scene.variants.entries()) {
-    if (i > 0) {
-     const response = page.waitForResponse(r=>r.url().includes(variant.recording) && r.request().method()==='GET' && r.status()===200);
+    if(i>0) {
+     const response=page.waitForResponse(r=>r.url().includes(variant.recording) && r.request().method()==='GET' && r.status()===200);
      await page.getByRole('button',{name:variant.label,exact:true}).click();
      await response;
+     assert.equal(await page.getByRole('button',{name:variant.label,exact:true}).getAttribute('aria-pressed'),'true');
     }
     await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
-    // Wait for playback to advance, so checks don't stop at an empty canvas
-    // mounted before the recording messages have been applied.
-    const frame = page.frames().find(f=>f.url().includes('viser-client'));
-    await frame.waitForFunction(()=>Array.from(document.querySelectorAll('input')).some(input=>Number(input.value)>0.1),null,{timeout:15000});
+    const frame=page.frames().find(f=>f.url().includes('viser-client'));
+    const grid=JSON.parse(fs.readFileSync(path.join(root,variant.augmentationPath),'utf8'));
+    await page.waitForFunction(index=>document.querySelector('#augmentation-controls').dataset.selectedIndex===String(index),grid.defaultIndex,{timeout:60000});
+    assert.equal(variant.sampleCount,grid.shifts.length);
     assert.match(await page.locator('#motion-meta').textContent(),/frames.*fps/);
-    if (variant.augmentationPath) {
-     const grid=JSON.parse(fs.readFileSync(path.join(root,variant.augmentationPath),'utf8'));
-     await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
-     if (await frame.getByRole('button',{name:'Pause motion',exact:true}).count()) {
-      await frame.getByRole('button',{name:'Pause motion',exact:true}).click();
+    await frame.getByRole('button',{name:'Pause motion',exact:true}).click();
+    const time=frame.getByRole('textbox',{name:'Playback time',exact:true});
+    const displayTime=Number(((grid.hitFrame || 200)/grid.fps).toFixed(1));
+    await time.fill(String(displayTime));await time.press('Tab');
+    const src=await page.locator('#viser-frame').getAttribute('src');
+    const shift=['x','y','z'].map(axis=>grid.axes[axis].default);
+    const indexFor=values=>grid.shifts.findIndex(s=>s.every((v,i)=>Math.abs(v-values[i])<1e-6));
+    for(const [axisIndex,axis] of ['x','y','z'].entries()) {
+     const input=page.locator('#shift-'+axis);
+     const settings=grid.axes[axis];
+     if(grid.shifts.length===1) {assert.equal(await input.isHidden(),true);continue;}
+     const values=settings.values || Array.from({length:9},(_,j)=>Number((settings.min+j*settings.step).toFixed(6)));
+     assert.equal(Number(await input.getAttribute('min')),settings.values?0:settings.min);
+     assert.equal(Number(await input.getAttribute('max')),settings.values?values.length-1:settings.max);
+     assert.equal(Number(await input.getAttribute('step')),settings.values?1:settings.step);
+     assert.equal(await input.isDisabled(),values.length===1);
+     if(values.length===1)continue;
+     for(const [j,value] of values.entries()) {
+      shift[axisIndex]=value;
+      await input.fill(String(settings.values?j:value));
+      const index=indexFor(shift);
+      assert.notEqual(index,-1,'Every displayed slider position must have a solved motion');
+      await page.waitForFunction(index=>document.querySelector('#augmentation-controls').dataset.selectedIndex===String(index),index);
+      assert.match(await input.getAttribute('aria-valuetext'),/metres/);
      }
-     const time=frame.getByRole('textbox',{name:'Playback time',exact:true});
-     await time.fill(String(grid.hitFrame/grid.fps)); await time.press('Tab');
-     const src=await page.locator('#viser-frame').getAttribute('src');
-     const shift=['x','y','z'].map(axis=>grid.axes[axis].default);
-     for (const [axisIndex,axis] of ['x','y','z'].entries()) {
-      const input=page.locator('#shift-'+axis);
-      for(const attribute of ['min','max','step']) assert.equal(Number(await input.getAttribute(attribute)),grid.axes[axis][attribute]);
-      for(let step=0;step<9;step++) {
-       shift[axisIndex]=Number((grid.axes[axis].min+step*grid.axes[axis].step).toFixed(6));
-       await input.fill(String(shift[axisIndex]));
-       const index=grid.shifts.findIndex(s=>s.every((value,i)=>Math.abs(value-shift[i])<1e-6));
-       assert.notEqual(index,-1,'Every displayed slider position must have a solved motion');
-       await page.waitForFunction(index=>document.querySelector('#augmentation-controls').dataset.selectedIndex===String(index),index);
-      }
-     }
-     assert.equal(await page.locator('#viser-frame').getAttribute('src'),src);
-     assert.equal(Number(await time.inputValue()),grid.hitFrame/grid.fps);
-     assert.match(await page.locator('#demo-status').textContent(),new RegExp(scene.title));
-     await page.locator('#show-hit-box').uncheck();
-     await frame.waitForFunction(()=>document.documentElement.dataset.hitBoxVisible==='false');
-     await page.locator('#show-hit-box').check();
-     await frame.waitForFunction(()=>document.documentElement.dataset.hitBoxVisible==='true');
-     await page.locator('#reset-shift').click();
-     await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
-     if(process.env.SCREENSHOT_DIR) {
-      fs.mkdirSync(process.env.SCREENSHOT_DIR,{recursive:true});
-      await page.waitForTimeout(350);
-      await page.locator('#interactive').screenshot({path:path.join(process.env.SCREENSHOT_DIR,scene.id+'.png')});
-     }
-     // Open viewer must use this style's exact ranges and provide its own UI.
-     const standalone=await browser.newPage();
-     await standalone.goto(await page.locator('#open-viewer').getAttribute('href'));
-     const input=standalone.getByRole('slider',{name:'X contact shift'});
-     await input.waitFor();
-     assert.equal(Number(await input.getAttribute('step')),grid.axes.x.step);
-     await input.fill(String(grid.axes.x.min));
-     await standalone.waitForFunction(()=>document.documentElement.dataset.augmentationIndex==='400');
-     await standalone.getByRole('checkbox',{name:'Show hit box'}).uncheck();
-     await standalone.waitForFunction(()=>document.documentElement.dataset.hitBoxVisible==='false');
-     await standalone.close();
     }
+    assert.equal(await page.locator('#viser-frame').getAttribute('src'),src,'Shifts must preserve the camera by retaining the iframe');
+    assert.equal(Number(await time.inputValue()),displayTime,'Shifts must preserve paused time');
+    await page.locator('#show-hit-box').uncheck();
+    await frame.waitForFunction(()=>document.documentElement.dataset.hitBoxVisible==='false');
+    // Replaying/seeking must not restore baseline visibility over our controls.
+    await time.fill('1.0');await time.press('Tab');
+    await frame.waitForFunction(()=>document.documentElement.dataset.hitBoxVisible==='false');
+    await page.locator('#show-hit-box').check();
+    if(grid.layers?.length && !await page.locator('#scene-options').evaluate(el=>el.open)) await page.locator('#scene-options summary').click();
+    for(const layer of grid.layers || []) {
+     const checkbox=page.locator(`#scene-layers input[data-layer="${layer.id}"]`);
+     assert.equal(await checkbox.isChecked(),layer.default);
+     await checkbox.setChecked(!layer.default);
+     await frame.waitForFunction(({id,value})=>JSON.parse(document.documentElement.dataset.sceneLayers)[id]===value,{id:layer.id,value:!layer.default});
+     await checkbox.setChecked(layer.default);
+    }
+    if(grid.shifts.length>1) {
+     await page.locator('#reset-shift').click();
+     await page.waitForFunction(index=>document.querySelector('#augmentation-controls').dataset.selectedIndex===String(index),grid.defaultIndex);
+    } else assert.equal(await page.locator('#reset-shift').isHidden(),true);
+    if(grid.shifts.length>1 && await page.locator('#scene-options').evaluate(el=>el.open)) await page.locator('#scene-options summary').click();
+    if(process.env.SCREENSHOT_DIR) {
+     fs.mkdirSync(process.env.SCREENSHOT_DIR,{recursive:true});
+     await time.fill(String(displayTime));await time.press('Tab');
+     await page.waitForTimeout(400);
+     await page.evaluate(()=>document.activeElement?.blur());
+     await page.locator('#interactive').screenshot({path:path.join(process.env.SCREENSHOT_DIR,`${scene.id}-${variant.id}.png`)});
+    }
+    const standalone=await browser.newPage();
+    standalone.on('pageerror',e=>errors.push(e.message));
+    await standalone.goto(await page.locator('#open-viewer').getAttribute('href'));
+    const box=standalone.getByRole('checkbox',{name:grid.boxLabel || 'Show hit box',exact:true});
+    await box.waitFor({timeout:60000});
+    if(grid.shifts.length>1) {
+     const input=standalone.getByRole('slider',{name:'X contact shift',exact:true});
+     assert.equal(Number(await input.getAttribute('step')),grid.axes.x.values?1:grid.axes.x.step);
+     await input.fill(String(grid.axes.x.values?0:grid.axes.x.min));
+     const expected=indexFor([grid.axes.x.min,grid.axes.y.default,grid.axes.z.default]);
+     await standalone.waitForFunction(index=>document.documentElement.dataset.augmentationIndex===String(index),expected);
+    } else assert.equal(await standalone.getByRole('slider',{name:'X contact shift',exact:true}).count(),0);
+    await box.uncheck();
+    await standalone.waitForFunction(()=>document.documentElement.dataset.hitBoxVisible==='false');
+    for(const layer of grid.layers || [])assert.equal(await standalone.getByRole('checkbox',{name:layer.label,exact:true}).isChecked(),layer.default);
+    await standalone.close();
     recordings++;
    }
   }
-  assert.equal(recordings,14);
+  assert.equal(recordings,11);
   const resetResponse=page.waitForResponse(r=>r.url().includes('.viser') && r.request().method()==='GET' && r.status()===200);
   await page.getByRole('button',{name:'Reset view',exact:true}).click();
   await resetResponse;
@@ -148,13 +168,13 @@ const server = http.createServer((req, res) => {
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Overflow at ${width}px`);
   }
   // Missing-recording recovery should provide retry UI, not a broken iframe.
-  await page.route('**/assets/recordings/**',route=>route.fulfill({status:404,body:''}));
-  await page.getByRole('button',{name:'Saved motion',exact:true}).click();
+  await page.route('**/assets/augmentation/tasks/*.viser',route=>route.fulfill({status:404,body:''}));
+  await page.getByRole('button',{name:'Reset view',exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('#demo-status').textContent.includes('could not be loaded'));
   assert.equal(await page.locator('#load-demo').isVisible(),true);
   assert.equal(await page.locator('#viser-frame').isHidden(),true);
   // A scene switch while the initial HEAD request is pending must cancel it.
-  await page.unroute('**/assets/recordings/**');
+  await page.unroute('**/assets/augmentation/tasks/*.viser');
   await page.reload({waitUntil:'networkidle'});
   let releaseHead;
   const heldHead = new Promise(resolve=>{releaseHead=resolve;});
@@ -165,17 +185,17 @@ const server = http.createServer((req, res) => {
   const headStarted=page.waitForRequest(r=>r.url().includes('.viser') && r.method()==='HEAD');
   await page.getByRole('button',{name:'Load 3D demo'}).click();
   await headStarted;
-  await page.locator('#demo-scene').selectOption('tabletop-pickup');
+  await page.locator('#demo-scene').selectOption('backhand');
   const headFinished=page.waitForResponse(r=>r.url().includes('.viser') && r.request().method()==='HEAD');
   releaseHead();
   await headFinished;
-  await page.waitForTimeout(100);
-  assert.equal(await page.locator('#viser-frame').getAttribute('src'),null);
-  assert.equal(await page.locator('#viser-frame').isHidden(),true);
+  await page.waitForFunction(()=>document.querySelector('#viser-frame').src.includes('backhand-base.viser'));
+  await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
+  assert.equal(await page.locator('#viser-frame').isVisible(),true);
   await page.unroute('**/assets/augmentation/serves/*.viser');
   await page.locator('#demo-scene').selectOption('ladder-climbing');
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
   assert.deepEqual(errors,[]);
-  console.log('PASS: X/Y/Z sliders at all 9 positions, preserved playback time, standalone controls, 10 video slots, all 14 recordings, all six serve grids, 1 pending task, responsive widths, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, both tabletop hands, scene layers, preserved playback, standalone controls, 10 video slots, responsive widths, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

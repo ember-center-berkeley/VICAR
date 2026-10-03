@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 node_modules/
 test-results/
+visualization/motions/tasks/previews/

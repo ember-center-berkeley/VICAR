@@ -228,7 +228,7 @@
       "id": "tabletop-pickup",
       "title": "Tabletop pickup",
       "kind": "tabletop",
-      "description": "The tabletop pickup recording is coming soon.",
+      "description": "Move the pickup contact in X, Y, and Z, and compare left- and right-hand grasps. The fingers close around the object before lifting it; the left-hand motion also includes the turn away from the table.",
       "sources": [
         "refine_pick_motion_g1.py",
         "refine_pick_motion_left_g1.py",
@@ -241,13 +241,27 @@
         "refined_augmented_pick_g1/t_*.pkl"
       ],
       "imports": [],
-      "variants": []
+      "variants": [],
+      "augmentations": [
+        {
+          "id": "tabletop-left",
+          "label": "Left hand",
+          "script": "augment_pick_motions_left_g1.py",
+          "stage": "Contact augmentation"
+        },
+        {
+          "id": "tabletop-right",
+          "label": "Right hand",
+          "script": "augment_pick_motions_g1.py",
+          "stage": "Contact augmentation"
+        }
+      ]
     },
     {
       "id": "under-table-pickup",
       "title": "Under-table pickup",
       "kind": "under-table",
-      "description": "An initial retargeted motion, before the contact refinement stage. The reconstructed table and final augmentation recordings are coming soon.",
+      "description": "Move the left-hand pickup contact in X, Y, and Z while the right hand supports the robot on the table. Inspect the reconstructed table, supporting-hand anchors, and carried object.",
       "sources": [
         "refine_pick_ground_motion_left_g1.py",
         "augment_ground_pick_motions_left_g1.py"
@@ -276,13 +290,21 @@
           "fps_basis": "SOURCE_FPS=60 in refine_pick_ground_motion_left_g1.py.",
           "file": "motions/under-table-pickup-source.npz"
         }
+      ],
+      "augmentations": [
+        {
+          "id": "under-table-pickup",
+          "label": "Contact augmentation",
+          "script": "augment_ground_pick_motions_left_g1.py",
+          "stage": "Contact augmentation"
+        }
       ]
     },
     {
       "id": "bimanual-pick-place",
       "title": "Bimanual pick-and-place",
       "kind": "bimanual",
-      "description": "Compare six saved motion versions. Blue and coral traces follow the hands; the box is inferred from their midpoint. These versions have no recorded contact-offset labels.",
+      "description": "Move the box placement in X and Z and replay the coordinated two-handed motion. Y stays fixed. Green traces the object path; cyan and pink show the left- and right-hand contact paths.",
       "sources": [
         "refine_bimanual_pick_motion_g1.py",
         "augment_bimanual_pick_motions_g1.py"
@@ -396,17 +418,25 @@
           "fps_basis": "30 fps convention in refinement and CSV playback scripts; CSV has no embedded timestamps.",
           "file": "motions/bimanual-pick-place-version-6.npz"
         }
+      ],
+      "augmentations": [
+        {
+          "id": "bimanual-pick-place",
+          "label": "Contact augmentation",
+          "script": "augment_bimanual_pick_motions_g1.py",
+          "stage": "Contact augmentation"
+        }
       ]
     },
     {
       "id": "ladder-climbing",
       "title": "Ladder climbing",
       "kind": "ladder",
-      "description": "Replay the saved climbing motion with the ladder geometry and scheduled hand and foot contacts from the augmentation code. Amber markers show active contacts.",
+      "description": "Replay the climb with the source ladder and its fixed hand and foot contacts. Toggle contact markers and collision geometry to inspect the motion from any angle.",
       "sources": [
         "refine_climbing_motion_g1.py",
-        "augment_climbing_motions_g1_vis.py",
-        "augment_climbing_motions_g1.py"
+        "augment_climbing_motions_g1.py",
+        "augment_climbing_motions_g1_vis.py"
       ],
       "expected": [
         "refined_climbing_pick_g1/climbing.pkl",
@@ -431,6 +461,14 @@
           "stage": "Saved motion",
           "fps_basis": "30 fps in refine_climbing_motion_g1.py; CSV written by copy_motion_to_lafan.py.",
           "file": "motions/ladder-climbing-reference.npz"
+        }
+      ],
+      "augmentations": [
+        {
+          "id": "ladder-climbing",
+          "label": "Contact solution",
+          "script": "augment_climbing_motions_g1.py",
+          "stage": "Fixed contact solution"
         }
       ]
     }

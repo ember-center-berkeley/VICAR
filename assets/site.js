@@ -164,11 +164,12 @@
     $('#load-demo').hidden = !available;
     $('#demo-description').textContent = scene.description;
     $('#augmentation-controls').hidden = !variant?.augmentationPath;
-    $('#motion-list-label').hidden = Boolean(variant?.augmentationPath);
-    $('#demo-variants').hidden = Boolean(variant?.augmentationPath);
+    $('#motion-list-label').hidden = scene.variants.length < 2;
+    $('#motion-list-label').textContent = variant?.augmentationPath ? 'Hand' : 'Saved motion';
+    $('#demo-variants').hidden = scene.variants.length < 2;
     $('.demo-legend').hidden = Boolean(variant?.augmentationPath);
     $('#motion-stage').textContent = variant?.stage || 'Coming soon';
-    $('#motion-meta').textContent = !available ? 'Recording coming soon' : Number.isFinite(variant.duration) ? `${variant.frames} frames · ${variant.fps} fps · ${variant.duration.toFixed(1)} s` : 'Interactive scene';
+    $('#motion-meta').textContent = !available ? 'Recording coming soon' : Number.isFinite(variant.duration) ? `${variant.frames} frames · ${Number(variant.fps.toFixed(2))} fps · ${variant.duration.toFixed(1)} s` : 'Interactive scene';
     $('#demo-cover-title').textContent = available ? 'Step inside the motion' : `${scene.title}`;
     $('#demo-cover-description').textContent = available ? 'Explore the saved G1 motion in an interactive 3D scene.' : 'The interactive recording for this skill is coming soon. Choose another skill to explore an available motion.';
     viewer.title = available ? `${scene.title}: ${variant.label} — interactive Viser scene` : 'Interactive Viser scene';
@@ -227,8 +228,7 @@
       button.setAttribute('aria-pressed', String(item.id === variant.id));
       button.addEventListener('click', () => {
         variant = item;
-        list.querySelectorAll('button').forEach(el => el.setAttribute('aria-pressed', String(el === button)));
-        updateViewerInfo();
+        renderVariants();
         if (activated) loadViewer();
       });
       list.append(button);
@@ -237,12 +237,30 @@
       shift = ['x', 'y', 'z'].map(axis => variant.axes[axis].default);
       ['x', 'y', 'z'].forEach((axis, i) => {
         const input = $(`#shift-${axis}`);
-        Object.assign(input, {min: variant.axes[axis].min, max: variant.axes[axis].max, step: variant.axes[axis].step, value: shift[i]});
+        const settings = variant.axes[axis];
+        const samples = settings.values;
+        Object.assign(input, {min: samples ? 0 : settings.min, max: samples ? samples.length - 1 : settings.max,
+          step: samples ? 1 : settings.step, value: samples ? samples.indexOf(settings.default) : shift[i], disabled: settings.min === settings.max});
+        input.closest('label').hidden = variant.sampleCount === 1;
+        input.setAttribute('aria-valuetext', `${formatShift(shift[i])} metres`);
         $(`#shift-${axis}-value`).textContent = `${formatShift(shift[i])} m`;
-        $(`#shift-${axis}-range`).textContent = `${formatShift(variant.axes[axis].min)} to ${formatShift(variant.axes[axis].max)} m`;
+        $(`#shift-${axis}-range`).textContent = settings.min === settings.max ? 'Fixed' : `${formatShift(settings.min)} to ${formatShift(settings.max)} m`;
       });
-      $('.augmentation-note').textContent = '729 motions · 9 positions per axis';
+      $('.augmentation-note').textContent = variant.sampleCount === 1 ? 'One fixed contact solution' : `${variant.sampleCount || 729} motions · ${['x','y','z'].map(a => variant.axes[a].values?.length || 9).join(' × ')} positions`;
+      $('#reset-shift').hidden = variant.sampleCount === 1;
+      $('#contact-controls-label').textContent = variant.sampleCount === 1 ? 'Scene layers' : 'Contact shift';
+      $('#show-hit-box-label').textContent = variant.boxLabel || 'Show hit box';
     }
+    const layers = $('#scene-layers');
+    layers.replaceChildren();
+    $('#scene-options').hidden = !variant?.layers?.length;
+    $('#scene-options').open = variant?.sampleCount === 1;
+    (variant?.layers || []).forEach(layer => {
+      const label = element('label', 'hit-box-control');
+      const input = document.createElement('input'); input.type = 'checkbox'; input.checked = layer.default;
+      input.dataset.layer = layer.id; input.addEventListener('change', sendShift);
+      label.append(input, document.createTextNode(layer.label)); layers.append(label);
+    });
     updateViewerInfo();
   }
   content.viewer.scenes.forEach(item => {
@@ -262,12 +280,14 @@
   $('#reset-viewer').addEventListener('click', loadViewer);
   function sendShift() {
     if (!variant?.augmentationPath || !viewer.contentWindow) return;
-    viewer.contentWindow.postMessage({type: 'vicar:set-shift', shift, showBox: $('#show-hit-box').checked, requestId: ++shiftRequest}, location.origin);
+    const layers = Object.fromEntries(Array.from($('#scene-layers').querySelectorAll('input')).map(input => [input.dataset.layer, input.checked]));
+    viewer.contentWindow.postMessage({type: 'vicar:set-shift', shift, showBox: $('#show-hit-box').checked, layers, requestId: ++shiftRequest}, location.origin);
   }
   ['x', 'y', 'z'].forEach((axis, i) => {
     $(`#shift-${axis}`).addEventListener('input', event => {
-      shift[i] = Number(event.target.value);
+      shift[i] = variant.axes[axis].values?.[Number(event.target.value)] ?? Number(event.target.value);
       $(`#shift-${axis}-value`).textContent = `${formatShift(shift[i])} m`;
+      event.target.setAttribute('aria-valuetext', `${formatShift(shift[i])} metres`);
       sendShift();
     });
   });
@@ -276,7 +296,8 @@
     if (!variant?.axes) return;
     ['x', 'y', 'z'].forEach((axis, i) => {
       shift[i] = variant.axes[axis].default;
-      $(`#shift-${axis}`).value = shift[i];
+      $(`#shift-${axis}`).value = variant.axes[axis].values ? variant.axes[axis].values.indexOf(shift[i]) : shift[i];
+      $(`#shift-${axis}`).setAttribute('aria-valuetext', `${formatShift(shift[i])} metres`);
       $(`#shift-${axis}-value`).textContent = `${formatShift(shift[i])} m`;
     });
     sendShift();
@@ -286,7 +307,7 @@
     if (event.data?.gridUrl !== new URL(variant.augmentationPath, document.baseURI).href) return;
     if (event.data?.type === 'vicar:augmentation-ready') sendShift();
     if (event.data?.type === 'vicar:shift-applied' && event.data.requestId === shiftRequest) {
-      $('#demo-status').textContent = `${scene.title} · X ${formatShift(shift[0])} m · Y ${formatShift(shift[1])} m · Z ${formatShift(shift[2])} m. Drag to orbit; pause or scrub to compare poses.`;
+      $('#demo-status').textContent = variant.sampleCount === 1 ? `${scene.title} · Fixed stair contacts. Drag to orbit; use the timeline to replay.` : `${scene.title} · X ${formatShift(shift[0])} m · Y ${formatShift(shift[1])} m · Z ${formatShift(shift[2])} m. Drag to orbit; pause or scrub to compare poses.`;
       $('#augmentation-controls').dataset.selectedIndex = event.data.index;
     }
     if (event.data?.type === 'vicar:augmentation-error') {

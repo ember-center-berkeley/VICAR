@@ -751,6 +751,11 @@ h3 {
   text-transform:none
 }
 .hit-box-control input {accent-color:var(--blue)}
+.axis-control input:disabled {cursor:default;opacity:.45}
+.scene-options {margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.scene-options summary {cursor:pointer;color:var(--muted);font-size:11px;font-weight:600}
+.scene-layers {margin-top:14px}
+.scene-layers:empty {display:none}
 @media(max-width:700px) {
   .augmentation-controls {
     display:grid;
@@ -765,6 +770,9 @@ h3 {
   .augmentation-controls .axis-control output {font-size:9px}
   .augmentation-controls .hit-box-control {grid-column:1 / -1;margin:0}
   .augmentation-controls .augmentation-note {grid-column:2 / -1;margin:0;align-self:center}
+  .augmentation-controls .scene-options {grid-column:1 / -1;margin-top:0}
+  .augmentation-controls .scene-layers {display:flex;flex-wrap:wrap;gap:12px}
+  .augmentation-controls .scene-layers:empty {display:none}
   #reset-shift {padding:7px;font-size:10px}
 }
 .viewer-actions {
