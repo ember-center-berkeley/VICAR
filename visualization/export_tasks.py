@@ -78,8 +78,7 @@ class TaskScene:
         center=np.mean(data['poses'][:,4:],axis=0)
         look=np.array([center[0]+.35,center[1],1.1 if key=='ladder-climbing' else .75])
         server.initial_camera.look_at=look
-        # View the climber from the approach side; from behind the ladder the
-        # source's enabled collision meshes obscure the robot.
+        # View the climber from the approach side of the ladder.
         server.initial_camera.position=look+([-2.2,-2.8,1.2] if key=='ladder-climbing' else [2.1,-2.8,1.4])
         if key=='under-table-pickup':
             look[2]=.55
@@ -194,13 +193,6 @@ class TaskScene:
             self.server.scene.add_icosphere(contact['node'],radius=.025,
                 color=tuple(contact['color']),position=contact['position'])
             self.box_nodes.append(contact['node'])
-        obstacles=[]
-        for i in range(7):
-            name=f'/collision/stair_{i}'
-            self.server.scene.add_mesh_simple(name,vertices=self.data[f'obstacle_{i}_vertices'],faces=self.data[f'obstacle_{i}_faces'],
-                color=(255,80,0),opacity=m['obstacle_opacity'],side='double',visible=m['obstacles_visible'])
-            obstacles.append(name)
-        self.layers.append(dict(id='obstacles',label='Collision geometry',nodes=obstacles,default=m['obstacles_visible']))
 
     def update(self,frame,index):
         with self.server.atomic():

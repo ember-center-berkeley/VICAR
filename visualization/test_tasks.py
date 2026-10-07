@@ -60,12 +60,8 @@ class TaskTests(unittest.TestCase):
             name=f'/stairs/step_{stair}'
             np.testing.assert_allclose(messages['SetPositionMessage',name]['position'],[.4+(stair-.5)*.076,0,.3*stair])
             np.testing.assert_allclose(messages['BoxMessage',name]['props']['dimensions'],[.076,1,.05])
-        obstacles=next(layer for layer in grid['layers'] if layer['id']=='obstacles')
-        self.assertTrue(obstacles['default'])
-        self.assertEqual(len(obstacles['nodes']),7)
-        for node in obstacles['nodes']:
-            self.assertTrue(messages['SetSceneNodeVisibilityMessage',node]['visible'])
-            self.assertEqual(messages['MeshMessage',node]['props']['opacity'],.35)
+        self.assertFalse(any(layer['id']=='obstacles' for layer in grid['layers']))
+        self.assertFalse(any(m.get('name','').startswith(('/collision/','/obstacles/')) for _,m in header['messages']))
         self.assertEqual(grid['quaternionShape'],[1,364,24,4])
 
     def test_source_ranges_fingers_and_browser_kinematics(self):

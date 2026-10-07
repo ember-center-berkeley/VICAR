@@ -298,7 +298,7 @@
       "id": "ladder-climbing",
       "title": "Ladder climbing",
       "kind": "ladder",
-      "description": "Replay the climb with the revised hand and toe-edge contact sequence. The source ladder, contact markers, and collision geometry can be toggled independently.",
+      "description": "Replay the climb with the revised hand and toe-edge contact sequence. Toggle the ladder rungs and contact markers to inspect the motion.",
       "sources": [
         "refine_climbing_motion_g1.py",
         "augment_climbing_motions_g1.py",

@@ -695,13 +695,13 @@ window.VICAR.viewer = {
     {
       "id": "ladder-climbing",
       "title": "Ladder climbing",
-      "description": "Replay the climb with the revised hand and toe-edge contact sequence. The source ladder, contact markers, and collision geometry can be toggled independently.",
+      "description": "Replay the climb with the revised hand and toe-edge contact sequence. Toggle the ladder rungs and contact markers to inspect the motion.",
       "variants": [
         {
           "id": "ladder-climbing",
           "label": "Contact solution",
-          "recording": "assets/augmentation/tasks/ladder-climbing-base.viser?v=44fcb848d184",
-          "augmentationPath": "assets/augmentation/tasks/ladder-climbing.json?v=44fcb848d184",
+          "recording": "assets/augmentation/tasks/ladder-climbing-base.viser?v=a800c6827c64",
+          "augmentationPath": "assets/augmentation/tasks/ladder-climbing.json?v=a800c6827c64",
           "axes": {
             "x": {
               "min": 0.0,
@@ -743,20 +743,6 @@ window.VICAR.viewer = {
                 "/stairs/step_4",
                 "/stairs/step_5",
                 "/stairs/step_6"
-              ],
-              "default": true
-            },
-            {
-              "id": "obstacles",
-              "label": "Collision geometry",
-              "nodes": [
-                "/collision/stair_0",
-                "/collision/stair_1",
-                "/collision/stair_2",
-                "/collision/stair_3",
-                "/collision/stair_4",
-                "/collision/stair_5",
-                "/collision/stair_6"
               ],
               "default": true
             }

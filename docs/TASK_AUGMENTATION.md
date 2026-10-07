@@ -53,9 +53,10 @@ coordinates retain their original precision.
   150–300, 0.3 × 0.3 × 0.4 m box, and source table. The box follows the prescribed
   object trajectory with the source's −0.2 m/clamped visual offset. It is not a
   simulated rigid body or a measurement of the achieved contact.
-- **Climbing:** six rungs starting at X = 0.40 m, ten hand/foot contact markers
-  (including two ground contacts), and seven collision meshes enabled by default
-  at opacity 0.35, matching the source visualization process. Root Y is zeroed.
+- **Climbing:** six rungs starting at X = 0.40 m and ten hand/foot contact markers
+  (including two ground contacts). Collision geometry is omitted from both the
+  scene and display controls. It remains part of the source optimization data.
+  Root Y is zeroed.
   Visual markers are read from that process’s `_stair_anchor` helper: rung
   anchors use `x = origin_x + (s−1)·tread`, `z = 0.3s+0.07`; ground markers use
   X = 0, Z = 0.03. Optimizer targets separately use +0.17 m toe-edge / +0.12 m
@@ -64,7 +65,7 @@ coordinates retain their original precision.
   fixed to the input motion. Both visual and optimizer anchors are recorded
   in `visual_contacts` in the NPZ metadata and public JSON provenance.
 
-The captured camera and collision geometry can be toggled independently, as can
+For the pickup tasks, the captured camera and collision geometry can be toggled independently, as can
 table points, voxels, paths, and contact diagnostics where relevant. Defaults
 preserve the source's enabled scene layers; the camera frustum starts hidden.
 Root quaternions are normalized for rendering to match the optimizer's rotation
