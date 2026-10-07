@@ -1,5 +1,6 @@
 """python -m visualization {list,view,export,import} --help"""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import time
@@ -54,8 +55,12 @@ def augmentation_variant(path, key, label, stage):
             raise FileNotFoundError(file)
     if grid.get('dynamic') and not (config.parent / grid['dynamic']['file']).exists():
         raise FileNotFoundError(grid['dynamic']['file'])
-    return dict(id=key, label=label, recording=f'{path}-base.viser',
-        augmentationPath=f'{path}.json', axes=grid['axes'], sampleCount=len(grid['shifts']),
+    version=''
+    if key=='ladder-climbing':
+        digest=hashlib.sha256(config.read_bytes()+(ROOT.parent/f'{path}-base.viser').read_bytes()).hexdigest()[:12]
+        version=f'?v={digest}'
+    return dict(id=key, label=label, recording=f'{path}-base.viser{version}',
+        augmentationPath=f'{path}.json{version}', axes=grid['axes'], sampleCount=len(grid['shifts']),
         layers=grid.get('layers', []), boxLabel=grid.get('boxLabel', 'Show hit box'),
         frames=grid['frames'], fps=grid['fps'], duration=grid['frames']/grid['fps'], stage=stage)
 

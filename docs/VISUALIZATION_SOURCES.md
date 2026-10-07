@@ -20,7 +20,7 @@ portable data preparation, renderer, local player, and static web exporter.
 | Tabletop, right hand | `augment_pick_motions_g1.py` | `refined_pick_g1/pick.pkl` | 306 |
 | Under-table pickup | `augment_ground_pick_motions_left_g1.py` | `refined_ground_pick_g1/ground_pick_left.pkl` | 250 |
 | Bimanual pick/place | `augment_bimanual_pick_motions_g1.py` | `refined_bimanual_pick_g1/bimanual_pick.pkl` | 50 |
-| Ladder climbing | `augment_climbing_motions_g1.py` | `refined_climbing_pick_g1/climbing.pkl` | 1 fixed contact solution |
+| Ladder climbing | `augment_climbing_motions_g1_vis.py` | `refined_climbing_pick_g1/climbing.pkl` | 1 fixed contact solution |
 
 Most source scripts contain their Viser setup and replay loop inside the
 optimization program. `--vis` also runs optimization and loads optional
@@ -52,10 +52,10 @@ include:
   reproduction; it does not replace the live general-script forehand.
 - `augment_pick_motions_left_g1_.py`: an earlier left-pick variant. The current
   canonical filename has no trailing underscore.
-- `augment_climbing_motions_g1_vis.py`: a climbing variant with a different
-  contact schedule. The current website follows `augment_climbing_motions_g1.py`.
-  Its historical output-directory naming overlaps another task; the headless
-  exporter disables source saving and writes uniquely named website NPZs.
+- `augment_climbing_motions_g1.py`: the previous climbing source, replaced by
+  `augment_climbing_motions_g1_vis.py` for its revised contact schedule, toe-edge
+  constraints, joint limits, and visualization geometry. The headless exporter
+  disables source saving and writes uniquely named website NPZs.
 - `augment_serves_g1_vis.py`: older multi-motion serve overlay.
 - `coll_vis.py`, `coll_vis2.py`: collision/optimization experiments reading
   `10.pkl`, outside the ten task players.

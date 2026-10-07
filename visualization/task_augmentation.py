@@ -24,7 +24,7 @@ TASKS = {
     'tabletop-right': dict(task='tabletop-pickup', label='Right hand', script='augment_pick_motions_g1.py', fps=10, lift=.035),
     'under-table-pickup': dict(task='under-table-pickup', label='Contact augmentation', script='augment_ground_pick_motions_left_g1.py', fps=1/.033, lift=0),
     'bimanual-pick-place': dict(task='bimanual-pick-place', label='Contact augmentation', script='augment_bimanual_pick_motions_g1.py', fps=1/.033, lift=0),
-    'ladder-climbing': dict(task='ladder-climbing', label='Contact solution', script='augment_climbing_motions_g1.py', fps=1/.033, lift=0),
+    'ladder-climbing': dict(task='ladder-climbing', label='Contact solution', script='augment_climbing_motions_g1_vis.py', fps=1/.033, lift=0),
 }
 DATA_DIR = ROOT / 'motions/tasks'
 
@@ -279,6 +279,26 @@ def export_data(source,key,env,costs,components,converged,source_iters,iteration
         'source_adaptations':['CPU-safe trusted pickle import','Resolve original absolute paths in supplied checkout','Omit GUI-only Pyroki heightmap','Vectorized equivalent anchor sums and selected FK branches, validated against source cost and gradients']}
     for field in ['PICK_TIME','CONTACT_START_FRAME','CONTACT_END_FRAME','TURN_AROUND_FRAMES','N_STAIRS','STAIR_TREAD','STAIR_DEPTH','LEFT_FEET_Y','RIGHT_FEET_Y','LEFT_HAND_Y','RIGHT_HAND_Y','LEFT_FEET_CONTACTS','RIGHT_FEET_CONTACTS','LEFT_HAND_CONTACTS','RIGHT_HAND_CONTACTS','OBJECT_DIMS','PLATFORM_POSITION','PLATFORM_DIMENSIONS','RIGHT_HAND_CONTACT_POINT']:
         if field in env:metadata[field]=env[field]
+    if key=='ladder-climbing':
+        # The visualization process has its own anchor helper, distinct from
+        # the optimizer's toe/hand offsets. Read it from the actual source.
+        tree=ast.parse((source/spec['script']).read_text())
+        viewer=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='_vis_process_main')
+        anchor=next(n for n in viewer.body if isinstance(n,ast.FunctionDef) and n.name=='_stair_anchor')
+        visual_env={'np':np,'STAIR_ORIGIN':env['STAIR_ORIGIN'],'STAIR_TREAD':env['STAIR_TREAD']}
+        exec(compile(ast.Module(body=[anchor],type_ignores=[]),spec['script'],'exec'),visual_env)
+        contacts=[]
+        for group,y_key,label,color,offset in [
+                ('LEFT_FEET_CONTACTS','LEFT_FEET_Y','left_foot',[50,200,50],.17),
+                ('RIGHT_FEET_CONTACTS','RIGHT_FEET_Y','right_foot',[200,50,50],.17),
+                ('LEFT_HAND_CONTACTS','LEFT_HAND_Y','left_hand',[50,100,255],.12),
+                ('RIGHT_HAND_CONTACTS','RIGHT_HAND_Y','right_hand',[200,50,255],.12)]:
+            for i,(start,end,stair) in enumerate(env[group]):
+                contacts.append(dict(node=f'/anchors/{label}_{i}',start=start,end=end,stair=stair,color=color,
+                    position=visual_env['_stair_anchor'](stair,env[y_key]).tolist(),
+                    optimizer_position=env['_stair_anchor'](stair,env[y_key],offset)[0].cpu().tolist()))
+        metadata.update(visual_contacts=contacts,obstacles_visible=True,obstacle_opacity=.35,
+            joint_limit_constraints=env['joint_limit_constraints'],HAND_ROT_INDICES=env['HAND_ROT_INDICES'])
     # The actual input pickles are a fixed, reviewed mapping, not filename guesses.
     inputs={'tabletop-left':'refined_pick_g1/pick_left.pkl','tabletop-right':'refined_pick_g1/pick.pkl',
         'under-table-pickup':'refined_ground_pick_g1/ground_pick_left.pkl','bimanual-pick-place':'refined_bimanual_pick_g1/bimanual_pick.pkl','ladder-climbing':'refined_climbing_pick_g1/climbing.pkl'}

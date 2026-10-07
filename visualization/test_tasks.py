@@ -22,6 +22,52 @@ PUBLIC = ROOT.parent/'assets/augmentation/tasks'
 
 
 class TaskTests(unittest.TestCase):
+    def test_revised_ladder_contacts_geometry_and_limits(self):
+        with np.load(DATA/'ladder-climbing.npz',allow_pickle=False) as file:data=dict(file)
+        meta=json.loads(str(data['metadata']))
+        grid=json.loads((PUBLIC/'ladder-climbing.json').read_text())
+        self.assertEqual(meta['script'],'augment_climbing_motions_g1_vis.py')
+        self.assertEqual(len(meta['active_joints']),24)
+        self.assertNotIn('left_hip_yaw_joint',meta['active_joints'])
+        self.assertNotIn('right_hip_yaw_joint',meta['active_joints'])
+        self.assertEqual(meta['HAND_ROT_INDICES'],[20,69,320,340])
+        self.assertEqual(meta['LEFT_FEET_CONTACTS'],[[0,69,0],[95,165,1],[206,363,3]])
+        self.assertEqual(meta['RIGHT_FEET_CONTACTS'],[[0,115,0],[150,225,2],[244,363,3]])
+        self.assertEqual(meta['LEFT_HAND_CONTACTS'],[[69,156,4],[206,297,6]])
+        self.assertEqual(meta['RIGHT_HAND_CONTACTS'],[[140,240,5],[280,297,6]])
+        np.testing.assert_allclose(data['STAIR_ORIGIN'],[.4,0,0])
+        for name in meta['active_joints']:
+            angles=data['body_joints'][:,:,JOINT_NAMES.index(name)]
+            lower,upper=meta['joint_limit_constraints'][name]
+            self.assertGreaterEqual(float(angles.min()),lower-2e-6)
+            self.assertLessEqual(float(angles.max()),upper+2e-6)
+        recording=(PUBLIC/'ladder-climbing-base.viser').read_bytes()
+        payload=zstandard.ZstdDecompressor().decompress(recording[8:])
+        header=msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])
+        messages={(m['type'],m.get('name')):m for t,m in header['messages'] if t==0}
+        self.assertEqual(len(grid['boxNodes']),10)
+        for contact in meta['visual_contacts']:
+            stair=contact['stair']
+            y=contact['position'][1]
+            visual=[.4+(stair-1)*.076,y,.3*stair+.07] if stair else [0,y,.03]
+            offset=.17 if 'foot' in contact['node'] else .12
+            target=[.4+(stair-1)*.076+offset,y,.3*stair+.09] if stair else [offset,y,.05]
+            np.testing.assert_allclose(contact['position'],visual,atol=1e-7)
+            np.testing.assert_allclose(contact['optimizer_position'],target,atol=1e-7)
+            np.testing.assert_allclose(messages['SetPositionMessage',contact['node']]['position'],visual,atol=1e-7)
+            self.assertLess(contact['end'],364)
+        for stair in range(1,7):
+            name=f'/stairs/step_{stair}'
+            np.testing.assert_allclose(messages['SetPositionMessage',name]['position'],[.4+(stair-.5)*.076,0,.3*stair])
+            np.testing.assert_allclose(messages['BoxMessage',name]['props']['dimensions'],[.076,1,.05])
+        obstacles=next(layer for layer in grid['layers'] if layer['id']=='obstacles')
+        self.assertTrue(obstacles['default'])
+        self.assertEqual(len(obstacles['nodes']),7)
+        for node in obstacles['nodes']:
+            self.assertTrue(messages['SetSceneNodeVisibilityMessage',node]['visible'])
+            self.assertEqual(messages['MeshMessage',node]['props']['opacity'],.35)
+        self.assertEqual(grid['quaternionShape'],[1,364,24,4])
+
     def test_source_ranges_fingers_and_browser_kinematics(self):
         hands=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'))
         self.assertEqual(len(hands.actuated_joint_names),43)

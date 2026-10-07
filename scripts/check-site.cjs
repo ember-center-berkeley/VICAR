@@ -154,7 +154,7 @@ const server = http.createServer((req, res) => {
     }
     await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
     const frame=page.frames().find(f=>f.url().includes('viser-client'));
-    const grid=JSON.parse(fs.readFileSync(path.join(root,variant.augmentationPath),'utf8'));
+    const grid=JSON.parse(fs.readFileSync(path.join(root,variant.augmentationPath.split('?')[0]),'utf8'));
     await page.waitForFunction(index=>document.querySelector('#augmentation-controls').dataset.selectedIndex===String(index),grid.defaultIndex,{timeout:60000});
     assert.equal(variant.sampleCount,grid.shifts.length);
     assert.match(await page.locator('#motion-meta').textContent(),/frames.*fps/);
@@ -248,13 +248,13 @@ const server = http.createServer((req, res) => {
    assert.ok(layout.cards.every(width=>Math.abs(width-layout.track)<2),'Show one full-width serve at every screen size');
   }
   // Missing-recording recovery should provide retry UI, not a broken iframe.
-  await page.route('**/assets/augmentation/tasks/*.viser',route=>route.fulfill({status:404,body:''}));
+  await page.route('**/assets/augmentation/tasks/*.viser*',route=>route.fulfill({status:404,body:''}));
   await page.getByRole('button',{name:'Reset view',exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('#demo-status').textContent.includes('could not be loaded'));
   assert.equal(await page.locator('#load-demo').isVisible(),true);
   assert.equal(await page.locator('#viser-frame').isHidden(),true);
   // A scene switch while the initial HEAD request is pending must cancel it.
-  await page.unroute('**/assets/augmentation/tasks/*.viser');
+  await page.unroute('**/assets/augmentation/tasks/*.viser*');
   let releaseHead;
   const heldHead = new Promise(resolve=>{releaseHead=resolve;});
   await page.route('**/assets/augmentation/serves/*.viser',async route=>{

@@ -1,6 +1,7 @@
 """Portable Viser scenes for pickup, bimanual manipulation and climbing."""
 import argparse
 import gzip
+import hashlib
 import json
 import time
 import numpy as np
@@ -41,8 +42,14 @@ class TaskScene:
         server.scene.reset()
         server.scene.set_up_direction('+z')
         server.scene.world_axes.visible=False
-        server.scene.add_grid('/Ground',width=8,height=8,cell_size=.25,section_size=1,
-            plane_color=(247,249,252),plane_opacity=1,cell_color=(223,229,238),section_color=(188,200,216))
+        if key=='ladder-climbing':
+            server.scene.add_mesh_simple('/ground',
+                vertices=np.array([[-5,-5,0],[5,-5,0],[5,5,0],[-5,5,0]],dtype=np.float32),
+                faces=np.array([[0,1,2],[0,2,3],[0,2,1],[0,3,2]],dtype=np.uint32),
+                color=(120,120,120),opacity=.5,flat_shading=True)
+        else:
+            server.scene.add_grid('/Ground',width=8,height=8,cell_size=.25,section_size=1,
+                plane_color=(247,249,252),plane_opacity=1,cell_color=(223,229,238),section_color=(188,200,216))
         self.model=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'))
         self.root=server.scene.add_frame('/base_new',show_axes=False)
         self.robot=ViserUrdf(server,self.model,root_node_name='/base_new')
@@ -71,7 +78,9 @@ class TaskScene:
         center=np.mean(data['poses'][:,4:],axis=0)
         look=np.array([center[0]+.35,center[1],1.1 if key=='ladder-climbing' else .75])
         server.initial_camera.look_at=look
-        server.initial_camera.position=look+([2.1,-2.8,1.2] if key=='ladder-climbing' else [2.1,-2.8,1.4])
+        # View the climber from the approach side; from behind the ladder the
+        # source's enabled collision meshes obscure the robot.
+        server.initial_camera.position=look+([-2.2,-2.8,1.2] if key=='ladder-climbing' else [2.1,-2.8,1.4])
         if key=='under-table-pickup':
             look[2]=.55
             server.initial_camera.look_at=look
@@ -181,22 +190,17 @@ class TaskScene:
                 dimensions=(m['STAIR_TREAD'],m['STAIR_DEPTH'],.05),color=(180,160,140))
             stairs.append(name)
         self.layers.append(dict(id='stairs',label='Ladder rungs',nodes=stairs,default=True))
-        for group,y_key,label,color in [('LEFT_FEET_CONTACTS','LEFT_FEET_Y','left_foot',(50,200,50)),
-                ('RIGHT_FEET_CONTACTS','RIGHT_FEET_Y','right_foot',(200,50,50)),
-                ('LEFT_HAND_CONTACTS','LEFT_HAND_Y','left_hand',(50,100,255)),
-                ('RIGHT_HAND_CONTACTS','RIGHT_HAND_Y','right_hand',(200,50,255))]:
-            for i,(start,end,s) in enumerate(m[group]):
-                name=f'/anchors/{label}_{i}'
-                self.server.scene.add_icosphere(name,radius=.025,color=color,
-                    position=(origin[0]+(s-.5)*m['STAIR_TREAD'],m[y_key],.3*s+.05))
-                self.box_nodes.append(name)
+        for contact in m['visual_contacts']:
+            self.server.scene.add_icosphere(contact['node'],radius=.025,
+                color=tuple(contact['color']),position=contact['position'])
+            self.box_nodes.append(contact['node'])
         obstacles=[]
         for i in range(7):
             name=f'/collision/stair_{i}'
             self.server.scene.add_mesh_simple(name,vertices=self.data[f'obstacle_{i}_vertices'],faces=self.data[f'obstacle_{i}_faces'],
-                color=(255,80,0),opacity=.15,side='double',visible=False)
+                color=(255,80,0),opacity=m['obstacle_opacity'],side='double',visible=m['obstacles_visible'])
             obstacles.append(name)
-        self.layers.append(dict(id='obstacles',label='Collision geometry',nodes=obstacles,default=False))
+        self.layers.append(dict(id='obstacles',label='Collision geometry',nodes=obstacles,default=m['obstacles_visible']))
 
     def update(self,frame,index):
         with self.server.atomic():
@@ -236,11 +240,16 @@ def export_task(server,key):
         recording.insert_sleep(1/m['fps'])
     OUTPUT.mkdir(parents=True,exist_ok=True)
     (OUTPUT/f'{key}-base.viser').write_bytes(recording.serialize())
-    (OUTPUT/f'{key}-quaternions.bin.gz').write_bytes(gzip.compress(quats.tobytes(),mtime=0))
+    compressed=gzip.compress(quats.tobytes(),mtime=0)
+    # The revised ladder has fewer active joints. Give its binary a content
+    # version so a cached old pack cannot be paired with the new scene.
+    suffix=f'-{hashlib.sha256(compressed).hexdigest()[:12]}' if key=='ladder-climbing' else ''
+    quaternion_file=f'{key}-quaternions{suffix}.bin.gz'
+    (OUTPUT/quaternion_file).write_bytes(compressed)
     config=dict(version=3,title=m['label'],frames=T,fps=m['fps'],defaultIndex=scene.default,
         hitFrame=m.get('PICK_TIME',m.get('CONTACT_START_FRAME',0)),
         nodes=[scene.nodes[name] for name in active],owner='',axes=m['axes'],
-        quaternions=f'{key}-quaternions.bin.gz',quaternionShape=list(quats.shape),
+        quaternions=quaternion_file,quaternionShape=list(quats.shape),
         shifts=d['shifts'].tolist(),displayLift=0,normalizeRootQuaternion=True,boxNodes=scene.box_nodes,
         boxLabel='Show contacts' if key=='ladder-climbing' else 'Show contact region',
         layers=scene.layers,curves=[dict(node=c['node'],points=c['points'].tolist()) for c in scene.curves],

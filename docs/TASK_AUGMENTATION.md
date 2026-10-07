@@ -18,7 +18,7 @@ on an even-sized axis, so the initial displayed value always exists in the grid.
 | Tabletop, right hand | `augment_pick_motions_g1.py` | 9 × 17 × 2 / 306 | 0 to 0.20 | −0.08 to 0.30 | 0.058133676 to 0.078133676 | 220 / 10 |
 | Under-table pickup | `augment_ground_pick_motions_left_g1.py` | 5 × 10 × 5 / 250 | 0 to 0.05 | 0 to 0.10 | −0.10 to 0 | 385 / 30.30303 |
 | Bimanual pick/place | `augment_bimanual_pick_motions_g1.py` | 5 × 1 × 10 / 50 | 0 to 0.05 | 0, fixed | 0.57 to 0.67 | 480 / 30.30303 |
-| Ladder climbing | `augment_climbing_motions_g1.py` | 1 fixed contact solution | — | — | — | 364 / 30.30303 |
+| Ladder climbing | `augment_climbing_motions_g1_vis.py` | 1 fixed contact solution | — | — | — | 364 / 30.30303 |
 
 This adds **913 task motions** to the 4,374 serve motions. The site has ten tasks
 and eleven viewers, including both tabletop hands.
@@ -27,8 +27,9 @@ Bimanual Z includes the source script's additional **+0.07 m**. Its Y slider is
 disabled because `NY=1`. The climbing script declares only one shift, `[0,0,0.07]`,
 but its objective uses fixed stair anchors and does not shift them with XYZ.
 Consequently, climbing offers timeline and scene-layer controls without XYZ
-sliders. The older `augment_climbing_motions_g1_vis.py` uses a different contact
-schedule and is not substituted for the canonical program.
+sliders. The website now follows `augment_climbing_motions_g1_vis.py`, including
+its ground contacts, revised contact schedule, toe-edge keypoints, and joint
+limits. The previous export used `augment_climbing_motions_g1.py`.
 
 The source GUIs use `(max-min)/8` even for axes with 2, 5, 10, or 17 samples. The
 website uses explicit sample arrays instead, ensuring that every slider stop
@@ -52,11 +53,16 @@ coordinates retain their original precision.
   150–300, 0.3 × 0.3 × 0.4 m box, and source table. The box follows the prescribed
   object trajectory with the source's −0.2 m/clamped visual offset. It is not a
   simulated rigid body or a measurement of the achieved contact.
-- **Climbing:** six rungs, original hand/foot contact markers, and an optional
-  overlay of the seven collision meshes. Root Y is zeroed as in the source.
-  The source visual markers use `x = origin_x + (s−0.5)·tread`, `z = 0.3s+0.05`;
-  optimizer anchors use `(s−1)·tread`, `0.3s+0.07`. That source distinction is
-  preserved; markers are not moved to suggest perfect contact.
+- **Climbing:** six rungs starting at X = 0.40 m, ten hand/foot contact markers
+  (including two ground contacts), and seven collision meshes enabled by default
+  at opacity 0.35, matching the source visualization process. Root Y is zeroed.
+  Visual markers are read from that process’s `_stair_anchor` helper: rung
+  anchors use `x = origin_x + (s−1)·tread`, `z = 0.3s+0.07`; ground markers use
+  X = 0, Z = 0.03. Optimizer targets separately use +0.17 m toe-edge / +0.12 m
+  hand X offsets and `z = 0.3s+0.09` (ground Z = 0.05). This source distinction
+  is preserved in the export. The motion optimizes 24 joints; hip yaw remains
+  fixed to the input motion. Both visual and optimizer anchors are recorded
+  in `visual_contacts` in the NPZ metadata and public JSON provenance.
 
 The captured camera and collision geometry can be toggled independently, as can
 table points, voxels, paths, and contact diagnostics where relevant. Defaults
