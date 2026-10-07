@@ -6,7 +6,7 @@ const path = require('node:path');
 const http = require('node:http');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const root = path.resolve(__dirname, '..');
-const types = {'.html':'text/html', '.css':'text/css', '.js':'text/javascript', '.svg':'image/svg+xml', '.png':'image/png', '.viser':'application/octet-stream'};
+const types = {'.html':'text/html', '.css':'text/css', '.js':'text/javascript', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.mp4':'video/mp4', '.viser':'application/octet-stream'};
 const server = http.createServer((req, res) => {
  const pathname = decodeURIComponent(new URL(req.url,'http://localhost').pathname);
  const relative = pathname.replace(/^\/VICAR\//, '/');
@@ -15,6 +15,17 @@ const server = http.createServer((req, res) => {
  if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file,'index.html');
  if (!fs.existsSync(file)) {res.writeHead(404).end();return;}
  res.setHeader('Content-Type',types[path.extname(file)] || 'application/octet-stream');
+ const size=fs.statSync(file).size;
+ res.setHeader('Accept-Ranges','bytes');
+ const range=req.headers.range?.match(/^bytes=(\d+)-(\d*)$/);
+ if(range) {
+  const start=Number(range[1]), end=range[2]?Math.min(Number(range[2]),size-1):size-1;
+  if(start>=size || end<start) {res.writeHead(416,{'Content-Range':`bytes */${size}`}).end();return;}
+  res.writeHead(206,{'Content-Range':`bytes ${start}-${end}/${size}`,'Content-Length':end-start+1});
+  if(req.method==='HEAD')res.end();else fs.createReadStream(file,{start,end}).pipe(res);
+  return;
+ }
+ res.setHeader('Content-Length',size);
  if (req.method === 'HEAD') res.end(); else fs.createReadStream(file).pipe(res);
 });
 (async () => {
@@ -29,7 +40,11 @@ const server = http.createServer((req, res) => {
   await page.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
   assert.equal(await page.locator('#serve-track article').count(),6);
   assert.equal(await page.locator('#other-skills article').count(),4);
-  assert.equal(await page.locator('.media-slot video').count(),0,'Empty slots must not request nonexistent clips');
+  assert.equal(await page.locator('.media-slot video').count(),9,'All nine supplied clips must be present');
+  assert.equal(await page.locator('#ladder-climbing .media-placeholder').count(),1,'Keep the missing ladder video placeholder');
+  assert.equal(requests.some(url=>url.includes('/assets/videos/')),false,'Clips must not download before play');
+  assert.equal(await page.locator('.media-slot video[preload="none"]').count(),9);
+  assert.equal(await page.locator('.hero-actions [data-resource="video"]').getAttribute('href'),'#skills');
   // Hero: two actions, paper links in the nav, and a still poster under reduced motion.
   assert.equal(await page.locator('.hero-actions a').count(),2);
   assert.deepEqual(await page.locator('.nav-cta').allTextContents(),['arXiv','Paper','Code']);
@@ -229,6 +244,8 @@ const server = http.createServer((req, res) => {
   for(const width of [768,390,320]) {
    await page.setViewportSize({width,height:844});
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Overflow at ${width}px`);
+   const layout=await page.locator('#serve-track').evaluate(track=>({track:track.clientWidth,cards:Array.from(track.children).map(card=>card.getBoundingClientRect().width)}));
+   assert.ok(layout.cards.every(width=>Math.abs(width-layout.track)<2),'Show one full-width serve at every screen size');
   }
   // Missing-recording recovery should provide retry UI, not a broken iframe.
   await page.route('**/assets/augmentation/tasks/*.viser',route=>route.fulfill({status:404,body:''}));
@@ -258,7 +275,35 @@ const server = http.createServer((req, res) => {
   await page.unroute('**/assets/augmentation/serves/*.viser');
   await page.locator('#demo-scene').selectOption('ladder-climbing');
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor();
+  // Decode, play and seek every supplied clip, with the actual Pages URL prefix.
+  await page.setViewportSize({width:1440,height:1000});
+  const clips=await page.evaluate(()=>[...window.VICAR.serves,...window.VICAR.skills].filter(item=>item.src));
+  for(const [index,clip] of clips.entries()) {
+   if(index<6) {
+    await page.locator('#serve-dots button').nth(index).click();
+    await page.waitForFunction(i=>document.querySelectorAll('#serve-dots button')[i].getAttribute('aria-current')==='true',index);
+   }
+   const video=page.locator(`#${clip.id} video`);
+   await video.scrollIntoViewIfNeeded();
+   assert.ok(fs.statSync(path.join(root,clip.src)).size<=20_000_000,`${clip.id} exceeds 20 MB`);
+   await video.evaluate(async video=>{video.muted=true;await video.play();});
+   await page.waitForFunction(id=>document.querySelector(`#${id} video`).currentTime>.1,clip.id);
+   const metadata=await video.evaluate(video=>({width:video.videoWidth,height:video.videoHeight,duration:video.duration,poster:video.poster,error:video.error}));
+   assert.equal(metadata.error,null);
+   assert.equal(metadata.width,clip.width);
+   assert.equal(metadata.height,clip.height);
+   assert.ok(metadata.duration>15 && metadata.duration<25);
+   await video.evaluate(video=>{video.pause();video.currentTime=video.duration*.75;});
+   await page.waitForFunction(id=>{const v=document.querySelector(`#${id} video`);return !v.seeking && v.readyState>=2 && v.currentTime>v.duration*.7;},clip.id);
+  }
+  if(process.env.SCREENSHOT_DIR) {
+   await page.locator('#serve-dots button').first().click();
+   await page.locator('#skills').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'serve-videos.png')});
+   await page.locator('#under-table-pickup').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'pickup-comparison.png')});
+   await page.setViewportSize({width:390,height:844});
+   await page.locator('#skills').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'serve-mobile.png')});
+  }
   assert.deepEqual(errors,[]);
-  console.log('PASS: hero actions, nav links, background loop, human card and centred fallback, abstract cards and full text, auto-load on approach, wheel passes through until clicked, data-saver button, touch shield, all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, both tabletop hands, scene layers, preserved playback, standalone controls, 10 video slots, responsive widths, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: nine compressed videos play and seek, native aspect ratios, no video preloading, full-width serve carousel, responsive widths, hero controls, all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

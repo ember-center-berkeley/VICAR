@@ -48,7 +48,33 @@ Edit **`assets/content.js`**. Video sources, project links, and authors are cent
 - **Hero background:** set `hero.video` (muted H.264 MP4 loop) and `hero.poster` (still image, also shown with reduced motion or data saver). Keep the subject in the right third of a 16:9 frame on a white background; the left side sits under the title. `hero.source` adds the human demonstration card beside the robot (`image`, `caption`, `alt`); remove it to hide the card. If neither the loop nor the poster loads, the hero falls back to a centred text layout. The current loop is a stand-in rendered from the bimanual box-pickup recording, paired with the crate photo from the overview figure.
 - **Citation:** set `bibtex` when the final citation is known. The citation section and copy button appear automatically.
 
-## Add the ten videos
+## Skill videos
+
+Nine supplied clips are published: six serves and three pickup comparisons. Each
+is **11.7–15.9 MB**, H.264 / AAC, 60 fps, with MP4 fast-start metadata and a JPEG
+poster. Together they are 125.4 MB, down from 1,017.1 MB. Videos use `preload="none"`
+and download on play. The ladder video remains a placeholder until supplied.
+
+The three vertically stacked pickup recordings have been rearranged with the
+human demonstration on the left and robot execution on the right. Both complete
+views and their original timing are preserved. Existing side-by-side serve
+recordings retain their layout. Comparison videos span the content width.
+
+To recreate these exports from the original folder, install `imageio-ffmpeg` (or
+provide `ffmpeg` on PATH), then run:
+
+```sh
+python scripts/prepare_videos.py '/path/to/VICAR 2'
+```
+
+The script reads the originals without changing them, uses two-pass compression,
+and writes videos, posters, and `assets/videos/encoding-manifest.json` with source
+filenames and output sizes. Regular clips are 1920 × 1080; comparisons are 2560
+pixels wide at their original aspect ratio. The source files named `top_spin`
+are labeled top-spin in the video gallery; the existing chop augmentation demos
+remain unchanged.
+
+To add or replace a clip:
 
 Place MP4 files in `assets/videos/`, then set each video's `src` in `assets/content.js`. For example:
 
@@ -64,8 +90,8 @@ Place MP4 files in `assets/videos/`, then set each video's `src` in `assets/cont
 | --- | --- | --- |
 | Carousel | `forehand.mp4` | Simple forehand serve |
 | Carousel | `backhand.mp4` | Simple backhand serve |
-| Carousel | `forehand-chop.mp4` | Forehand chop serve |
-| Carousel | `backhand-chop.mp4` | Backhand chop serve |
+| Carousel | `forehand-top-spin.mp4` | Forehand top-spin serve |
+| Carousel | `backhand-top-spin.mp4` | Backhand top-spin serve |
 | Carousel | `forehand-side-spin.mp4` | Forehand side-spin serve |
 | Carousel | `backhand-side-spin.mp4` | Backhand side-spin serve |
 | Individual | `tabletop-pickup.mp4` | Tabletop pickup |
@@ -73,7 +99,12 @@ Place MP4 files in `assets/videos/`, then set each video's `src` in `assets/cont
 | Individual | `bimanual-pick-place.mp4` | Bimanual box pickup and placement |
 | Individual | `ladder-climbing.mp4` | Ladder climbing (simulation) |
 
-The first six videos appear in a responsive carousel: three cards on desktop, two on tablet, and one with a peek of the next card on mobile. It supports buttons, keyboard arrows while the track is focused, six direct-selection dots, and touch scrolling. The remaining four are individually titled in a two-column grid, collapsing to one column on mobile.
+The six serves appear one at a time at full width on desktop, tablet, and mobile.
+The carousel supports buttons, keyboard arrows while the track is focused, six
+direct-selection dots, and touch scrolling. Its height adapts to each clip's
+aspect ratio. The three pickup comparisons are individually titled, full-width
+rows, followed by the ladder placeholder. Set each video's `width` and `height`
+in `assets/content.js` so the layout reserves the correct space before playback.
 
 Use browser-compatible H.264 MP4 with `yuv420p` and fast-start metadata. Keep individual files below GitHub's 100 MiB Git limit; for larger clips use a video/CDN URL in `src`. Do not use Git LFS pointer files as Pages media assets.
 
@@ -120,4 +151,9 @@ npx playwright install chromium
 npm test
 ```
 
-The checks exercise all six carousel selections, keyboard navigation, all ten tasks and eleven viewers, every sampled XYZ position, both tabletop hands, fixed axes, scene layers, preserved playback, standalone controls, project-prefixed URLs, responsive widths, and missing-recording recovery. To use an existing Chrome installation, run `CHROME_CHANNEL=chrome npm test`.
+The checks exercise playback and seeking for all nine videos, the 20 MB size
+limit, no video preloading, all six carousel selections, full-width cards at
+responsive sizes, keyboard navigation, all ten tasks and eleven viewers, every
+sampled XYZ position, both tabletop hands, fixed axes, scene layers, preserved
+playback, standalone controls, project-prefixed URLs, and missing-recording
+recovery. To use an existing Chrome installation, run `CHROME_CHANNEL=chrome npm test`.

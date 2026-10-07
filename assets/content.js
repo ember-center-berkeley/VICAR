@@ -5,7 +5,7 @@ window.VICAR = {
     "arxiv": "./",
     "paper": "./",
     "code": "https://github.com/ember-center-berkeley/VICAR",
-    "video": "./"
+    "video": "#skills"
   },
   "hero": {
     "video": "assets/videos/hero-box-pickup.mp4",
@@ -29,9 +29,11 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/forehand.mp4",
+      "poster": "assets/images/forehand-poster.jpg",
+      "captions": "",
+      "width": 1920,
+      "height": 1080
     },
     {
       "id": "backhand",
@@ -41,33 +43,39 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/backhand.mp4",
+      "poster": "assets/images/backhand-poster.jpg",
+      "captions": "",
+      "width": 1920,
+      "height": 1080
     },
     {
-      "id": "forehand-chop",
-      "title": "Forehand chop",
-      "description": "A chopping motion with contact-aware racket retargeting.",
+      "id": "forehand-top-spin",
+      "title": "Forehand top-spin",
+      "description": "A forehand top-spin serve executed on the humanoid.",
       "tags": [
         "Forehand",
         "Serve"
       ],
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/forehand-top-spin.mp4",
+      "poster": "assets/images/forehand-top-spin-poster.jpg",
+      "captions": "",
+      "width": 1920,
+      "height": 1080
     },
     {
-      "id": "backhand-chop",
-      "title": "Backhand chop",
-      "description": "A backhand chop with a contact-conditioned reference.",
+      "id": "backhand-top-spin",
+      "title": "Backhand top-spin",
+      "description": "A backhand top-spin serve executed on the humanoid.",
       "tags": [
         "Backhand",
         "Serve"
       ],
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/backhand-top-spin.mp4",
+      "poster": "assets/images/backhand-top-spin-poster.jpg",
+      "captions": "",
+      "width": 1920,
+      "height": 1080
     },
     {
       "id": "forehand-side-spin",
@@ -77,9 +85,11 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/forehand-side-spin.mp4",
+      "poster": "assets/images/forehand-side-spin-poster.jpg",
+      "captions": "",
+      "width": 2560,
+      "height": 720
     },
     {
       "id": "backhand-side-spin",
@@ -89,9 +99,11 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/backhand-side-spin.mp4",
+      "poster": "assets/images/backhand-side-spin-poster.jpg",
+      "captions": "",
+      "width": 2560,
+      "height": 744
     }
   ],
   "skills": [
@@ -104,9 +116,12 @@ window.VICAR = {
         "Hardware"
       ],
       "art": "pickup",
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/tabletop-pickup.mp4",
+      "poster": "assets/images/tabletop-pickup-poster.jpg",
+      "captions": "",
+      "width": 2560,
+      "height": 720,
+      "comparison": "Human demonstration (left) · Robot execution (right)"
     },
     {
       "id": "under-table-pickup",
@@ -117,9 +132,12 @@ window.VICAR = {
         "Hardware"
       ],
       "art": "under-table",
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/under-table-pickup.mp4",
+      "poster": "assets/images/under-table-pickup-poster.jpg",
+      "captions": "",
+      "width": 2560,
+      "height": 720,
+      "comparison": "Human demonstration (left) · Robot execution (right)"
     },
     {
       "id": "bimanual-pick-place",
@@ -130,9 +148,12 @@ window.VICAR = {
         "Hardware"
       ],
       "art": "bimanual",
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/bimanual-pick-place.mp4",
+      "poster": "assets/images/bimanual-pick-place-poster.jpg",
+      "captions": "",
+      "width": 2560,
+      "height": 720,
+      "comparison": "Human demonstration (left) · Robot execution (right)"
     },
     {
       "id": "ladder-climbing",

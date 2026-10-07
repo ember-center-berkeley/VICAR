@@ -111,11 +111,17 @@
     const card = element('article', 'video-card');
     card.id = item.id;
     const slot = element('div', 'media-slot');
+    if (item.width && item.height) {
+      slot.style.aspectRatio = `${item.width} / ${item.height}`;
+      if (item.width / item.height > 2) card.classList.add('video-card-wide');
+    }
     if (item.src) {
       const video = document.createElement('video');
       video.controls = true;
       video.playsInline = true;
       video.preload = 'none';
+      video.width = item.width || 1920;
+      video.height = item.height || 1080;
       video.setAttribute('aria-label', item.title);
       if (item.poster) video.poster = item.poster;
       if (item.captions) {
@@ -131,16 +137,13 @@
     const meta = element('div', 'video-meta');
     (item.tags || []).forEach(tag => meta.append(element('span', '', tag)));
     copy.append(element('h3', '', item.title), element('p', '', item.description), meta);
+    if (item.comparison) copy.append(element('p', 'comparison-caption', item.comparison));
     card.append(slot, copy);
     return card;
   }
   const track = $('#serve-track');
   content.serves.forEach((item, index) => track.append(videoCard(item, index + 1)));
   content.skills.forEach((item, index) => $('#other-skills').append(videoCard(item, index + 7)));
-  if ([...content.serves, ...content.skills].every(item => item.src)) {
-    $('.media-note').hidden = true;
-    document.querySelectorAll('.section-tag').forEach(el => el.hidden = true);
-  }
   let activeServe = 0;
   const dots = content.serves.map((serve, i) => {
     const dot = element('button');
@@ -149,26 +152,16 @@
     $('#serve-dots').append(dot);
     return dot;
   });
-  // Pad the end so every card, including the sixth, can become the first visible card.
-  function sizeTrack() {
-    const first = track.firstElementChild;
-    if (!first) return;
-    const gap = parseFloat(getComputedStyle(track).gap);
-    const endSpace = Math.max(0, track.clientWidth - first.offsetWidth - gap);
-    let spacer = track.querySelector('.carousel-spacer');
-    if (!spacer) {
-      spacer = element('div', 'carousel-spacer');
-      spacer.setAttribute('aria-hidden', 'true');
-      track.append(spacer);
-    }
-    spacer.style.flex = `0 0 ${endSpace}px`;
-  }
   function updateCarousel() {
     const step = track.children[1] ? track.children[1].offsetLeft - track.children[0].offsetLeft : 1;
     activeServe = Math.max(0, Math.min(content.serves.length - 1, Math.round(track.scrollLeft / step)));
     dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === activeServe)));
     $('#serve-prev').disabled = activeServe === 0;
     $('#serve-next').disabled = activeServe === content.serves.length - 1;
+    $('.carousel-note').textContent = `${activeServe + 1} / ${content.serves.length} · ${content.serves[activeServe].title}`;
+    // Match each clip's native aspect ratio without leaving a tall empty row
+    // beneath the side-by-side comparisons.
+    track.style.height = `${track.children[activeServe].offsetHeight + 11}px`;
   }
   function moveTo(index) {
     index = Math.max(0, Math.min(content.serves.length - 1, index));
@@ -185,8 +178,8 @@
     }
   });
   track.addEventListener('scroll', updateCarousel, {passive: true});
-  new ResizeObserver(() => { sizeTrack(); updateCarousel(); }).observe(track);
-  sizeTrack(); updateCarousel();
+  new ResizeObserver(updateCarousel).observe(track);
+  updateCarousel();
   // Pause clips once they scroll away; never autoplay six videos at once.
   const mediaObserver = new IntersectionObserver(entries => entries.forEach(entry => {
     if (!entry.isIntersecting) entry.target.pause();

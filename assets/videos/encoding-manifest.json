@@ -1,0 +1,74 @@
+[
+  {
+    "source": "forehand.mp4",
+    "video": "assets/videos/forehand.mp4",
+    "poster": "assets/images/forehand-poster.jpg",
+    "layout": "single",
+    "sourceBytes": 34549276,
+    "bytes": 11764863
+  },
+  {
+    "source": "backhand.mp4",
+    "video": "assets/videos/backhand.mp4",
+    "poster": "assets/images/backhand-poster.jpg",
+    "layout": "single",
+    "sourceBytes": 49362430,
+    "bytes": 11742056
+  },
+  {
+    "source": "forehand_top_spin.mp4",
+    "video": "assets/videos/forehand-top-spin.mp4",
+    "poster": "assets/images/forehand-top-spin-poster.jpg",
+    "layout": "single",
+    "sourceBytes": 31990504,
+    "bytes": 11724434
+  },
+  {
+    "source": "backhand_top_spin.mp4",
+    "video": "assets/videos/backhand-top-spin.mp4",
+    "poster": "assets/images/backhand-top-spin-poster.jpg",
+    "layout": "single",
+    "sourceBytes": 42706870,
+    "bytes": 11736286
+  },
+  {
+    "source": "forehand_side_spin.mp4",
+    "video": "assets/videos/forehand-side-spin.mp4",
+    "poster": "assets/images/forehand-side-spin-poster.jpg",
+    "layout": "wide",
+    "sourceBytes": 164351847,
+    "bytes": 15594723
+  },
+  {
+    "source": "backhand_side_spin.mp4",
+    "video": "assets/videos/backhand-side-spin.mp4",
+    "poster": "assets/images/backhand-side-spin-poster.jpg",
+    "layout": "wide",
+    "sourceBytes": 113799630,
+    "bytes": 15624065
+  },
+  {
+    "source": "pick_from_table.mp4",
+    "video": "assets/videos/tabletop-pickup.mp4",
+    "poster": "assets/images/tabletop-pickup-poster.jpg",
+    "layout": "stacked",
+    "sourceBytes": 195886371,
+    "bytes": 15694685
+  },
+  {
+    "source": "pick_under_table.mp4",
+    "video": "assets/videos/under-table-pickup.mp4",
+    "poster": "assets/images/under-table-pickup-poster.jpg",
+    "layout": "stacked",
+    "sourceBytes": 207025236,
+    "bytes": 15692448
+  },
+  {
+    "source": "bimanual_pickmp4.mp4",
+    "video": "assets/videos/bimanual-pick-place.mp4",
+    "poster": "assets/images/bimanual-pick-place-poster.jpg",
+    "layout": "stacked",
+    "sourceBytes": 177405036,
+    "bytes": 15811784
+  }
+]

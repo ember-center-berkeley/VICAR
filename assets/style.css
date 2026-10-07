@@ -624,6 +624,7 @@ h3 {
 }
 .serve-track {
   display:flex;
+  align-items:flex-start;
   gap:20px;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
@@ -642,8 +643,9 @@ h3 {
   background:white
 }
 .serve-track .video-card {
-  flex:0 0 calc((100% - 40px)/3);
-  scroll-snap-align:start
+  flex:0 0 100%;
+  scroll-snap-align:start;
+  scroll-snap-stop:always
 }
 .media-slot {
   aspect-ratio:16/10;
@@ -799,6 +801,13 @@ h3 {
 }
 .skill-grid .media-slot {
   aspect-ratio:16/8
+}
+.skill-grid .video-card-wide {
+  grid-column:1 / -1
+}
+.video-copy .comparison-caption {
+  color:var(--blue);
+  font-size:12px
 }
 .skill-grid .media-placeholder .skill-art {
   width:125px;
@@ -1305,9 +1314,6 @@ pre {
   }
 }
 @media(max-width:900px) {
-  .serve-track .video-card {
-    flex-basis:calc((100% - 20px)/2)
-  }
   .pipeline-steps {
     gap:18px
   }
@@ -1435,9 +1441,6 @@ pre {
   }
   .serve-track {
     gap:14px
-  }
-  .serve-track .video-card {
-    flex-basis:88%
   }
   .carousel-note {
     display:none
