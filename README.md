@@ -132,12 +132,12 @@ Place MP4 files in `assets/videos/`, then set each video's `src` in `assets/cont
 
 | Group | ID / suggested filename | Skill |
 | --- | --- | --- |
+| Carousel | `backhand-side-spin.mp4` | Backhand side-spin serve |
+| Carousel | `forehand-side-spin.mp4` | Forehand side-spin serve |
 | Carousel | `forehand.mp4` | Simple forehand serve |
 | Carousel | `backhand.mp4` | Simple backhand serve |
-| Carousel | `forehand-top-spin.mp4` | Forehand top-spin serve |
 | Carousel | `backhand-top-spin.mp4` | Backhand top-spin serve |
-| Carousel | `forehand-side-spin.mp4` | Forehand side-spin serve |
-| Carousel | `backhand-side-spin.mp4` | Backhand side-spin serve |
+| Carousel | `forehand-top-spin.mp4` | Forehand top-spin serve |
 | Individual | `tabletop-pickup.mp4` | Tabletop pickup |
 | Individual | `under-table-pickup.mp4` | Under-table pickup |
 | Individual | `bimanual-pick-place.mp4` | Bimanual box pickup and placement |

@@ -22,6 +22,34 @@ window.VICAR = {
   "bibtex": "",
   "serves": [
     {
+      "id": "backhand-side-spin",
+      "title": "Backhand side-spin",
+      "description": "A backhand side-spin serve with a movable hit pose.",
+      "tags": [
+        "Backhand",
+        "Serve"
+      ],
+      "src": "assets/videos/backhand-side-spin.mp4?v=robot-match-1",
+      "poster": "assets/images/backhand-side-spin-poster.jpg?v=robot-match-1",
+      "captions": "",
+      "width": 2560,
+      "height": 744
+    },
+    {
+      "id": "forehand-side-spin",
+      "title": "Forehand side-spin",
+      "description": "A lateral racket motion retaining the demonstrated style.",
+      "tags": [
+        "Forehand",
+        "Serve"
+      ],
+      "src": "assets/videos/forehand-side-spin.mp4?v=robot-match-1",
+      "poster": "assets/images/forehand-side-spin-poster.jpg?v=robot-match-1",
+      "captions": "",
+      "width": 2560,
+      "height": 720
+    },
+    {
       "id": "forehand",
       "title": "Simple forehand",
       "description": "A forward racket stroke with a movable hit point.",
@@ -52,21 +80,6 @@ window.VICAR = {
       "duration": 6
     },
     {
-      "id": "forehand-top-spin",
-      "title": "Forehand top-spin",
-      "description": "A forehand top-spin serve executed on the humanoid.",
-      "tags": [
-        "Forehand",
-        "Serve"
-      ],
-      "src": "assets/videos/forehand-top-spin.mp4?v=robot-match-1",
-      "poster": "assets/images/forehand-top-spin-poster.jpg?v=robot-match-1",
-      "captions": "",
-      "width": 2560,
-      "height": 720,
-      "duration": 6
-    },
-    {
       "id": "backhand-top-spin",
       "title": "Backhand top-spin",
       "description": "A backhand top-spin serve executed on the humanoid.",
@@ -82,32 +95,19 @@ window.VICAR = {
       "duration": 6
     },
     {
-      "id": "forehand-side-spin",
-      "title": "Forehand side-spin",
-      "description": "A lateral racket motion retaining the demonstrated style.",
+      "id": "forehand-top-spin",
+      "title": "Forehand top-spin",
+      "description": "A forehand top-spin serve executed on the humanoid.",
       "tags": [
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/forehand-side-spin.mp4?v=robot-match-1",
-      "poster": "assets/images/forehand-side-spin-poster.jpg?v=robot-match-1",
+      "src": "assets/videos/forehand-top-spin.mp4?v=robot-match-1",
+      "poster": "assets/images/forehand-top-spin-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
-      "height": 720
-    },
-    {
-      "id": "backhand-side-spin",
-      "title": "Backhand side-spin",
-      "description": "A backhand side-spin serve with a movable hit pose.",
-      "tags": [
-        "Backhand",
-        "Serve"
-      ],
-      "src": "assets/videos/backhand-side-spin.mp4?v=robot-match-1",
-      "poster": "assets/images/backhand-side-spin-poster.jpg?v=robot-match-1",
-      "captions": "",
-      "width": 2560,
-      "height": 744
+      "height": 720,
+      "duration": 6
     }
   ],
   "skills": [
