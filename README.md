@@ -118,7 +118,8 @@ The six serves appear one at a time at full width on desktop, tablet, and mobile
 The carousel supports buttons, keyboard arrows while the track is focused, six
 direct-selection dots, and touch scrolling. Its height adapts to each clip's
 aspect ratio. The three pickup comparisons are individually titled, full-width
-rows, followed by the full-width climbing comparison. Set each video's `width` and `height`
+rows, followed by a centered climbing comparison at 50% width (full width on
+mobile screens up to 600 px). Set each video's `width` and `height`
 in `assets/content.js` so the layout reserves the correct space before playback.
 
 Use browser-compatible H.264 MP4 with `yuv420p` and fast-start metadata. Keep individual files below GitHub's 100 MiB Git limit; for larger clips use a video/CDN URL in `src`. Do not use Git LFS pointer files as Pages media assets.

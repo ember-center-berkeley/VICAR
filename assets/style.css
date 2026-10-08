@@ -805,6 +805,10 @@ h3 {
 .skill-grid .video-card-wide {
   grid-column:1 / -1
 }
+.skill-grid #ladder-climbing {
+  width:50%;
+  justify-self:center
+}
 .video-copy .comparison-caption {
   color:var(--blue);
   font-size:12px
@@ -1458,6 +1462,9 @@ pre {
   }
   .skill-grid .media-slot {
     aspect-ratio:16/9
+  }
+  .skill-grid #ladder-climbing {
+    width:100%
   }
   .video-copy {
     padding:18px

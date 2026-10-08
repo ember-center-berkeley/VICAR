@@ -241,14 +241,15 @@ const server = http.createServer((req, res) => {
    await page.waitForTimeout(1500); // Allow mesh buffers to upload before visual QA.
    await page.locator('#interactive').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'motion-explorer.png')});
   }
-  for(const width of [768,390,320]) {
+  for(const width of [1440,768,390,320]) {
    await page.setViewportSize({width,height:844});
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Overflow at ${width}px`);
    const layout=await page.locator('#serve-track').evaluate(track=>({track:track.clientWidth,cards:Array.from(track.children).map(card=>card.getBoundingClientRect().width)}));
    assert.ok(layout.cards.every(width=>Math.abs(width-layout.track)<2),'Show one full-width serve at every screen size');
    const climbingWidth=await page.locator('#ladder-climbing').evaluate(card=>card.getBoundingClientRect().width);
    const skillsWidth=await page.locator('#other-skills').evaluate(grid=>grid.getBoundingClientRect().width);
-   assert.ok(Math.abs(climbingWidth-skillsWidth)<2,'Climbing comparison must span the full width');
+   const climbingScale=width>600 ? .5 : 1;
+   assert.ok(Math.abs(climbingWidth-skillsWidth*climbingScale)<2,'Climbing comparison must use half width on larger screens and full width on mobile');
   }
   // Missing-recording recovery should provide retry UI, not a broken iframe.
   await page.route('**/assets/augmentation/tasks/*.viser*',route=>route.fulfill({status:404,body:''}));
@@ -310,6 +311,6 @@ const server = http.createServer((req, res) => {
    await page.locator('#ladder-climbing').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'climbing-mobile.png')});
   }
   assert.deepEqual(errors,[]);
-  console.log('PASS: all ten compressed videos play and seek, full-width aligned climbing comparison, native aspect ratios, no video preloading, full-width serve carousel, responsive widths, hero controls, all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: all ten compressed videos play and seek, responsive aligned climbing comparison, native aspect ratios, no video preloading, full-width serve carousel, responsive widths, hero controls, all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());
