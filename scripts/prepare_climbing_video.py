@@ -31,7 +31,6 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("human", type=Path)
     parser.add_argument("simulation", type=Path)
-    parser.add_argument("--font", default="/System/Library/Fonts/Helvetica.ttc")
     args = parser.parse_args()
     for source in [args.human, args.simulation]:
         if not source.is_file():
@@ -56,9 +55,9 @@ def main():
     sim_color = "zscale=p=bt709:t=bt709:m=bt709:r=limited,format=yuv420p"
     graph = (
         f"[0:v]setpts=PTS-STARTPTS,{human_color},scale=486:864:flags=lanczos,setsar=1,fps=60,"
-        f"pad=498:912:0:48:color=0x111827,drawtext=fontfile='{args.font}':text='Human demonstration':fontsize=23:fontcolor=white:x=(486-tw)/2:y=12[left];"
+        "pad=498:864:0:0:color=0x111827[left];"
         f"[1:v]setpts=PTS-STARTPTS,setpts='({timing})/TB',{sim_color},scale=668:864:flags=lanczos,setsar=1,fps=60,"
-        f"pad=668:912:0:48:color=0x111827,drawtext=fontfile='{args.font}':text='Robot simulation':fontsize=23:fontcolor=white:x=(w-tw)/2:y=12[right];"
+        "null[right];"
         "[left][right]hstack=inputs=2:shortest=1,format=yuv420p,"
         "setparams=range=limited:color_primaries=bt709:color_trc=bt709:colorspace=bt709[v]"
     )
@@ -81,7 +80,7 @@ def main():
     manifest = {
         "video": "assets/videos/ladder-climbing.mp4",
         "poster": "assets/images/ladder-climbing-poster.jpg",
-        "bytes": video.stat().st_size, "width": 1166, "height": 912,
+        "bytes": video.stat().st_size, "width": 1166, "height": 864,
         "fps": 60, "duration": 11.8,
         "sources": [{"file": p.name, "bytes": p.stat().st_size,
                      "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}
@@ -92,7 +91,7 @@ def main():
         "color": "SDR BT.709; human HLG tone-mapped, simulation converted from Display P3",
     }
     (video.parent / "climbing-alignment.json").write_text(json.dumps(manifest, indent=2)+"\n")
-    print(f"Climbing comparison: {video.stat().st_size/1e6:.2f} MB, 1166 × 912, 11.8 s", flush=True)
+    print(f"Climbing comparison: {video.stat().st_size/1e6:.2f} MB, 1166 × 864, 11.8 s", flush=True)
 
 
 if __name__ == "__main__":

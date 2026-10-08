@@ -51,14 +51,14 @@ Edit **`assets/content.js`**. Video sources, project links, and authors are cent
 ## Skill videos
 
 All ten task videos are published: six serves, three pickup comparisons, and a
-human/simulation climbing comparison. The first nine are **11.7–15.9 MB** each;
-the climbing comparison is **3.6 MB**. All use H.264 / AAC, 60 fps, MP4 fast-start
+human/simulation climbing comparison. Every video is below **20 MB**.
+All use H.264 / AAC, 60 fps, MP4 fast-start
 metadata, and JPEG posters. Videos use `preload="none"` and download on play.
 
 The three vertically stacked pickup recordings have been rearranged with the
 human demonstration on the left and robot execution on the right. Both complete
 views and their original timing are preserved. Existing side-by-side serve
-recordings retain their layout. Comparison videos span the content width.
+recordings retain their layout. Serves and pickup comparisons span the content width.
 
 To recreate these exports from the original folder, install `imageio-ffmpeg` (or
 provide `ffmpeg` on PATH), then run:
@@ -74,9 +74,24 @@ pixels wide at their original aspect ratio. The source files named `top_spin`
 are labeled top-spin in the video gallery; the existing chop augmentation demos
 remain unchanged.
 
+After the base export, create the four paired serve videos from the supplied
+human `.MOV` files and the original robot `.mp4` files:
+
+```sh
+python scripts/prepare_serve_pairs.py /path/to/human_clips '/path/to/VICAR 2'
+```
+
+These six-second clips preserve both playback speeds, trimming idle footage so
+the visually selected ball-contact frames coincide at 3 seconds (frame 180 at
+60 fps). Each complete view is 1280 × 720, with the human on the left and robot
+on the right, without text overlays. Phone HLG colors are tone-mapped to SDR.
+The robot audio is trimmed with its video. Source hashes and contact/trim frames
+are recorded in `assets/videos/serve-pair-alignment.json`; this supersedes the
+four single-view exports in `assets/videos/encoding-manifest.json`.
+
 The climbing comparison preserves the complete human demonstration at its
 original speed and makes small, continuous timing adjustments to the simulation
-at visually reviewed foot-lift and standing phases. It includes view labels and
+at visually reviewed foot-lift and standing phases. It has no view labels, with
 an alignment note in the caption. The portrait views are preserved without
 cropping, with the human on the left and simulation on the right. Phone HLG and
 screen-recording P3 colors are converted to SDR BT.709 for browser playback.

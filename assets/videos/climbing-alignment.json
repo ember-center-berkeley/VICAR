@@ -1,9 +1,9 @@
 {
   "video": "assets/videos/ladder-climbing.mp4",
   "poster": "assets/images/ladder-climbing-poster.jpg",
-  "bytes": 3601800,
+  "bytes": 3585407,
   "width": 1166,
-  "height": 912,
+  "height": 864,
   "fps": 60,
   "duration": 11.8,
   "sources": [

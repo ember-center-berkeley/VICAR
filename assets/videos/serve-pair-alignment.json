@@ -1,0 +1,142 @@
+[
+  {
+    "id": "forehand",
+    "video": "assets/videos/forehand.mp4",
+    "poster": "assets/images/forehand-poster.jpg",
+    "bytes": 2932492,
+    "width": 2560,
+    "height": 720,
+    "fps": 60,
+    "frames": 360,
+    "duration": 6.0,
+    "contactFrame": 180,
+    "contactSeconds": 3.0,
+    "sources": [
+      {
+        "file": "forehand.MOV",
+        "role": "human",
+        "bytes": 27666761,
+        "sha256": "1a738c0e3a2d05f9fefca7adad281b0cfc77f2a1dbd258de632a1c6cfef29703",
+        "contactFrameAt60fps": 249,
+        "trimStartFrameAt60fps": 69
+      },
+      {
+        "file": "forehand.mp4",
+        "role": "robot",
+        "bytes": 34549276,
+        "sha256": "eaf9006d3a40f2cf1f51533a7030e0900879d2fd2a9a5725acde2cfac380d405",
+        "contactFrameAt60fps": 187,
+        "trimStartFrameAt60fps": 7
+      }
+    ],
+    "layout": "Human left, robot right; full views without text overlays",
+    "alignment": "Visually selected contact frames aligned at 3 seconds by trimming; original playback speeds preserved",
+    "audio": "Robot recording, trimmed with its video",
+    "color": "SDR BT.709; human HLG tone-mapped"
+  },
+  {
+    "id": "backhand",
+    "video": "assets/videos/backhand.mp4",
+    "poster": "assets/images/backhand-poster.jpg",
+    "bytes": 3023424,
+    "width": 2560,
+    "height": 720,
+    "fps": 60,
+    "frames": 360,
+    "duration": 6.0,
+    "contactFrame": 180,
+    "contactSeconds": 3.0,
+    "sources": [
+      {
+        "file": "backhand.MOV",
+        "role": "human",
+        "bytes": 18360956,
+        "sha256": "5fc5886a1d99d6ff9a90fb41d9a300f9362dea5b21ca1d094cc4f83c60709908",
+        "contactFrameAt60fps": 217,
+        "trimStartFrameAt60fps": 37
+      },
+      {
+        "file": "backhand.mp4",
+        "role": "robot",
+        "bytes": 49362430,
+        "sha256": "6d3644421eaaed97602d82ca8becb2931ef6118b193f3ab1d5516d654d3db8eb",
+        "contactFrameAt60fps": 232,
+        "trimStartFrameAt60fps": 52
+      }
+    ],
+    "layout": "Human left, robot right; full views without text overlays",
+    "alignment": "Visually selected contact frames aligned at 3 seconds by trimming; original playback speeds preserved",
+    "audio": "Robot recording, trimmed with its video",
+    "color": "SDR BT.709; human HLG tone-mapped"
+  },
+  {
+    "id": "forehand-top-spin",
+    "video": "assets/videos/forehand-top-spin.mp4",
+    "poster": "assets/images/forehand-top-spin-poster.jpg",
+    "bytes": 3152812,
+    "width": 2560,
+    "height": 720,
+    "fps": 60,
+    "frames": 360,
+    "duration": 6.0,
+    "contactFrame": 180,
+    "contactSeconds": 3.0,
+    "sources": [
+      {
+        "file": "forehand_top_spin.MOV",
+        "role": "human",
+        "bytes": 20493565,
+        "sha256": "8f1a98778549942a585803fb2f1ca13ab4129b843a4395622641c13b468469f7",
+        "contactFrameAt60fps": 307,
+        "trimStartFrameAt60fps": 127
+      },
+      {
+        "file": "forehand_top_spin.mp4",
+        "role": "robot",
+        "bytes": 31990504,
+        "sha256": "4ed8711463c6117fb47475d806783cb5a32480760a8f2a64c79e7b916a59c7ad",
+        "contactFrameAt60fps": 202,
+        "trimStartFrameAt60fps": 22
+      }
+    ],
+    "layout": "Human left, robot right; full views without text overlays",
+    "alignment": "Visually selected contact frames aligned at 3 seconds by trimming; original playback speeds preserved",
+    "audio": "Robot recording, trimmed with its video",
+    "color": "SDR BT.709; human HLG tone-mapped"
+  },
+  {
+    "id": "backhand-top-spin",
+    "video": "assets/videos/backhand-top-spin.mp4",
+    "poster": "assets/images/backhand-top-spin-poster.jpg",
+    "bytes": 3058891,
+    "width": 2560,
+    "height": 720,
+    "fps": 60,
+    "frames": 360,
+    "duration": 6.0,
+    "contactFrame": 180,
+    "contactSeconds": 3.0,
+    "sources": [
+      {
+        "file": "backhand_top_spin.MOV",
+        "role": "human",
+        "bytes": 23021473,
+        "sha256": "05ca5a9aa2ede38cab283fa71a33534e37b0079433c3b4859c37e314d783c8bb",
+        "contactFrameAt60fps": 282,
+        "trimStartFrameAt60fps": 102
+      },
+      {
+        "file": "backhand_top_spin.mp4",
+        "role": "robot",
+        "bytes": 42706870,
+        "sha256": "c00f9baf11a7f6931c01a1ebe400e2fa06d57e96409ab090a04728cd48452503",
+        "contactFrameAt60fps": 433,
+        "trimStartFrameAt60fps": 253
+      }
+    ],
+    "layout": "Human left, robot right; full views without text overlays",
+    "alignment": "Visually selected contact frames aligned at 3 seconds by trimming; original playback speeds preserved",
+    "audio": "Robot recording, trimmed with its video",
+    "color": "SDR BT.709; human HLG tone-mapped"
+  }
+]

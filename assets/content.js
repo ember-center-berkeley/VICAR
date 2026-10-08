@@ -29,11 +29,12 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/forehand.mp4",
-      "poster": "assets/images/forehand-poster.jpg",
+      "src": "assets/videos/forehand.mp4?v=serve-pairs-1",
+      "poster": "assets/images/forehand-poster.jpg?v=serve-pairs-1",
       "captions": "",
-      "width": 1920,
-      "height": 1080
+      "width": 2560,
+      "height": 720,
+      "duration": 6
     },
     {
       "id": "backhand",
@@ -43,11 +44,12 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/backhand.mp4",
-      "poster": "assets/images/backhand-poster.jpg",
+      "src": "assets/videos/backhand.mp4?v=serve-pairs-1",
+      "poster": "assets/images/backhand-poster.jpg?v=serve-pairs-1",
       "captions": "",
-      "width": 1920,
-      "height": 1080
+      "width": 2560,
+      "height": 720,
+      "duration": 6
     },
     {
       "id": "forehand-top-spin",
@@ -57,11 +59,12 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/forehand-top-spin.mp4",
-      "poster": "assets/images/forehand-top-spin-poster.jpg",
+      "src": "assets/videos/forehand-top-spin.mp4?v=serve-pairs-1",
+      "poster": "assets/images/forehand-top-spin-poster.jpg?v=serve-pairs-1",
       "captions": "",
-      "width": 1920,
-      "height": 1080
+      "width": 2560,
+      "height": 720,
+      "duration": 6
     },
     {
       "id": "backhand-top-spin",
@@ -71,11 +74,12 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/backhand-top-spin.mp4",
-      "poster": "assets/images/backhand-top-spin-poster.jpg",
+      "src": "assets/videos/backhand-top-spin.mp4?v=serve-pairs-1",
+      "poster": "assets/images/backhand-top-spin-poster.jpg?v=serve-pairs-1",
       "captions": "",
-      "width": 1920,
-      "height": 1080
+      "width": 2560,
+      "height": 720,
+      "duration": 6
     },
     {
       "id": "forehand-side-spin",
@@ -164,14 +168,14 @@ window.VICAR = {
         "Simulation"
       ],
       "art": "ladder",
-      "src": "assets/videos/ladder-climbing.mp4",
-      "poster": "assets/images/ladder-climbing-poster.jpg",
+      "src": "assets/videos/ladder-climbing.mp4?v=no-labels-1",
+      "poster": "assets/images/ladder-climbing-poster.jpg?v=no-labels-1",
       "captions": "",
       "width": 1166,
-      "height": 912,
+      "height": 864,
       "duration": 11.8,
       "wide": true,
-      "comparison": "Human demonstration (left) · Robot simulation (right). Timing aligned for comparison."
+      "comparison": "Timing aligned for comparison."
     }
   ]
 };

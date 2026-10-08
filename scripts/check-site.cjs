@@ -289,14 +289,14 @@ const server = http.createServer((req, res) => {
    }
    const video=page.locator(`#${clip.id} video`);
    await video.scrollIntoViewIfNeeded();
-   assert.ok(fs.statSync(path.join(root,clip.src)).size<=20_000_000,`${clip.id} exceeds 20 MB`);
+   assert.ok(fs.statSync(path.join(root,clip.src.split('?')[0])).size<=20_000_000,`${clip.id} exceeds 20 MB`);
    await video.evaluate(async video=>{video.muted=true;await video.play();});
    await page.waitForFunction(id=>document.querySelector(`#${id} video`).currentTime>.1,clip.id);
    const metadata=await video.evaluate(video=>({width:video.videoWidth,height:video.videoHeight,duration:video.duration,poster:video.poster,error:video.error}));
    assert.equal(metadata.error,null);
    assert.equal(metadata.width,clip.width);
    assert.equal(metadata.height,clip.height);
-   if(clip.duration)assert.ok(Math.abs(metadata.duration-clip.duration)<.1,'Preserve the climbing comparison duration');
+   if(clip.duration)assert.ok(Math.abs(metadata.duration-clip.duration)<.1,`Preserve the ${clip.id} comparison duration`);
    else assert.ok(metadata.duration>15 && metadata.duration<25);
    await video.evaluate(video=>{video.pause();video.currentTime=video.duration*.75;});
    await page.waitForFunction(id=>{const v=document.querySelector(`#${id} video`);return !v.seeking && v.readyState>=2 && v.currentTime>v.duration*.7;},clip.id);
