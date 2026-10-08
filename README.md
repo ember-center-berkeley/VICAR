@@ -89,6 +89,20 @@ The robot audio is trimmed with its video. Source hashes and contact/trim frames
 are recorded in `assets/videos/serve-pair-alignment.json`; this supersedes the
 four single-view exports in `assets/videos/encoding-manifest.json`.
 
+All ten comparisons use fixed human-view color grades in
+`scripts/video_color.py`, with each robot view as the reference. The new phone
+serves use lower highlights and midtones, 72% saturation, and gentler contrast
+after HLG-to-SDR conversion. Climbing uses a similar grade, while older
+comparisons receive smaller corrections where their exposure already matches.
+The export manifests record the settings. Grades affect only the human view;
+frame counts, playback speed, contact alignment, and robot color are preserved.
+Posters use the same grade as their videos. To refresh only selected base clips
+without overwriting the four paired serves, pass `--only` with their gallery IDs:
+
+```sh
+python scripts/prepare_videos.py '/path/to/VICAR 2' --only forehand-side-spin backhand-side-spin tabletop-pickup under-table-pickup bimanual-pick-place
+```
+
 The climbing comparison preserves the complete human demonstration at its
 original speed and makes small, continuous timing adjustments to the simulation
 at visually reviewed foot-lift and standing phases. It has no view labels, with

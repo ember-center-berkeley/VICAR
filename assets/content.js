@@ -29,8 +29,8 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/forehand.mp4?v=serve-pairs-1",
-      "poster": "assets/images/forehand-poster.jpg?v=serve-pairs-1",
+      "src": "assets/videos/forehand.mp4?v=robot-match-1",
+      "poster": "assets/images/forehand-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -44,8 +44,8 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/backhand.mp4?v=serve-pairs-1",
-      "poster": "assets/images/backhand-poster.jpg?v=serve-pairs-1",
+      "src": "assets/videos/backhand.mp4?v=robot-match-1",
+      "poster": "assets/images/backhand-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -59,8 +59,8 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/forehand-top-spin.mp4?v=serve-pairs-1",
-      "poster": "assets/images/forehand-top-spin-poster.jpg?v=serve-pairs-1",
+      "src": "assets/videos/forehand-top-spin.mp4?v=robot-match-1",
+      "poster": "assets/images/forehand-top-spin-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -74,8 +74,8 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/backhand-top-spin.mp4?v=serve-pairs-1",
-      "poster": "assets/images/backhand-top-spin-poster.jpg?v=serve-pairs-1",
+      "src": "assets/videos/backhand-top-spin.mp4?v=robot-match-1",
+      "poster": "assets/images/backhand-top-spin-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -89,8 +89,8 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/forehand-side-spin.mp4",
-      "poster": "assets/images/forehand-side-spin-poster.jpg",
+      "src": "assets/videos/forehand-side-spin.mp4?v=robot-match-1",
+      "poster": "assets/images/forehand-side-spin-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
       "height": 720
@@ -103,8 +103,8 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/backhand-side-spin.mp4",
-      "poster": "assets/images/backhand-side-spin-poster.jpg",
+      "src": "assets/videos/backhand-side-spin.mp4?v=robot-match-1",
+      "poster": "assets/images/backhand-side-spin-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
       "height": 744
@@ -120,8 +120,8 @@ window.VICAR = {
         "Hardware"
       ],
       "art": "pickup",
-      "src": "assets/videos/tabletop-pickup.mp4",
-      "poster": "assets/images/tabletop-pickup-poster.jpg",
+      "src": "assets/videos/tabletop-pickup.mp4?v=robot-match-1",
+      "poster": "assets/images/tabletop-pickup-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -136,8 +136,8 @@ window.VICAR = {
         "Hardware"
       ],
       "art": "under-table",
-      "src": "assets/videos/under-table-pickup.mp4",
-      "poster": "assets/images/under-table-pickup-poster.jpg",
+      "src": "assets/videos/under-table-pickup.mp4?v=robot-match-1",
+      "poster": "assets/images/under-table-pickup-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -152,8 +152,8 @@ window.VICAR = {
         "Hardware"
       ],
       "art": "bimanual",
-      "src": "assets/videos/bimanual-pick-place.mp4",
-      "poster": "assets/images/bimanual-pick-place-poster.jpg",
+      "src": "assets/videos/bimanual-pick-place.mp4?v=robot-match-1",
+      "poster": "assets/images/bimanual-pick-place-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -168,8 +168,8 @@ window.VICAR = {
         "Simulation"
       ],
       "art": "ladder",
-      "src": "assets/videos/ladder-climbing.mp4?v=no-labels-1",
-      "poster": "assets/images/ladder-climbing-poster.jpg?v=no-labels-1",
+      "src": "assets/videos/ladder-climbing.mp4?v=robot-match-1",
+      "poster": "assets/images/ladder-climbing-poster.jpg?v=robot-match-1",
       "captions": "",
       "width": 1166,
       "height": 864,

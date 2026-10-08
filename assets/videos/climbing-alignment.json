@@ -1,7 +1,7 @@
 {
   "video": "assets/videos/ladder-climbing.mp4",
   "poster": "assets/images/ladder-climbing-poster.jpg",
-  "bytes": 3585407,
+  "bytes": 3448524,
   "width": 1166,
   "height": 864,
   "fps": 60,
@@ -56,5 +56,13 @@
     }
   ],
   "note": "Human at original speed; simulation timing aligned by climbing phase for comparison.",
-  "color": "SDR BT.709; human HLG tone-mapped, simulation converted from Display P3"
+  "color": "SDR BT.709; human HLG tone-mapped, simulation converted from Display P3",
+  "humanGrade": {
+    "version": "robot-match-1",
+    "target": "human view only",
+    "contrast": 0.9,
+    "brightness": -0.025,
+    "gamma": 0.84,
+    "saturation": 0.72
+  }
 }

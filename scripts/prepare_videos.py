@@ -14,6 +14,8 @@ import shutil
 import subprocess
 import tempfile
 
+from video_color import color_profile, human_grade
+
 
 VIDEOS = [
     ("forehand.mp4", "forehand", "single", 16.70),
@@ -32,6 +34,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input_dir", type=Path)
     parser.add_argument("--jobs", type=int, default=3)
+    parser.add_argument("--only", nargs="+", choices=[item[1] for item in VIDEOS],
+                        help="Re-encode selected clips and preserve other manifest entries")
     args = parser.parse_args()
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
@@ -41,7 +45,8 @@ def main():
     video_dir, image_dir = root / "assets/videos", root / "assets/images"
     video_dir.mkdir(exist_ok=True)
     image_dir.mkdir(exist_ok=True)
-    for filename, *_ in VIDEOS:
+    selected = [entry for entry in VIDEOS if not args.only or entry[1] in args.only]
+    for filename, *_ in selected:
         if not (args.input_dir / filename).is_file():
             parser.error(f"Missing input: {filename}")
 
@@ -54,13 +59,19 @@ def main():
         if layout == "stacked":
             graph = (
                 "[0:v]split=2[top][bottom];"
-                "[top]crop=iw:ih/2:0:0,scale=1280:720[left];"
+                f"[top]crop=iw:ih/2:0:0,{human_grade(name)},scale=1280:720[left];"
                 "[bottom]crop=iw:ih/2:0:ih/2,scale=1280:720[right];"
                 "[left][right]hstack=inputs=2,fps=60,setsar=1[v]"
             )
+        elif layout == "wide":
+            graph = (
+                "[0:v]scale=2560:-2,split=2[l][r];"
+                f"[l]crop=iw/2:ih:0:0,{human_grade(name)}[left];"
+                "[r]crop=iw/2:ih:iw/2:0[right];"
+                "[left][right]hstack=inputs=2,fps=60,setsar=1[v]"
+            )
         else:
-            width = 1920 if layout == "single" else 2560
-            graph = f"[0:v]scale={width}:-2,fps=60,setsar=1[v]"
+            graph = "[0:v]scale=1920:-2,fps=60,setsar=1[v]"
         destination = video_dir / f"{name}.mp4"
         print(f"Encoding {filename} → {destination.name} ({layout}, ~{target_mb} MB)", flush=True)
         with tempfile.TemporaryDirectory(prefix=f"vicar-{name}-") as temp:
@@ -90,12 +101,20 @@ def main():
         result = {"source": filename, "video": f"assets/videos/{name}.mp4",
                   "poster": f"assets/images/{name}-poster.jpg", "layout": layout,
                   "sourceBytes": source.stat().st_size, "bytes": destination.stat().st_size}
+        if layout != "single":
+            result["humanGrade"] = color_profile(name)
         print(f"Finished {name}: {result['bytes'] / 1_000_000:.2f} MB", flush=True)
         return result
 
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        results = list(pool.map(encode, VIDEOS))
-    (video_dir / "encoding-manifest.json").write_text(json.dumps(results, indent=2) + "\n")
+        results = list(pool.map(encode, selected))
+    manifest_path = video_dir / "encoding-manifest.json"
+    manifest = results
+    if args.only and manifest_path.exists():
+        previous = {item["video"]: item for item in json.loads(manifest_path.read_text())}
+        previous.update({item["video"]: item for item in results})
+        manifest = list(previous.values())
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     print(f"Total: {sum(item['bytes'] for item in results) / 1_000_000:.1f} MB", flush=True)
 
 

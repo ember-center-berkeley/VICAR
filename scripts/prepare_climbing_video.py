@@ -13,6 +13,8 @@ from pathlib import Path
 import shutil
 import subprocess
 
+from video_color import HLG_TO_SDR, color_profile, human_grade
+
 
 # (human/output time, simulation source time, visual alignment landmark).
 # Seconds were reviewed in the supplied clips, including intermediate frames.
@@ -51,7 +53,7 @@ def main():
         timing = f"if(lt(T,{end}),{expression},{timing})"
     # The phone clip is BT.2020 HLG; tone-map it to SDR for consistent browser
     # playback. The screen recording is full-range Display P3 with BT.709 gamma.
-    human_color = "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=mobius:desat=0,zscale=t=bt709:m=bt709:r=limited,format=yuv420p"
+    human_color = HLG_TO_SDR + "," + human_grade("ladder-climbing")
     sim_color = "zscale=p=bt709:t=bt709:m=bt709:r=limited,format=yuv420p"
     graph = (
         f"[0:v]setpts=PTS-STARTPTS,{human_color},scale=486:864:flags=lanczos,setsar=1,fps=60,"
@@ -89,6 +91,7 @@ def main():
                       for h, s, phase in ALIGNMENT],
         "note": "Human at original speed; simulation timing aligned by climbing phase for comparison.",
         "color": "SDR BT.709; human HLG tone-mapped, simulation converted from Display P3",
+        "humanGrade": color_profile("ladder-climbing"),
     }
     (video.parent / "climbing-alignment.json").write_text(json.dumps(manifest, indent=2)+"\n")
     print(f"Climbing comparison: {video.stat().st_size/1e6:.2f} MB, 1166 × 864, 11.8 s", flush=True)

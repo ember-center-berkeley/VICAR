@@ -3,7 +3,7 @@
     "id": "forehand",
     "video": "assets/videos/forehand.mp4",
     "poster": "assets/images/forehand-poster.jpg",
-    "bytes": 2932492,
+    "bytes": 2797109,
     "width": 2560,
     "height": 720,
     "fps": 60,
@@ -32,13 +32,21 @@
     "layout": "Human left, robot right; full views without text overlays",
     "alignment": "Visually selected contact frames aligned at 3 seconds by trimming; original playback speeds preserved",
     "audio": "Robot recording, trimmed with its video",
-    "color": "SDR BT.709; human HLG tone-mapped"
+    "color": "SDR BT.709; human HLG tone-mapped and graded to the robot reference",
+    "humanGrade": {
+      "version": "robot-match-1",
+      "target": "human view only",
+      "contrast": 0.9,
+      "brightness": -0.03,
+      "gamma": 0.82,
+      "saturation": 0.72
+    }
   },
   {
     "id": "backhand",
     "video": "assets/videos/backhand.mp4",
     "poster": "assets/images/backhand-poster.jpg",
-    "bytes": 3023424,
+    "bytes": 2882282,
     "width": 2560,
     "height": 720,
     "fps": 60,
@@ -67,13 +75,21 @@
     "layout": "Human left, robot right; full views without text overlays",
     "alignment": "Visually selected contact frames aligned at 3 seconds by trimming; original playback speeds preserved",
     "audio": "Robot recording, trimmed with its video",
-    "color": "SDR BT.709; human HLG tone-mapped"
+    "color": "SDR BT.709; human HLG tone-mapped and graded to the robot reference",
+    "humanGrade": {
+      "version": "robot-match-1",
+      "target": "human view only",
+      "contrast": 0.9,
+      "brightness": -0.03,
+      "gamma": 0.82,
+      "saturation": 0.72
+    }
   },
   {
     "id": "forehand-top-spin",
     "video": "assets/videos/forehand-top-spin.mp4",
     "poster": "assets/images/forehand-top-spin-poster.jpg",
-    "bytes": 3152812,
+    "bytes": 3006517,
     "width": 2560,
     "height": 720,
     "fps": 60,
@@ -102,13 +118,21 @@
     "layout": "Human left, robot right; full views without text overlays",
     "alignment": "Visually selected contact frames aligned at 3 seconds by trimming; original playback speeds preserved",
     "audio": "Robot recording, trimmed with its video",
-    "color": "SDR BT.709; human HLG tone-mapped"
+    "color": "SDR BT.709; human HLG tone-mapped and graded to the robot reference",
+    "humanGrade": {
+      "version": "robot-match-1",
+      "target": "human view only",
+      "contrast": 0.9,
+      "brightness": -0.03,
+      "gamma": 0.82,
+      "saturation": 0.72
+    }
   },
   {
     "id": "backhand-top-spin",
     "video": "assets/videos/backhand-top-spin.mp4",
     "poster": "assets/images/backhand-top-spin-poster.jpg",
-    "bytes": 3058891,
+    "bytes": 2930986,
     "width": 2560,
     "height": 720,
     "fps": 60,
@@ -137,6 +161,14 @@
     "layout": "Human left, robot right; full views without text overlays",
     "alignment": "Visually selected contact frames aligned at 3 seconds by trimming; original playback speeds preserved",
     "audio": "Robot recording, trimmed with its video",
-    "color": "SDR BT.709; human HLG tone-mapped"
+    "color": "SDR BT.709; human HLG tone-mapped and graded to the robot reference",
+    "humanGrade": {
+      "version": "robot-match-1",
+      "target": "human view only",
+      "contrast": 0.9,
+      "brightness": -0.03,
+      "gamma": 0.82,
+      "saturation": 0.72
+    }
   }
 ]

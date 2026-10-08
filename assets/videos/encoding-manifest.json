@@ -37,7 +37,15 @@
     "poster": "assets/images/forehand-side-spin-poster.jpg",
     "layout": "wide",
     "sourceBytes": 164351847,
-    "bytes": 15594723
+    "bytes": 15593467,
+    "humanGrade": {
+      "version": "robot-match-1",
+      "target": "human view only",
+      "contrast": 0.99,
+      "brightness": -0.005,
+      "gamma": 0.94,
+      "saturation": 0.9
+    }
   },
   {
     "source": "backhand_side_spin.mp4",
@@ -45,7 +53,15 @@
     "poster": "assets/images/backhand-side-spin-poster.jpg",
     "layout": "wide",
     "sourceBytes": 113799630,
-    "bytes": 15624065
+    "bytes": 15624106,
+    "humanGrade": {
+      "version": "robot-match-1",
+      "target": "human view only",
+      "contrast": 1.0,
+      "brightness": -0.004,
+      "gamma": 0.96,
+      "saturation": 0.95
+    }
   },
   {
     "source": "pick_from_table.mp4",
@@ -53,7 +69,15 @@
     "poster": "assets/images/tabletop-pickup-poster.jpg",
     "layout": "stacked",
     "sourceBytes": 195886371,
-    "bytes": 15694685
+    "bytes": 15696584,
+    "humanGrade": {
+      "version": "robot-match-1",
+      "target": "human view only",
+      "contrast": 1.0,
+      "brightness": 0.0,
+      "gamma": 1.0,
+      "saturation": 0.9
+    }
   },
   {
     "source": "pick_under_table.mp4",
@@ -61,7 +85,15 @@
     "poster": "assets/images/under-table-pickup-poster.jpg",
     "layout": "stacked",
     "sourceBytes": 207025236,
-    "bytes": 15692448
+    "bytes": 15694951,
+    "humanGrade": {
+      "version": "robot-match-1",
+      "target": "human view only",
+      "contrast": 1.0,
+      "brightness": 0.0,
+      "gamma": 0.97,
+      "saturation": 0.88
+    }
   },
   {
     "source": "bimanual_pickmp4.mp4",
@@ -69,6 +101,14 @@
     "poster": "assets/images/bimanual-pick-place-poster.jpg",
     "layout": "stacked",
     "sourceBytes": 177405036,
-    "bytes": 15811784
+    "bytes": 15808900,
+    "humanGrade": {
+      "version": "robot-match-1",
+      "target": "human view only",
+      "contrast": 1.0,
+      "brightness": 0.0,
+      "gamma": 0.98,
+      "saturation": 0.88
+    }
   }
 ]

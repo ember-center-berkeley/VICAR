@@ -13,6 +13,8 @@ from pathlib import Path
 import shutil
 import subprocess
 
+from video_color import HLG_TO_SDR, color_profile, human_grade
+
 
 FPS = 60
 HIT_FRAME = 180
@@ -25,11 +27,6 @@ CONTACTS = [
     ("forehand_top_spin", 307, 202),
     ("backhand_top_spin", 282, 433),
 ]
-HUMAN_COLOR = (
-    "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,"
-    "tonemap=tonemap=mobius:desat=0,zscale=t=bt709:m=bt709:r=limited,"
-    "format=yuv420p"
-)
 
 
 def main():
@@ -58,7 +55,7 @@ def main():
         starts = [human_hit - HIT_FRAME, robot_hit - HIT_FRAME]
         branches = []
         for index, start in enumerate(starts):
-            color = HUMAN_COLOR + "," if index == 0 else ""
+            color = HLG_TO_SDR + "," + human_grade(slug) + "," if index == 0 else ""
             branches.append(
                 f"[{index}:v:0]fps={FPS},trim=start_frame={start}:end_frame={start+FRAME_COUNT},"
                 f"setpts=N/({FPS}*TB),{color}scale=1280:720:flags=lanczos,setsar=1[v{index}]"
@@ -101,7 +98,8 @@ def main():
             "layout": "Human left, robot right; full views without text overlays",
             "alignment": "Visually selected contact frames aligned at 3 seconds by trimming; original playback speeds preserved",
             "audio": "Robot recording, trimmed with its video",
-            "color": "SDR BT.709; human HLG tone-mapped",
+            "color": "SDR BT.709; human HLG tone-mapped and graded to the robot reference",
+            "humanGrade": color_profile(slug),
         }
         print(f"{slug}: {result['bytes']/1e6:.2f} MB; contact at frame {HIT_FRAME}", flush=True)
         return result
