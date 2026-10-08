@@ -134,7 +134,7 @@ const server = http.createServer((req, res) => {
   await touch.locator('#viewer-shield').tap();
   assert.equal(await touch.locator('#viewer-shield').isVisible(),false);
   await phone.close();
-  // Exercise all ten tasks, both tabletop hands, each actual sampled axis,
+  // Exercise all ten tasks, the left-hand tabletop motion, each actual sampled axis,
   // fixed dimensions, independent scene layers, and standalone playback.
   const scenes = await page.evaluate(() => window.VICAR.viewer.scenes);
   assert.equal(scenes.length,10);
@@ -231,7 +231,7 @@ const server = http.createServer((req, res) => {
     recordings++;
    }
   }
-  assert.equal(recordings,11);
+  assert.equal(recordings,10);
   const resetResponse=page.waitForResponse(r=>r.url().includes('.viser') && r.request().method()==='GET' && r.status()===200);
   await page.getByRole('button',{name:'Reset view',exact:true}).click();
   await resetResponse;
@@ -311,6 +311,6 @@ const server = http.createServer((req, res) => {
    await page.locator('#ladder-climbing').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'climbing-mobile.png')});
   }
   assert.deepEqual(errors,[]);
-  console.log('PASS: all ten compressed videos play and seek, responsive aligned climbing comparison, native aspect ratios, no video preloading, full-width serve carousel, responsive widths, hero controls, all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: all ten compressed videos play and seek, responsive aligned climbing comparison, native aspect ratios, no video preloading, full-width serve carousel, responsive widths, hero controls, all 10 tasks / 10 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

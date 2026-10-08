@@ -1,8 +1,9 @@
 # Pickup, bimanual, and climbing augmentation
 
 The four non-serve task categories use five canonical `augment_*` programs from
-TT_PLayer revision `b377ba951d2bd12bef45e23a5e623342038121e0`. Tabletop pickup has
-separate left- and right-hand viewers. All use the articulated 43-joint G1 visual
+TT_PLayer revision `b377ba951d2bd12bef45e23a5e623342038121e0`. The tabletop pickup
+viewer exposes only the left-hand motion; the right-hand dataset is retained
+as an archive. All use the articulated 43-joint G1 visual
 model from the source, with the original 29-joint body motion mapped by joint order.
 The six serve viewers are described in [SERVE_AUGMENTATION.md](SERVE_AUGMENTATION.md).
 
@@ -15,13 +16,14 @@ on an even-sized axis, so the initial displayed value always exists in the grid.
 | Viewer | Canonical source | Grid / motions | X range | Y range | Z range | Frames / fps |
 | --- | --- | --- | --- | --- | --- | --- |
 | Tabletop, left hand | `augment_pick_motions_left_g1.py` | 9 × 17 × 2 / 306 | 0 to 0.20 | −0.30 to 0.08 | 0.058133676 to 0.078133676 | 320 / 20 |
-| Tabletop, right hand | `augment_pick_motions_g1.py` | 9 × 17 × 2 / 306 | 0 to 0.20 | −0.08 to 0.30 | 0.058133676 to 0.078133676 | 220 / 10 |
+| Tabletop, right hand (archived) | `augment_pick_motions_g1.py` | 9 × 17 × 2 / 306 | 0 to 0.20 | −0.08 to 0.30 | 0.058133676 to 0.078133676 | 220 / 10 |
 | Under-table pickup | `augment_ground_pick_motions_left_g1.py` | 5 × 10 × 5 / 250 | 0 to 0.05 | 0 to 0.10 | −0.10 to 0 | 385 / 30.30303 |
 | Bimanual pick/place | `augment_bimanual_pick_motions_g1.py` | 5 × 1 × 10 / 50 | 0 to 0.05 | 0, fixed | 0.57 to 0.67 | 480 / 30.30303 |
 | Ladder climbing | `augment_climbing_motions_g1_vis.py` | 1 fixed contact solution | — | — | — | 364 / 30.30303 |
 
-This adds **913 task motions** to the 4,374 serve motions. The site has ten tasks
-and eleven viewers, including both tabletop hands.
+The site exposes **607 task motions** alongside the 4,374 serve motions, with
+ten tasks and ten viewers. The 306 archived right-hand tabletop motions are
+excluded from the public manifest and hand-selection controls.
 
 Bimanual Z includes the source script's additional **+0.07 m**. Its Y slider is
 disabled because `NY=1`. The climbing script declares only one shift, `[0,0,0.07]`,
@@ -38,8 +40,7 @@ coordinates retain their original precision.
 
 ## What the scenes show
 
-- **Tabletop:** the left-hand scene uses the source table point cloud and voxels;
-  the right-hand script uses its solid table collision box. Both include the
+- **Tabletop:** the left-hand scene uses the source table point cloud and voxels,
   contact region/path, grasped object, and exact 15-frame finger closure starting
   at frame 100.
   The left-hand source appends a 100-frame turn: waist yaw changes by −0.8 rad
@@ -117,7 +118,6 @@ not additional physical trials or proof of collision-free feasibility.
 pip install -r visualization/requirements.txt
 python -m visualization list
 python -m visualization view --task tabletop-pickup --variant tabletop-left
-python -m visualization view --task tabletop-pickup --variant tabletop-right
 python -m visualization view --task under-table-pickup
 python -m visualization view --task bimanual-pick-place
 python -m visualization view --task ladder-climbing
@@ -160,7 +160,7 @@ python -m visualization.task_augmentation --source-root /path/to/TT_PLayer \
   --task tabletop-left --trust-pickle
 ```
 
-Repeat with `tabletop-right`, `under-table-pickup`, `bimanual-pick-place`, and
+Repeat with `under-table-pickup`, `bimanual-pick-place`, and
 `ladder-climbing`, then export. Input pickles are loaded only with explicit trust.
 The generator executes the trusted source program's headless setup and tail;
 it is not intended for untrusted Python files. A short `--max-iters` development
@@ -183,6 +183,6 @@ npm test
 Task checks independently validate ranges and sample counts, the 29-to-43-joint
 mapping, finger timelines, turn extension, browser quaternions, carried-object
 transforms, and penetration overlays. Browser checks cover all ten tasks and
-eleven viewers, every sampled XYZ position, fixed axes, hand switching, scene
+ten viewers, every sampled XYZ position, fixed axes, scene
 layers, standalone controls, preserved playback, mobile widths, missing-file
 recovery, and rapid scene changes under a `/VICAR/` project prefix.

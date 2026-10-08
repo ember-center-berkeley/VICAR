@@ -165,7 +165,7 @@ Use browser-compatible H.264 MP4 with `yuv420p` and fast-start metadata. Keep in
 
 All **six serve styles** use `augment_serves_general_g1.py`, with 729 motions each and X/Y/Z ranges derived from each style’s `augment_ranges` plus the script’s 4 cm padding. The G1 carries the racket and ball holder; a blue hit box, green contact spline, and orange hit marker match the source viewer. Slider changes preserve camera and playback position.
 
-The other four tasks now use their canonical `augment_*` scripts: both tabletop hands (306 motions each), under-table pickup (250), bimanual pick/place (50), and one fixed ladder contact solution. Their viewers include the source objects, grasping fingers, reconstructed tables, contact paths, and scene-layer controls. Bimanual Y is fixed; climbing has playback and layer controls for its fixed contacts.
+The other four tasks now use their canonical `augment_*` scripts: left-hand tabletop pickup (306 motions), under-table pickup (250), bimanual pick/place (50), and one fixed ladder contact solution. Tabletop pickup shows only the left-hand motion, without a hand selector. Their viewers include the source objects, grasping fingers, reconstructed tables, contact paths, and scene-layer controls. Bimanual Y is fixed; climbing has playback and layer controls for its fixed contacts.
 
 The organized `visualization/` package runs the same viewers locally and exports them for GitHub Pages. See [the serve augmentation guide](docs/SERVE_AUGMENTATION.md), [the other task guide](docs/TASK_AUGMENTATION.md), [general viewer instructions](docs/VISER.md), and [the source map](docs/VISUALIZATION_SOURCES.md).
 
@@ -206,7 +206,7 @@ npm test
 
 The checks exercise playback and seeking for all ten videos, the 20 MB size
 limit, no video preloading, all six carousel selections, full-width cards at
-responsive sizes, keyboard navigation, all ten tasks and eleven viewers, every
-sampled XYZ position, both tabletop hands, fixed axes, scene layers, preserved
+responsive sizes, keyboard navigation, all ten tasks and ten viewers, every
+sampled XYZ position, left-hand tabletop pickup, fixed axes, scene layers, preserved
 playback, standalone controls, project-prefixed URLs, and missing-recording
 recovery. To use an existing Chrome installation, run `CHROME_CHANNEL=chrome npm test`.

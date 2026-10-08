@@ -228,7 +228,7 @@
       "id": "tabletop-pickup",
       "title": "Tabletop pickup",
       "kind": "tabletop",
-      "description": "Move the pickup contact in X, Y, and Z, and compare left- and right-hand grasps. The fingers close around the object before lifting it; the left-hand motion also includes the turn away from the table.",
+      "description": "Move the left-hand pickup contact in X, Y, and Z. The fingers close around the object before lifting it, and the motion includes the turn away from the table.",
       "sources": [
         "refine_pick_motion_g1.py",
         "refine_pick_motion_left_g1.py",
@@ -247,12 +247,6 @@
           "id": "tabletop-left",
           "label": "Left hand",
           "script": "augment_pick_motions_left_g1.py",
-          "stage": "Contact augmentation"
-        },
-        {
-          "id": "tabletop-right",
-          "label": "Right hand",
-          "script": "augment_pick_motions_g1.py",
           "stage": "Contact augmentation"
         }
       ]

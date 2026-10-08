@@ -246,7 +246,7 @@ window.VICAR.viewer = {
     {
       "id": "tabletop-pickup",
       "title": "Tabletop pickup",
-      "description": "Move the pickup contact in X, Y, and Z, and compare left- and right-hand grasps. The fingers close around the object before lifting it; the left-hand motion also includes the turn away from the table.",
+      "description": "Move the left-hand pickup contact in X, Y, and Z. The fingers close around the object before lifting it, and the motion includes the turn away from the table.",
       "variants": [
         {
           "id": "tabletop-left",
@@ -354,105 +354,6 @@ window.VICAR.viewer = {
           "frames": 320,
           "fps": 20,
           "duration": 16.0,
-          "stage": "Contact augmentation"
-        },
-        {
-          "id": "tabletop-right",
-          "label": "Right hand",
-          "recording": "assets/augmentation/tasks/tabletop-right-base.viser",
-          "augmentationPath": "assets/augmentation/tasks/tabletop-right.json",
-          "axes": {
-            "x": {
-              "min": 0.0,
-              "max": 0.2,
-              "step": 0.025,
-              "default": 0.1,
-              "values": [
-                0.0,
-                0.025,
-                0.05,
-                0.07500000000000001,
-                0.1,
-                0.125,
-                0.15000000000000002,
-                0.17500000000000002,
-                0.2
-              ]
-            },
-            "y": {
-              "min": -0.08,
-              "max": 0.3,
-              "step": 0.02375,
-              "default": 0.11,
-              "values": [
-                -0.08,
-                -0.05625,
-                -0.0325,
-                -0.008749999999999994,
-                0.015,
-                0.03874999999999999,
-                0.06250000000000001,
-                0.08625000000000001,
-                0.11,
-                0.13374999999999998,
-                0.15749999999999997,
-                0.18124999999999997,
-                0.20500000000000002,
-                0.22875,
-                0.2525,
-                0.27625,
-                0.3
-              ]
-            },
-            "z": {
-              "min": 0.058133676052093526,
-              "max": 0.07813367605209352,
-              "step": 0.019999999999999997,
-              "default": 0.058133676052093526,
-              "values": [
-                0.058133676052093526,
-                0.07813367605209352
-              ]
-            }
-          },
-          "sampleCount": 306,
-          "layers": [
-            {
-              "id": "penetration",
-              "label": "Contact diagnostics",
-              "nodes": [
-                "/penetration/right_shoulder_pitch_link",
-                "/penetration/right_wrist_yaw_link",
-                "/penetration/right_shoulder_yaw_link",
-                "/penetration/right_elbow_link",
-                "/penetration/right_wrist_pitch_link",
-                "/penetration/right_rubber_hand",
-                "/penetration/right_shoulder_roll_link",
-                "/penetration/right_wrist_roll_link"
-              ],
-              "default": true
-            },
-            {
-              "id": "paths",
-              "label": "Contact trajectories",
-              "nodes": [
-                "/traj_right_hand"
-              ],
-              "default": true
-            },
-            {
-              "id": "obstacles",
-              "label": "Collision geometry",
-              "nodes": [
-                "/collision/platform"
-              ],
-              "default": true
-            }
-          ],
-          "boxLabel": "Show contact region",
-          "frames": 220,
-          "fps": 10,
-          "duration": 22.0,
           "stage": "Contact augmentation"
         }
       ]
