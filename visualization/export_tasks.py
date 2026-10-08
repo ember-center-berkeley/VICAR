@@ -27,6 +27,26 @@ def wxyz(matrix):
     return Rotation.from_matrix(matrix.reshape(-1,3,3)).as_quat()[:,[3,0,1,2]].reshape(*shape,4).astype(np.float32)
 
 
+def table_geometry(key,data):
+    """Display cleanup only; retain the captured geometry and solved motions."""
+    points,colors=data['table_pts_world'],data['table_pts_colors']
+    vertices,faces=data['table_vox_verts'],data['table_vox_faces']
+    if key=='under-table-pickup':
+        # The reconstruction contains a detached vertical fragment next to
+        # the pickup object: 15 complete voxels at X=.45–.55, Y=.15–.35,
+        # Z=.15–.45 m. Bounds lie in empty space around that fragment, below
+        # the tabletop and away from the real table support at X>1 m.
+        def artifact(p):
+            return np.all((p>=[.4,.1,0]) & (p<=[.6,.4,.65]),axis=-1)
+        keep=~artifact(points)
+        points,colors=points[keep],colors[keep]
+        faces=faces[~artifact(vertices[faces].mean(axis=1))]
+        used,indices=np.unique(faces,return_inverse=True)
+        vertices=vertices[used]
+        faces=indices.reshape(-1,3).astype(np.uint32)
+    return points,colors,vertices,faces
+
+
 class TaskScene:
     def __init__(self,server,key,data):
         self.server,self.key,self.data = server,key,data
@@ -60,8 +80,9 @@ class TaskScene:
         else:
             self._manipulation()
         if key!='ladder-climbing' and 'table_pts_world' in data:
-            server.scene.add_point_cloud('/table_pointcloud',points=data['table_pts_world'],colors=data['table_pts_colors'],point_size=.003)
-            server.scene.add_mesh_simple('/table_voxels',vertices=data['table_vox_verts'],faces=data['table_vox_faces'],
+            points,colors,vertices,faces=table_geometry(key,data)
+            server.scene.add_point_cloud('/table_pointcloud',points=points,colors=colors,point_size=.003)
+            server.scene.add_mesh_simple('/table_voxels',vertices=vertices,faces=faces,
                 color=(180,140,80),opacity=.5,side='double')
             self.layers.extend([
                 dict(id='points',label='Table point cloud',nodes=['/table_pointcloud'],default=True),
@@ -246,6 +267,8 @@ def export_task(server,key):
         boxLabel='Show contacts' if key=='ladder-climbing' else 'Show contact region',
         layers=scene.layers,curves=[dict(node=c['node'],points=c['points'].tolist()) for c in scene.curves],
         provenance={**m,'cost_min':float(d['costs'].min()),'cost_max':float(d['costs'].max())})
+    if key=='under-table-pickup':
+        config['visualizationEdits']=['Remove detached reconstruction leg beside pickup object from table point cloud and voxel mesh; source geometry and optimization unchanged']
     if scene.targets is not None:config.update(targetNode='/pick_point',targets=scene.targets.tolist())
     if scene.dynamic is not None:
         (OUTPUT/f'{key}-objects.bin.gz').write_bytes(gzip.compress(scene.dynamic.tobytes(),mtime=0))

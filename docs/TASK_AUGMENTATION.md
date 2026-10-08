@@ -47,6 +47,10 @@ coordinates retain their original precision.
   display lift; overlays retain their original coordinates.
 - **Under-table:** frame-130 left-hand pickup and finger closure, the 30-frame
   contact path, right-hand support anchors, carried object, and source table.
+  The detached reconstruction leg beside the object is removed from both
+  displayed table layers (585 points and 15 voxels). This cleanup runs only
+  when rendering/exporting; the raw reconstruction, optimization and motions
+  remain in the source data.
   Contact diagnostics color and resize arm-keypoint spheres using penetration
   into the original collision box.
 - **Bimanual:** source object trajectory and ±0.15 m hand paths, contact interval

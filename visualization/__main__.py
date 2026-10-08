@@ -56,7 +56,7 @@ def augmentation_variant(path, key, label, stage):
     if grid.get('dynamic') and not (config.parent / grid['dynamic']['file']).exists():
         raise FileNotFoundError(grid['dynamic']['file'])
     version=''
-    if key=='ladder-climbing':
+    if key in ('ladder-climbing','under-table-pickup'):
         digest=hashlib.sha256(config.read_bytes()+(ROOT.parent/f'{path}-base.viser').read_bytes()).hexdigest()[:12]
         version=f'?v={digest}'
     return dict(id=key, label=label, recording=f'{path}-base.viser{version}',

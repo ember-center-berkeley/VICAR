@@ -465,8 +465,8 @@ window.VICAR.viewer = {
         {
           "id": "under-table-pickup",
           "label": "Contact augmentation",
-          "recording": "assets/augmentation/tasks/under-table-pickup-base.viser",
-          "augmentationPath": "assets/augmentation/tasks/under-table-pickup.json",
+          "recording": "assets/augmentation/tasks/under-table-pickup-base.viser?v=fce0c816c227",
+          "augmentationPath": "assets/augmentation/tasks/under-table-pickup.json?v=fce0c816c227",
           "axes": {
             "x": {
               "min": 0.0,
