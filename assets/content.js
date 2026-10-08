@@ -57,8 +57,8 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/forehand.mp4?v=robot-match-1",
-      "poster": "assets/images/forehand-poster.jpg?v=robot-match-1",
+      "src": "assets/videos/forehand.mp4?v=background-match-2",
+      "poster": "assets/images/forehand-poster.jpg?v=background-match-2",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -72,8 +72,8 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/backhand.mp4?v=robot-match-1",
-      "poster": "assets/images/backhand-poster.jpg?v=robot-match-1",
+      "src": "assets/videos/backhand.mp4?v=background-match-2",
+      "poster": "assets/images/backhand-poster.jpg?v=background-match-2",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -87,8 +87,8 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/backhand-top-spin.mp4?v=robot-match-1",
-      "poster": "assets/images/backhand-top-spin-poster.jpg?v=robot-match-1",
+      "src": "assets/videos/backhand-top-spin.mp4?v=background-match-2",
+      "poster": "assets/images/backhand-top-spin-poster.jpg?v=background-match-2",
       "captions": "",
       "width": 2560,
       "height": 720,
@@ -102,8 +102,8 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/forehand-top-spin.mp4?v=robot-match-1",
-      "poster": "assets/images/forehand-top-spin-poster.jpg?v=robot-match-1",
+      "src": "assets/videos/forehand-top-spin.mp4?v=background-match-2",
+      "poster": "assets/images/forehand-top-spin-poster.jpg?v=background-match-2",
       "captions": "",
       "width": 2560,
       "height": 720,

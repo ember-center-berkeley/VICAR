@@ -3,7 +3,7 @@
     "id": "forehand",
     "video": "assets/videos/forehand.mp4",
     "poster": "assets/images/forehand-poster.jpg",
-    "bytes": 2797109,
+    "bytes": 2917654,
     "width": 2560,
     "height": 720,
     "fps": 60,
@@ -34,19 +34,29 @@
     "audio": "Robot recording, trimmed with its video",
     "color": "SDR BT.709; human HLG tone-mapped and graded to the robot reference",
     "humanGrade": {
-      "version": "robot-match-1",
+      "version": "background-match-2",
       "target": "human view only",
-      "contrast": 0.9,
-      "brightness": -0.03,
-      "gamma": 0.82,
-      "saturation": 0.72
+      "method": "Fixed 33-point 3D LUT after HLG-to-SDR conversion",
+      "calibration": "Matched table, wall, cabinet and yellow housing samples at frames 36, 180 and 288",
+      "tone": [
+        0.16477479883323762,
+        0.5670810408837746,
+        0.966791452032511
+      ],
+      "whiteBalance": [
+        0.9743583320967181,
+        1.0,
+        0.9814714961723545
+      ],
+      "coolSaturation": 0.8806549616730781,
+      "yellowGain": 1.3812802898117675
     }
   },
   {
     "id": "backhand",
     "video": "assets/videos/backhand.mp4",
     "poster": "assets/images/backhand-poster.jpg",
-    "bytes": 2882282,
+    "bytes": 2883937,
     "width": 2560,
     "height": 720,
     "fps": 60,
@@ -77,19 +87,29 @@
     "audio": "Robot recording, trimmed with its video",
     "color": "SDR BT.709; human HLG tone-mapped and graded to the robot reference",
     "humanGrade": {
-      "version": "robot-match-1",
+      "version": "background-match-2",
       "target": "human view only",
-      "contrast": 0.9,
-      "brightness": -0.03,
-      "gamma": 0.82,
-      "saturation": 0.72
+      "method": "Fixed 33-point 3D LUT after HLG-to-SDR conversion",
+      "calibration": "Matched table, wall, cabinet and yellow housing samples at frames 36, 180 and 288",
+      "tone": [
+        0.16851273547794812,
+        0.5494982520262813,
+        0.8942791527888654
+      ],
+      "whiteBalance": [
+        0.9998790164495513,
+        1.0,
+        0.9809711391129086
+      ],
+      "coolSaturation": 0.9206839940181459,
+      "yellowGain": 1.3525534142833395
     }
   },
   {
     "id": "forehand-top-spin",
     "video": "assets/videos/forehand-top-spin.mp4",
     "poster": "assets/images/forehand-top-spin-poster.jpg",
-    "bytes": 3006517,
+    "bytes": 3075591,
     "width": 2560,
     "height": 720,
     "fps": 60,
@@ -120,19 +140,29 @@
     "audio": "Robot recording, trimmed with its video",
     "color": "SDR BT.709; human HLG tone-mapped and graded to the robot reference",
     "humanGrade": {
-      "version": "robot-match-1",
+      "version": "background-match-2",
       "target": "human view only",
-      "contrast": 0.9,
-      "brightness": -0.03,
-      "gamma": 0.82,
-      "saturation": 0.72
+      "method": "Fixed 33-point 3D LUT after HLG-to-SDR conversion",
+      "calibration": "Matched table, wall, cabinet and yellow housing samples at frames 36, 180 and 288",
+      "tone": [
+        0.11870210652610563,
+        0.6151246739484487,
+        0.9018555621027385
+      ],
+      "whiteBalance": [
+        1.0137872034571593,
+        1.0,
+        0.9482575108263448
+      ],
+      "coolSaturation": 0.7787199461188411,
+      "yellowGain": 1.178082817519236
     }
   },
   {
     "id": "backhand-top-spin",
     "video": "assets/videos/backhand-top-spin.mp4",
     "poster": "assets/images/backhand-top-spin-poster.jpg",
-    "bytes": 2930986,
+    "bytes": 2979687,
     "width": 2560,
     "height": 720,
     "fps": 60,
@@ -163,12 +193,22 @@
     "audio": "Robot recording, trimmed with its video",
     "color": "SDR BT.709; human HLG tone-mapped and graded to the robot reference",
     "humanGrade": {
-      "version": "robot-match-1",
+      "version": "background-match-2",
       "target": "human view only",
-      "contrast": 0.9,
-      "brightness": -0.03,
-      "gamma": 0.82,
-      "saturation": 0.72
+      "method": "Fixed 33-point 3D LUT after HLG-to-SDR conversion",
+      "calibration": "Matched table, wall, cabinet and yellow housing samples at frames 36, 180 and 288",
+      "tone": [
+        0.14265931928179673,
+        0.6112324537427758,
+        0.8897106336540931
+      ],
+      "whiteBalance": [
+        1.0105758196778318,
+        1.0,
+        0.9631982398390547
+      ],
+      "coolSaturation": 0.8104901931347472,
+      "yellowGain": 1.2656984203303048
     }
   }
 ]

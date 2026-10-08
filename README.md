@@ -90,10 +90,18 @@ are recorded in `assets/videos/serve-pair-alignment.json`; this supersedes the
 four single-view exports in `assets/videos/encoding-manifest.json`.
 
 All ten comparisons use fixed human-view color grades in
-`scripts/video_color.py`, with each robot view as the reference. The new phone
-serves use lower highlights and midtones, 72% saturation, and gentler contrast
-after HLG-to-SDR conversion. Climbing uses a similar grade, while older
-comparisons receive smaller corrections where their exposure already matches.
+`scripts/video_color.py`, with each robot view as the reference. The four phone
+serves each use a calibrated 3D LUT after HLG-to-SDR conversion: separate shadow,
+midtone and highlight levels, RGB white balance, and selective color corrections
+match the table, walls, dark cabinet and yellow housing. Background samples at
+three moments in each clip and the fitted settings are saved in
+`scripts/serve_color_profiles.json`. One fixed grade per clip avoids temporal
+color pumping. Physical scene differences, such as the added gray floor mat in
+the robot recordings, remain intact. To rebuild the committed LUTs after changing
+the profiles, install NumPy/SciPy and run `python scripts/build_serve_color_luts.py`;
+ordinary video exports require only FFmpeg, as before.
+
+Climbing and the older comparisons retain their existing color grades.
 The export manifests record the settings. Grades affect only the human view;
 frame counts, playback speed, contact alignment, and robot color are preserved.
 Posters use the same grade as their videos. To refresh only selected base clips
