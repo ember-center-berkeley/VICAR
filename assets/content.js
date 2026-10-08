@@ -164,9 +164,14 @@ window.VICAR = {
         "Simulation"
       ],
       "art": "ladder",
-      "src": "",
-      "poster": "",
-      "captions": ""
+      "src": "assets/videos/ladder-climbing.mp4",
+      "poster": "assets/images/ladder-climbing-poster.jpg",
+      "captions": "",
+      "width": 1166,
+      "height": 912,
+      "duration": 11.8,
+      "wide": true,
+      "comparison": "Human demonstration (left) · Robot simulation (right). Timing aligned for comparison."
     }
   ]
 };

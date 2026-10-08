@@ -50,10 +50,10 @@ Edit **`assets/content.js`**. Video sources, project links, and authors are cent
 
 ## Skill videos
 
-Nine supplied clips are published: six serves and three pickup comparisons. Each
-is **11.7–15.9 MB**, H.264 / AAC, 60 fps, with MP4 fast-start metadata and a JPEG
-poster. Together they are 125.4 MB, down from 1,017.1 MB. Videos use `preload="none"`
-and download on play. The ladder video remains a placeholder until supplied.
+All ten task videos are published: six serves, three pickup comparisons, and a
+human/simulation climbing comparison. The first nine are **11.7–15.9 MB** each;
+the climbing comparison is **3.6 MB**. All use H.264 / AAC, 60 fps, MP4 fast-start
+metadata, and JPEG posters. Videos use `preload="none"` and download on play.
 
 The three vertically stacked pickup recordings have been rearranged with the
 human demonstration on the left and robot execution on the right. Both complete
@@ -73,6 +73,21 @@ filenames and output sizes. Regular clips are 1920 × 1080; comparisons are 2560
 pixels wide at their original aspect ratio. The source files named `top_spin`
 are labeled top-spin in the video gallery; the existing chop augmentation demos
 remain unchanged.
+
+The climbing comparison preserves the complete human demonstration at its
+original speed and makes small, continuous timing adjustments to the simulation
+at visually reviewed foot-lift and standing phases. It includes view labels and
+an alignment note in the caption. The portrait views are preserved without
+cropping, with the human on the left and simulation on the right. Phone HLG and
+screen-recording P3 colors are converted to SDR BT.709 for browser playback.
+
+```sh
+python scripts/prepare_climbing_video.py /path/to/Climbing.mp4 /path/to/climbing_in_sim_new.mov
+```
+
+This export's source hashes, timing landmarks, dimensions, and size are recorded
+in `assets/videos/climbing-alignment.json`. It is a visual comparison with edited
+timing, not a measurement of tracking latency.
 
 To add or replace a clip:
 
@@ -103,7 +118,7 @@ The six serves appear one at a time at full width on desktop, tablet, and mobile
 The carousel supports buttons, keyboard arrows while the track is focused, six
 direct-selection dots, and touch scrolling. Its height adapts to each clip's
 aspect ratio. The three pickup comparisons are individually titled, full-width
-rows, followed by the ladder placeholder. Set each video's `width` and `height`
+rows, followed by the full-width climbing comparison. Set each video's `width` and `height`
 in `assets/content.js` so the layout reserves the correct space before playback.
 
 Use browser-compatible H.264 MP4 with `yuv420p` and fast-start metadata. Keep individual files below GitHub's 100 MiB Git limit; for larger clips use a video/CDN URL in `src`. Do not use Git LFS pointer files as Pages media assets.
@@ -151,7 +166,7 @@ npx playwright install chromium
 npm test
 ```
 
-The checks exercise playback and seeking for all nine videos, the 20 MB size
+The checks exercise playback and seeking for all ten videos, the 20 MB size
 limit, no video preloading, all six carousel selections, full-width cards at
 responsive sizes, keyboard navigation, all ten tasks and eleven viewers, every
 sampled XYZ position, both tabletop hands, fixed axes, scene layers, preserved

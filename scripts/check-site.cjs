@@ -40,10 +40,10 @@ const server = http.createServer((req, res) => {
   await page.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
   assert.equal(await page.locator('#serve-track article').count(),6);
   assert.equal(await page.locator('#other-skills article').count(),4);
-  assert.equal(await page.locator('.media-slot video').count(),9,'All nine supplied clips must be present');
-  assert.equal(await page.locator('#ladder-climbing .media-placeholder').count(),1,'Keep the missing ladder video placeholder');
+  assert.equal(await page.locator('.media-slot video').count(),10,'All ten task videos must be present');
+  assert.equal(await page.locator('.media-placeholder').count(),0,'All video slots are now populated');
   assert.equal(requests.some(url=>url.includes('/assets/videos/')),false,'Clips must not download before play');
-  assert.equal(await page.locator('.media-slot video[preload="none"]').count(),9);
+  assert.equal(await page.locator('.media-slot video[preload="none"]').count(),10);
   assert.equal(await page.locator('.hero-actions [data-resource="video"]').getAttribute('href'),'#skills');
   // Hero: two actions, paper links in the nav, and a still poster under reduced motion.
   assert.equal(await page.locator('.hero-actions a').count(),2);
@@ -246,6 +246,9 @@ const server = http.createServer((req, res) => {
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Overflow at ${width}px`);
    const layout=await page.locator('#serve-track').evaluate(track=>({track:track.clientWidth,cards:Array.from(track.children).map(card=>card.getBoundingClientRect().width)}));
    assert.ok(layout.cards.every(width=>Math.abs(width-layout.track)<2),'Show one full-width serve at every screen size');
+   const climbingWidth=await page.locator('#ladder-climbing').evaluate(card=>card.getBoundingClientRect().width);
+   const skillsWidth=await page.locator('#other-skills').evaluate(grid=>grid.getBoundingClientRect().width);
+   assert.ok(Math.abs(climbingWidth-skillsWidth)<2,'Climbing comparison must span the full width');
   }
   // Missing-recording recovery should provide retry UI, not a broken iframe.
   await page.route('**/assets/augmentation/tasks/*.viser*',route=>route.fulfill({status:404,body:''}));
@@ -292,7 +295,8 @@ const server = http.createServer((req, res) => {
    assert.equal(metadata.error,null);
    assert.equal(metadata.width,clip.width);
    assert.equal(metadata.height,clip.height);
-   assert.ok(metadata.duration>15 && metadata.duration<25);
+   if(clip.duration)assert.ok(Math.abs(metadata.duration-clip.duration)<.1,'Preserve the climbing comparison duration');
+   else assert.ok(metadata.duration>15 && metadata.duration<25);
    await video.evaluate(video=>{video.pause();video.currentTime=video.duration*.75;});
    await page.waitForFunction(id=>{const v=document.querySelector(`#${id} video`);return !v.seeking && v.readyState>=2 && v.currentTime>v.duration*.7;},clip.id);
   }
@@ -300,10 +304,12 @@ const server = http.createServer((req, res) => {
    await page.locator('#serve-dots button').first().click();
    await page.locator('#skills').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'serve-videos.png')});
    await page.locator('#under-table-pickup').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'pickup-comparison.png')});
+   await page.locator('#ladder-climbing').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'climbing-comparison.png')});
    await page.setViewportSize({width:390,height:844});
    await page.locator('#skills').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'serve-mobile.png')});
+   await page.locator('#ladder-climbing').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'climbing-mobile.png')});
   }
   assert.deepEqual(errors,[]);
-  console.log('PASS: nine compressed videos play and seek, native aspect ratios, no video preloading, full-width serve carousel, responsive widths, hero controls, all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: all ten compressed videos play and seek, full-width aligned climbing comparison, native aspect ratios, no video preloading, full-width serve carousel, responsive widths, hero controls, all 10 tasks / 11 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

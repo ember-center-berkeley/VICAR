@@ -113,7 +113,7 @@
     const slot = element('div', 'media-slot');
     if (item.width && item.height) {
       slot.style.aspectRatio = `${item.width} / ${item.height}`;
-      if (item.width / item.height > 2) card.classList.add('video-card-wide');
+      if (item.wide || item.width / item.height > 2) card.classList.add('video-card-wide');
     }
     if (item.src) {
       const video = document.createElement('video');
