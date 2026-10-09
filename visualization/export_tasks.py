@@ -64,12 +64,14 @@ def bimanual_object_motion(data):
     start,end=meta['CONTACT_START_FRAME'],meta['CONTACT_END_FRAME']
     frames=np.arange(path.shape[1])
     dimensions=np.asarray(meta['OBJECT_DIMS'],dtype=float).copy()
-    # The source's minimum center height is 15 cm. A 30 cm height rests on
-    # the ground while retaining the 30 cm width between the grasping hands.
-    dimensions[2]=.3
+    # Raise the center by half the added height to preserve the bottom's
+    # trajectory, including its initial ground contact and tabletop landing.
+    reference_height=.3
+    dimensions[2]=.35
+    center_lift=(dimensions[2]-reference_height)/2
     half_height=dimensions[2]/2
     positions=path[:,np.clip(frames,start,end)].copy()
-    positions[:,:,2]=np.clip(positions[:,:,2]-.2,half_height,2.)
+    positions[:,:,2]=np.clip(positions[:,:,2]-.2,reference_height/2,2.)+center_lift
 
     # Land on the visible voxel tabletop under each box footprint, rather
     # than the differently aligned collision proxy used by the optimizer.

@@ -256,9 +256,9 @@ class TaskTests(unittest.TestCase):
                     for frame in [0,config['hitFrame'],min(config['hitFrame']+35,T-1),T-1]:
                         if key=='bimanual-pick-place':
                             expected=data['object_traj_batch'][index,np.clip(frame,150,300)].copy()
-                            expected[2]=np.clip(expected[2]-.2,.15,2)
+                            expected[2]=np.clip(expected[2]-.2,.15,2)+.025
                             if frame>=318:
-                                expected[2]=tabletop_height(data,expected[:2])+.30/2
+                                expected[2]=tabletop_height(data,expected[:2])+.35/2
                         else:
                             picked=max(frame,meta['PICK_TIME'])
                             body.update_cfg(dict(zip(JOINT_NAMES,data['body_joints'][index,picked])))
@@ -296,7 +296,7 @@ class TaskTests(unittest.TestCase):
         presentation=config['objectPresentation']
         with np.load(DATA/'bimanual-pick-place.npz',allow_pickle=False) as file:data=dict(file)
         surfaces=np.array([tabletop_height(data,p[:2]) for p in positions[:,318]])
-        np.testing.assert_allclose(presentation['dimensions'],[.3,.3,.3])
+        np.testing.assert_allclose(presentation['dimensions'],[.3,.3,.35])
         np.testing.assert_allclose(presentation['tabletopZ'],surfaces,atol=1e-6)
         self.assertEqual(presentation['releaseFrame'],300)
         self.assertEqual(presentation['settleEndFrame'],318)
@@ -305,20 +305,20 @@ class TaskTests(unittest.TestCase):
         payload=zstandard.ZstdDecompressor().decompress(recording[8:])
         header=msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])
         box=next(m for _,m in header['messages'] if m['type']=='BoxMessage' and m['name']=='/object_cuboid')
-        np.testing.assert_allclose(box['props']['dimensions'],[.3,.3,.3])
+        np.testing.assert_allclose(box['props']['dimensions'],[.3,.3,.35])
         # Check every augmentation, including both extreme X/Z placements.
-        np.testing.assert_allclose(positions[:,:151,2]-.15,0,atol=1e-7)
-        self.assertGreaterEqual(float(positions[:,:,2].min()),.15-1e-7)
-        np.testing.assert_allclose(positions[:,318:,2]-.15,np.broadcast_to(surfaces[:,None],(50,162)),atol=1e-6)
+        np.testing.assert_allclose(positions[:,:151,2]-.175,0,atol=1e-7)
+        self.assertGreaterEqual(float(positions[:,:,2].min()),.175-1e-7)
+        np.testing.assert_allclose(positions[:,318:,2]-.175,np.broadcast_to(surfaces[:,None],(50,162)),atol=1e-6)
         carried=data['object_traj_batch'][:,np.clip(np.arange(480),150,300)].copy()
-        carried[:,:,2]=np.clip(carried[:,:,2]-.2,.15,2.)
+        carried[:,:,2]=np.clip(carried[:,:,2]-.2,.15,2.)+.025
         np.testing.assert_array_equal(positions[:,:301],carried[:,:301])
         np.testing.assert_array_equal(positions[:,:,:2],carried[:,:,:2])
         descent=np.diff(positions[:,300:319,2],axis=1)
         self.assertTrue((descent<=0).all())
         self.assertLess(float(np.abs(descent).max()),.03)
         self.assertLess(float(np.abs(descent[:,[0,-1]]).max()),.001)
-        np.testing.assert_allclose(positions[:,309,2],(positions[:,300,2]+surfaces+.15)/2,atol=1e-6)
+        np.testing.assert_allclose(positions[:,309,2],(positions[:,300,2]+surfaces+.175)/2,atol=1e-6)
 
     def test_selected_branch_kinematics_and_gradients(self):
         import torch
