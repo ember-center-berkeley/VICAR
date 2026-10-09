@@ -1,0 +1,5741 @@
+env:
+  viewer:
+    eye:
+    - 1.5
+    - 1.5
+    - 1.5
+    lookat:
+    - 0.0
+    - 0.0
+    - 0.0
+    cam_prim_path: /OmniverseKit_Persp
+    resolution:
+    - 1280
+    - 720
+    origin_type: asset_root
+    env_index: 0
+    asset_name: robot
+    body_name: null
+  sim:
+    physics_prim_path: /physicsScene
+    device: cuda:0
+    dt: 0.005
+    render_interval: 4
+    gravity:
+    - 0.0
+    - 0.0
+    - -9.81
+    enable_scene_query_support: false
+    use_fabric: true
+    physx:
+      solver_type: 1
+      min_position_iteration_count: 1
+      max_position_iteration_count: 255
+      min_velocity_iteration_count: 0
+      max_velocity_iteration_count: 255
+      enable_ccd: false
+      enable_stabilization: false
+      enable_external_forces_every_iteration: false
+      enable_enhanced_determinism: false
+      bounce_threshold_velocity: 0.5
+      friction_offset_threshold: 0.04
+      friction_correlation_distance: 0.025
+      gpu_max_rigid_contact_count: 8388608
+      gpu_max_rigid_patch_count: 327680
+      gpu_found_lost_pairs_capacity: 2097152
+      gpu_found_lost_aggregate_pairs_capacity: 33554432
+      gpu_total_aggregate_pairs_capacity: 2097152
+      gpu_collision_stack_size: 67108864
+      gpu_heap_capacity: 67108864
+      gpu_temp_buffer_capacity: 16777216
+      gpu_max_num_partitions: 8
+      gpu_max_soft_body_contacts: 1048576
+      gpu_max_particle_contacts: 1048576
+      solve_articulation_contact_last: false
+    physics_material:
+      func: isaaclab.sim.spawners.materials.physics_materials:spawn_rigid_body_material
+      static_friction: 1.0
+      dynamic_friction: 1.0
+      restitution: 0.0
+      friction_combine_mode: multiply
+      restitution_combine_mode: multiply
+      compliant_contact_stiffness: 0.0
+      compliant_contact_damping: 0.0
+    render:
+      enable_translucency: null
+      enable_reflections: null
+      enable_global_illumination: null
+      antialiasing_mode: null
+      enable_dlssg: null
+      enable_dl_denoiser: null
+      dlss_mode: null
+      enable_direct_lighting: null
+      samples_per_pixel: null
+      enable_shadows: null
+      enable_ambient_occlusion: null
+      dome_light_upper_lower_strategy: null
+      carb_settings: null
+      rendering_mode: null
+    create_stage_in_memory: false
+    logging_level: WARNING
+    save_logs_to_file: true
+  ui_window_class_type: isaaclab.envs.ui.manager_based_rl_env_window:ManagerBasedRLEnvWindow
+  seed: null
+  decimation: 4
+  scene:
+    num_envs: 4096
+    env_spacing: 2.5
+    lazy_sensor_update: true
+    replicate_physics: true
+    filter_collisions: true
+    clone_in_fabric: false
+    robot:
+      class_type: isaaclab.assets.articulation.articulation:Articulation
+      prim_path: '{ENV_REGEX_NS}/Robot'
+      spawn:
+        asset_path: /mnt/amlfs-04/home/dkalaria/TT_PLayer/whole_body_tracking/source/whole_body_tracking/whole_body_tracking/assets/unitree_description/urdf/g1/main.urdf
+        usd_dir: null
+        usd_file_name: null
+        force_usd_conversion: false
+        make_instanceable: true
+        fix_base: false
+        root_link_name: null
+        link_density: 0.0
+        merge_fixed_joints: true
+        convert_mimic_joints_to_normal_joints: false
+        joint_drive:
+          drive_type: force
+          target_type: position
+          gains:
+            stiffness: 0
+            damping: 0
+        collider_type: convex_hull
+        self_collision: false
+        replace_cylinders_with_capsules: true
+        collision_from_visuals: false
+        func: isaaclab.sim.spawners.from_files.from_files:spawn_from_urdf
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: null
+          disable_gravity: false
+          linear_damping: 0.0
+          angular_damping: 0.0
+          max_linear_velocity: 1000.0
+          max_angular_velocity: 1000.0
+          max_depenetration_velocity: 1.0
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: false
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props: null
+        activate_contact_sensors: true
+        scale: null
+        articulation_props:
+          articulation_enabled: null
+          enabled_self_collisions: true
+          solver_position_iteration_count: 8
+          solver_velocity_iteration_count: 4
+          sleep_threshold: null
+          stabilization_threshold: null
+          fix_root_link: null
+        fixed_tendons_props: null
+        spatial_tendons_props: null
+        joint_drive_props: null
+        visual_material_path: material
+        visual_material: null
+      init_state:
+        pos:
+        - 0.0
+        - 0.0
+        - 0.76
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        joint_pos:
+          .*_hip_pitch_joint: -0.312
+          .*_knee_joint: 0.669
+          .*_ankle_pitch_joint: -0.363
+          .*_elbow_joint: 0.6
+          left_shoulder_roll_joint: 0.2
+          left_shoulder_pitch_joint: 0.2
+          right_shoulder_roll_joint: -0.2
+          right_shoulder_pitch_joint: 0.2
+        joint_vel:
+          .*: 0.0
+      collision_group: 0
+      debug_vis: false
+      articulation_root_prim_path: null
+      soft_joint_pos_limit_factor: 0.9
+      actuators:
+        legs:
+          class_type: isaaclab.actuators.actuator_pd:ImplicitActuator
+          joint_names_expr:
+          - .*_hip_yaw_joint
+          - .*_hip_roll_joint
+          - .*_hip_pitch_joint
+          - .*_knee_joint
+          effort_limit: null
+          velocity_limit: null
+          effort_limit_sim:
+            .*_hip_yaw_joint: 88.0
+            .*_hip_roll_joint: 139.0
+            .*_hip_pitch_joint: 88.0
+            .*_knee_joint: 139.0
+          velocity_limit_sim:
+            .*_hip_yaw_joint: 32.0
+            .*_hip_roll_joint: 20.0
+            .*_hip_pitch_joint: 32.0
+            .*_knee_joint: 20.0
+          stiffness:
+            .*_hip_pitch_joint: 40.17923847137318
+            .*_hip_roll_joint: 99.09842777666113
+            .*_hip_yaw_joint: 40.17923847137318
+            .*_knee_joint: 99.09842777666113
+          damping:
+            .*_hip_pitch_joint: 2.5578897650279457
+            .*_hip_roll_joint: 6.3088018534966395
+            .*_hip_yaw_joint: 2.5578897650279457
+            .*_knee_joint: 6.3088018534966395
+          armature:
+            .*_hip_pitch_joint: 0.01017752
+            .*_hip_roll_joint: 0.025101925
+            .*_hip_yaw_joint: 0.01017752
+            .*_knee_joint: 0.025101925
+          friction: null
+          dynamic_friction: null
+          viscous_friction: null
+        feet:
+          class_type: isaaclab.actuators.actuator_pd:ImplicitActuator
+          joint_names_expr:
+          - .*_ankle_pitch_joint
+          - .*_ankle_roll_joint
+          effort_limit: null
+          velocity_limit: null
+          effort_limit_sim: 50.0
+          velocity_limit_sim: 37.0
+          stiffness: 28.50124619574858
+          damping: 1.814445686584846
+          armature: 0.00721945
+          friction: null
+          dynamic_friction: null
+          viscous_friction: null
+        waist:
+          class_type: isaaclab.actuators.actuator_pd:ImplicitActuator
+          joint_names_expr:
+          - waist_roll_joint
+          - waist_pitch_joint
+          effort_limit: null
+          velocity_limit: null
+          effort_limit_sim: 50
+          velocity_limit_sim: 37.0
+          stiffness: 28.50124619574858
+          damping: 1.814445686584846
+          armature: 0.00721945
+          friction: null
+          dynamic_friction: null
+          viscous_friction: null
+        waist_yaw:
+          class_type: isaaclab.actuators.actuator_pd:ImplicitActuator
+          joint_names_expr:
+          - waist_yaw_joint
+          effort_limit: null
+          velocity_limit: null
+          effort_limit_sim: 88
+          velocity_limit_sim: 32.0
+          stiffness: 40.17923847137318
+          damping: 2.5578897650279457
+          armature: 0.01017752
+          friction: null
+          dynamic_friction: null
+          viscous_friction: null
+        arms:
+          class_type: isaaclab.actuators.actuator_pd:ImplicitActuator
+          joint_names_expr:
+          - .*_shoulder_pitch_joint
+          - .*_shoulder_roll_joint
+          - .*_shoulder_yaw_joint
+          - .*_elbow_joint
+          - .*_wrist_roll_joint
+          - .*_wrist_pitch_joint
+          - .*_wrist_yaw_joint
+          effort_limit: null
+          velocity_limit: null
+          effort_limit_sim:
+            .*_shoulder_pitch_joint: 25.0
+            .*_shoulder_roll_joint: 25.0
+            .*_shoulder_yaw_joint: 25.0
+            .*_elbow_joint: 25.0
+            .*_wrist_roll_joint: 25.0
+            .*_wrist_pitch_joint: 5.0
+            .*_wrist_yaw_joint: 5.0
+          velocity_limit_sim:
+            .*_shoulder_pitch_joint: 37.0
+            .*_shoulder_roll_joint: 37.0
+            .*_shoulder_yaw_joint: 37.0
+            .*_elbow_joint: 37.0
+            .*_wrist_roll_joint: 37.0
+            .*_wrist_pitch_joint: 22.0
+            .*_wrist_yaw_joint: 22.0
+          stiffness:
+            .*_shoulder_pitch_joint: 14.25062309787429
+            .*_shoulder_roll_joint: 14.25062309787429
+            .*_shoulder_yaw_joint: 14.25062309787429
+            .*_elbow_joint: 14.25062309787429
+            .*_wrist_roll_joint: 14.25062309787429
+            .*_wrist_pitch_joint: 16.77832748089279
+            .*_wrist_yaw_joint: 16.77832748089279
+          damping:
+            .*_shoulder_pitch_joint: 0.907222843292423
+            .*_shoulder_roll_joint: 0.907222843292423
+            .*_shoulder_yaw_joint: 0.907222843292423
+            .*_elbow_joint: 0.907222843292423
+            .*_wrist_roll_joint: 0.907222843292423
+            .*_wrist_pitch_joint: 1.06814150219
+            .*_wrist_yaw_joint: 1.06814150219
+          armature:
+            .*_shoulder_pitch_joint: 0.003609725
+            .*_shoulder_roll_joint: 0.003609725
+            .*_shoulder_yaw_joint: 0.003609725
+            .*_elbow_joint: 0.003609725
+            .*_wrist_roll_joint: 0.003609725
+            .*_wrist_pitch_joint: 0.00425
+            .*_wrist_yaw_joint: 0.00425
+          friction: null
+          dynamic_friction: null
+          viscous_friction: null
+      actuator_value_resolution_debug_print: false
+    stair_lane_0_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_0_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.18
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 0.0
+        - 0.21
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_0_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_0_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.18
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 0.0
+        - 0.51
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_0_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_0_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.18
+      init_state:
+        pos:
+        - 0.5
+        - 0.0
+        - 0.8099999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_0_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_0_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.18
+      init_state:
+        pos:
+        - 0.576
+        - 0.0
+        - 1.1099999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_0_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_0_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.18
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 0.0
+        - 1.41
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_0_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_0_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.18
+      init_state:
+        pos:
+        - 0.728
+        - 0.0
+        - 1.7099999999999997
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_1_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_1_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.1644
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 103.0
+        - 0.2178
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_1_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_1_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.1644
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 103.0
+        - 0.5178
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_1_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_1_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.1644
+      init_state:
+        pos:
+        - 0.5
+        - 103.0
+        - 0.8177999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_1_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_1_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.1644
+      init_state:
+        pos:
+        - 0.576
+        - 103.0
+        - 1.1178
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_1_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_1_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.1644
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 103.0
+        - 1.4178
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_1_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_1_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.1644
+      init_state:
+        pos:
+        - 0.728
+        - 103.0
+        - 1.7177999999999998
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_2_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_2_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.1488
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 106.0
+        - 0.2256
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_2_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_2_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.1488
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 106.0
+        - 0.5256
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_2_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_2_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.1488
+      init_state:
+        pos:
+        - 0.5
+        - 106.0
+        - 0.8255999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_2_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_2_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.1488
+      init_state:
+        pos:
+        - 0.576
+        - 106.0
+        - 1.1256
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_2_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_2_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.1488
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 106.0
+        - 1.4256
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_2_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_2_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.1488
+      init_state:
+        pos:
+        - 0.728
+        - 106.0
+        - 1.7255999999999998
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_3_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_3_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.1334
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 109.0
+        - 0.2333
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_3_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_3_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.1334
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 109.0
+        - 0.5333
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_3_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_3_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.1334
+      init_state:
+        pos:
+        - 0.5
+        - 109.0
+        - 0.8332999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_3_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_3_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.1334
+      init_state:
+        pos:
+        - 0.576
+        - 109.0
+        - 1.1333
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_3_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_3_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.1334
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 109.0
+        - 1.4333
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_3_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_3_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.1334
+      init_state:
+        pos:
+        - 0.728
+        - 109.0
+        - 1.7332999999999998
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_4_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_4_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.1178
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 112.0
+        - 0.24109999999999998
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_4_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_4_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.1178
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 112.0
+        - 0.5411
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_4_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_4_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.1178
+      init_state:
+        pos:
+        - 0.5
+        - 112.0
+        - 0.8411
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_4_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_4_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.1178
+      init_state:
+        pos:
+        - 0.576
+        - 112.0
+        - 1.1411
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_4_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_4_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.1178
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 112.0
+        - 1.4411
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_4_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_4_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.1178
+      init_state:
+        pos:
+        - 0.728
+        - 112.0
+        - 1.7410999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_5_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_5_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.1022
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 115.0
+        - 0.24889999999999998
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_5_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_5_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.1022
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 115.0
+        - 0.5488999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_5_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_5_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.1022
+      init_state:
+        pos:
+        - 0.5
+        - 115.0
+        - 0.8488999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_5_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_5_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.1022
+      init_state:
+        pos:
+        - 0.576
+        - 115.0
+        - 1.1489
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_5_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_5_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.1022
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 115.0
+        - 1.4489
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_5_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_5_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.1022
+      init_state:
+        pos:
+        - 0.728
+        - 115.0
+        - 1.7489
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_6_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_6_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.0866
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 118.0
+        - 0.2567
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_6_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_6_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.0866
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 118.0
+        - 0.5567
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_6_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_6_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.0866
+      init_state:
+        pos:
+        - 0.5
+        - 118.0
+        - 0.8566999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_6_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_6_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.0866
+      init_state:
+        pos:
+        - 0.576
+        - 118.0
+        - 1.1567
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_6_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_6_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.0866
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 118.0
+        - 1.4567
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_6_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_6_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.0866
+      init_state:
+        pos:
+        - 0.728
+        - 118.0
+        - 1.7567
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_7_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_7_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.0712
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 121.0
+        - 0.26439999999999997
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_7_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_7_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.0712
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 121.0
+        - 0.5644
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_7_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_7_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.0712
+      init_state:
+        pos:
+        - 0.5
+        - 121.0
+        - 0.8644
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_7_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_7_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.0712
+      init_state:
+        pos:
+        - 0.576
+        - 121.0
+        - 1.1643999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_7_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_7_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.0712
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 121.0
+        - 1.4644
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_7_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_7_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.0712
+      init_state:
+        pos:
+        - 0.728
+        - 121.0
+        - 1.7643999999999997
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_8_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_8_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.0556
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 124.0
+        - 0.2722
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_8_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_8_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.0556
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 124.0
+        - 0.5721999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_8_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_8_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.0556
+      init_state:
+        pos:
+        - 0.5
+        - 124.0
+        - 0.8721999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_8_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_8_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.0556
+      init_state:
+        pos:
+        - 0.576
+        - 124.0
+        - 1.1722
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_8_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_8_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.0556
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 124.0
+        - 1.4722
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_8_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_8_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.0556
+      init_state:
+        pos:
+        - 0.728
+        - 124.0
+        - 1.7721999999999998
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_9_step_1:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_9_step_1'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5499999999999999
+        - 0.04
+      init_state:
+        pos:
+        - 0.34800000000000003
+        - 127.0
+        - 0.27999999999999997
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_9_step_2:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_9_step_2'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.5
+        - 0.04
+      init_state:
+        pos:
+        - 0.42400000000000004
+        - 127.0
+        - 0.58
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_9_step_3:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_9_step_3'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.44999999999999996
+        - 0.04
+      init_state:
+        pos:
+        - 0.5
+        - 127.0
+        - 0.8799999999999999
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_9_step_4:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_9_step_4'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.4
+        - 0.04
+      init_state:
+        pos:
+        - 0.576
+        - 127.0
+        - 1.18
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_9_step_5:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_9_step_5'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.35
+        - 0.04
+      init_state:
+        pos:
+        - 0.6519999999999999
+        - 127.0
+        - 1.48
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_lane_9_step_6:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_lane_9_step_6'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 0.096
+        - 0.3
+        - 0.04
+      init_state:
+        pos:
+        - 0.728
+        - 127.0
+        - 1.7799999999999998
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_connector_pos:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_connector_pos'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 1.8629106258755408
+        - 0.04
+        - 0.04
+      init_state:
+        pos:
+        - 0.538
+        - 0.22499999999999998
+        - 0.8999999999999999
+        rot:
+        - 0.7889164241029858
+        - 0.0
+        - -0.6123778758610898
+        - -0.05103148965509083
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    stair_connector_neg:
+      class_type: isaaclab.assets.rigid_object.rigid_object:RigidObject
+      prim_path: '{ENV_REGEX_NS}/Stairs_connector_neg'
+      spawn:
+        func: isaaclab.sim.spawners.meshes.meshes:spawn_mesh_cuboid
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        mass_props: null
+        deformable_props: null
+        rigid_props:
+          rigid_body_enabled: null
+          kinematic_enabled: true
+          disable_gravity: true
+          linear_damping: null
+          angular_damping: null
+          max_linear_velocity: null
+          max_angular_velocity: null
+          max_depenetration_velocity: null
+          max_contact_impulse: null
+          enable_gyroscopic_forces: null
+          retain_accelerations: null
+          solver_position_iteration_count: null
+          solver_velocity_iteration_count: null
+          sleep_threshold: null
+          stabilization_threshold: null
+        collision_props:
+          collision_enabled: null
+          contact_offset: null
+          rest_offset: null
+          torsional_patch_radius: null
+          min_torsional_patch_radius: null
+        activate_contact_sensors: false
+        visual_material_path: material
+        visual_material:
+          func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+          diffuse_color:
+          - 0.12
+          - 0.12
+          - 0.14
+          emissive_color:
+          - 0.0
+          - 0.0
+          - 0.0
+          roughness: 0.8
+          metallic: 0.0
+          opacity: 1.0
+        physics_material_path: material
+        physics_material: null
+        size:
+        - 1.8629106258755408
+        - 0.04
+        - 0.04
+      init_state:
+        pos:
+        - 0.538
+        - -0.22499999999999998
+        - 0.8999999999999999
+        rot:
+        - 0.7889164241029858
+        - 0.0
+        - -0.6123778758610898
+        - 0.05103148965509083
+        lin_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+        ang_vel:
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    terrain:
+      class_type: isaaclab.terrains.terrain_importer:TerrainImporter
+      collision_group: -1
+      prim_path: /World/ground
+      num_envs: 1
+      terrain_type: plane
+      terrain_generator: null
+      usd_path: null
+      env_spacing: null
+      use_terrain_origins: true
+      visual_material:
+        func: isaaclab.sim.spawners.materials.visual_materials:spawn_from_mdl_file
+        mdl_path: '{NVIDIA_NUCLEUS_DIR}/Materials/Base/Architecture/Shingles_01.mdl'
+        project_uvw: true
+        albedo_brightness: null
+        texture_scale: null
+      physics_material:
+        func: isaaclab.sim.spawners.materials.physics_materials:spawn_rigid_body_material
+        static_friction: 1.0
+        dynamic_friction: 1.0
+        restitution: 0.0
+        friction_combine_mode: multiply
+        restitution_combine_mode: multiply
+        compliant_contact_stiffness: 0.0
+        compliant_contact_damping: 0.0
+      max_init_terrain_level: null
+      debug_vis: false
+    light:
+      class_type: null
+      prim_path: /World/light
+      spawn:
+        func: isaaclab.sim.spawners.lights.lights:spawn_light
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        prim_type: DistantLight
+        color:
+        - 0.75
+        - 0.75
+        - 0.75
+        enable_color_temperature: false
+        color_temperature: 6500.0
+        normalize: false
+        exposure: 0.0
+        intensity: 3000.0
+        angle: 0.53
+      init_state:
+        pos:
+        - 0.0
+        - 0.0
+        - 0.0
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    sky_light:
+      class_type: null
+      prim_path: /World/skyLight
+      spawn:
+        func: isaaclab.sim.spawners.lights.lights:spawn_light
+        visible: true
+        semantic_tags: null
+        copy_from_source: true
+        prim_type: DomeLight
+        color:
+        - 0.13
+        - 0.13
+        - 0.13
+        enable_color_temperature: false
+        color_temperature: 6500.0
+        normalize: false
+        exposure: 0.0
+        intensity: 1000.0
+        texture_file: null
+        texture_format: automatic
+        visible_in_primary_ray: true
+      init_state:
+        pos:
+        - 0.0
+        - 0.0
+        - 0.0
+        rot:
+        - 1.0
+        - 0.0
+        - 0.0
+        - 0.0
+      collision_group: 0
+      debug_vis: false
+    contact_forces:
+      class_type: isaaclab.sensors.contact_sensor.contact_sensor:ContactSensor
+      prim_path: '{ENV_REGEX_NS}/Robot/.*'
+      update_period: 0.0
+      history_length: 3
+      debug_vis: true
+      track_pose: false
+      track_contact_points: false
+      track_friction_forces: false
+      max_contact_data_count_per_prim: 4
+      track_air_time: true
+      force_threshold: 10.0
+      filter_prim_paths_expr: []
+      visualizer_cfg:
+        prim_path: /Visuals/ContactSensor
+        markers:
+          contact:
+            func: isaaclab.sim.spawners.shapes.shapes:spawn_sphere
+            visible: true
+            semantic_tags: null
+            copy_from_source: true
+            mass_props: null
+            rigid_props: null
+            collision_props: null
+            activate_contact_sensors: false
+            visual_material_path: material
+            visual_material:
+              func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+              diffuse_color:
+              - 1.0
+              - 0.0
+              - 0.0
+              emissive_color:
+              - 0.0
+              - 0.0
+              - 0.0
+              roughness: 0.5
+              metallic: 0.0
+              opacity: 1.0
+            physics_material_path: material
+            physics_material: null
+            radius: 0.02
+          no_contact:
+            func: isaaclab.sim.spawners.shapes.shapes:spawn_sphere
+            visible: false
+            semantic_tags: null
+            copy_from_source: true
+            mass_props: null
+            rigid_props: null
+            collision_props: null
+            activate_contact_sensors: false
+            visual_material_path: material
+            visual_material:
+              func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+              diffuse_color:
+              - 0.0
+              - 1.0
+              - 0.0
+              emissive_color:
+              - 0.0
+              - 0.0
+              - 0.0
+              roughness: 0.5
+              metallic: 0.0
+              opacity: 1.0
+            physics_material_path: material
+            physics_material: null
+            radius: 0.02
+  recorders:
+    dataset_file_handler_class_type: isaaclab.utils.datasets.hdf5_dataset_file_handler:HDF5DatasetFileHandler
+    dataset_export_dir_path: /tmp/isaaclab/logs
+    dataset_filename: dataset
+    dataset_export_mode:
+      _value_: 1
+      _name_: EXPORT_ALL
+      _sort_order_: 1
+    export_in_record_pre_reset: true
+    export_in_close: false
+  observations:
+    policy:
+      concatenate_terms: true
+      concatenate_dim: -1
+      enable_corruption: true
+      history_length: null
+      flatten_history_dim: true
+      command:
+        func: isaaclab.envs.mdp.observations:generated_commands
+        params:
+          command_name: motion
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      motion_anchor_pos_b:
+        func: whole_body_tracking.tasks.tracking.mdp.observations:motion_anchor_pos_b
+        params:
+          command_name: motion
+        modifiers: null
+        noise:
+          func: isaaclab.utils.noise.noise_model:uniform_noise
+          operation: add
+          n_min: -0.25
+          n_max: 0.25
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      motion_anchor_ori_b:
+        func: whole_body_tracking.tasks.tracking.mdp.observations:motion_anchor_ori_b
+        params:
+          command_name: motion
+        modifiers: null
+        noise:
+          func: isaaclab.utils.noise.noise_model:uniform_noise
+          operation: add
+          n_min: -0.05
+          n_max: 0.05
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      base_lin_vel:
+        func: isaaclab.envs.mdp.observations:base_lin_vel
+        params: {}
+        modifiers: null
+        noise:
+          func: isaaclab.utils.noise.noise_model:uniform_noise
+          operation: add
+          n_min: -0.5
+          n_max: 0.5
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      base_ang_vel:
+        func: isaaclab.envs.mdp.observations:base_ang_vel
+        params: {}
+        modifiers: null
+        noise:
+          func: isaaclab.utils.noise.noise_model:uniform_noise
+          operation: add
+          n_min: -0.2
+          n_max: 0.2
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      joint_pos:
+        func: isaaclab.envs.mdp.observations:joint_pos_rel
+        params: {}
+        modifiers: null
+        noise:
+          func: isaaclab.utils.noise.noise_model:uniform_noise
+          operation: add
+          n_min: -0.01
+          n_max: 0.01
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      joint_vel:
+        func: isaaclab.envs.mdp.observations:joint_vel_rel
+        params: {}
+        modifiers: null
+        noise:
+          func: isaaclab.utils.noise.noise_model:uniform_noise
+          operation: add
+          n_min: -0.5
+          n_max: 0.5
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      actions:
+        func: isaaclab.envs.mdp.observations:last_action
+        params: {}
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+    critic:
+      concatenate_terms: true
+      concatenate_dim: -1
+      enable_corruption: false
+      history_length: null
+      flatten_history_dim: true
+      command:
+        func: isaaclab.envs.mdp.observations:generated_commands
+        params:
+          command_name: motion
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      motion_anchor_pos_b:
+        func: whole_body_tracking.tasks.tracking.mdp.observations:motion_anchor_pos_b
+        params:
+          command_name: motion
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      motion_anchor_ori_b:
+        func: whole_body_tracking.tasks.tracking.mdp.observations:motion_anchor_ori_b
+        params:
+          command_name: motion
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      body_pos:
+        func: whole_body_tracking.tasks.tracking.mdp.observations:robot_body_pos_b
+        params:
+          command_name: motion
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      body_ori:
+        func: whole_body_tracking.tasks.tracking.mdp.observations:robot_body_ori_b
+        params:
+          command_name: motion
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      base_lin_vel:
+        func: isaaclab.envs.mdp.observations:base_lin_vel
+        params: {}
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      base_ang_vel:
+        func: isaaclab.envs.mdp.observations:base_ang_vel
+        params: {}
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      joint_pos:
+        func: isaaclab.envs.mdp.observations:joint_pos_rel
+        params: {}
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      joint_vel:
+        func: isaaclab.envs.mdp.observations:joint_vel_rel
+        params: {}
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+      actions:
+        func: isaaclab.envs.mdp.observations:last_action
+        params: {}
+        modifiers: null
+        noise: null
+        clip: null
+        scale: null
+        history_length: 0
+        flatten_history_dim: true
+  actions:
+    joint_pos:
+      class_type: isaaclab.envs.mdp.actions.joint_actions:JointPositionAction
+      asset_name: robot
+      debug_vis: false
+      clip: null
+      joint_names:
+      - .*
+      scale:
+        .*_hip_yaw_joint: 0.5475464652142303
+        .*_hip_roll_joint: 0.3506614663788243
+        .*_hip_pitch_joint: 0.5475464652142303
+        .*_knee_joint: 0.3506614663788243
+        .*_ankle_pitch_joint: 0.43857731392336724
+        .*_ankle_roll_joint: 0.43857731392336724
+        waist_roll_joint: 0.43857731392336724
+        waist_pitch_joint: 0.43857731392336724
+        waist_yaw_joint: 0.5475464652142303
+        .*_shoulder_pitch_joint: 0.43857731392336724
+        .*_shoulder_roll_joint: 0.43857731392336724
+        .*_shoulder_yaw_joint: 0.43857731392336724
+        .*_elbow_joint: 0.43857731392336724
+        .*_wrist_roll_joint: 0.43857731392336724
+        .*_wrist_pitch_joint: 0.07450087032950714
+        .*_wrist_yaw_joint: 0.07450087032950714
+      offset: 0.0
+      preserve_order: false
+      use_default_offset: true
+  events:
+    physics_material:
+      func: isaaclab.envs.mdp.events:randomize_rigid_body_material
+      params:
+        asset_cfg:
+          name: robot
+          joint_names: null
+          joint_ids: slice(None,None,None)
+          fixed_tendon_names: null
+          fixed_tendon_ids: slice(None,None,None)
+          body_names: .*
+          body_ids: slice(None,None,None)
+          object_collection_names: null
+          object_collection_ids: slice(None,None,None)
+          preserve_order: false
+        static_friction_range:
+        - 0.3
+        - 1.6
+        dynamic_friction_range:
+        - 0.3
+        - 1.2
+        restitution_range:
+        - 0.0
+        - 0.5
+        num_buckets: 64
+      mode: startup
+      interval_range_s: null
+      is_global_time: false
+      min_step_count_between_reset: 0
+    add_joint_default_pos:
+      func: whole_body_tracking.tasks.tracking.mdp.events:randomize_joint_default_pos
+      params:
+        asset_cfg:
+          name: robot
+          joint_names:
+          - .*
+          joint_ids: slice(None,None,None)
+          fixed_tendon_names: null
+          fixed_tendon_ids: slice(None,None,None)
+          body_names: null
+          body_ids: slice(None,None,None)
+          object_collection_names: null
+          object_collection_ids: slice(None,None,None)
+          preserve_order: false
+        pos_distribution_params:
+        - -0.01
+        - 0.01
+        operation: add
+      mode: startup
+      interval_range_s: null
+      is_global_time: false
+      min_step_count_between_reset: 0
+    base_com:
+      func: whole_body_tracking.tasks.tracking.mdp.events:randomize_rigid_body_com
+      params:
+        asset_cfg:
+          name: robot
+          joint_names: null
+          joint_ids: slice(None,None,None)
+          fixed_tendon_names: null
+          fixed_tendon_ids: slice(None,None,None)
+          body_names: torso_link
+          body_ids: slice(None,None,None)
+          object_collection_names: null
+          object_collection_ids: slice(None,None,None)
+          preserve_order: false
+        com_range:
+          x:
+          - -0.025
+          - 0.025
+          'y':
+          - -0.05
+          - 0.05
+          z:
+          - -0.05
+          - 0.05
+      mode: startup
+      interval_range_s: null
+      is_global_time: false
+      min_step_count_between_reset: 0
+    push_robot:
+      func: isaaclab.envs.mdp.events:push_by_setting_velocity
+      params:
+        velocity_range:
+          x:
+          - -0.02
+          - 0.02
+          'y':
+          - -0.02
+          - 0.02
+          z:
+          - 0.02
+          - 0.05
+          roll:
+          - -0.01
+          - 0.01
+          pitch:
+          - -0.01
+          - 0.01
+          yaw:
+          - -0.01
+          - 0.01
+      mode: interval
+      interval_range_s:
+      - 1.0
+      - 3.0
+      is_global_time: false
+      min_step_count_between_reset: 0
+  rerender_on_reset: false
+  wait_for_textures: true
+  xr: null
+  is_finite_horizon: false
+  episode_length_s: 17.0
+  rewards:
+    motion_global_anchor_pos:
+      func: whole_body_tracking.tasks.tracking.mdp.rewards:motion_global_anchor_position_error_exp
+      params:
+        command_name: motion
+        std: 0.3
+      weight: 0.5
+    motion_global_anchor_ori:
+      func: whole_body_tracking.tasks.tracking.mdp.rewards:motion_global_anchor_orientation_error_exp
+      params:
+        command_name: motion
+        std: 0.4
+      weight: 0.5
+    motion_body_pos:
+      func: whole_body_tracking.tasks.tracking.mdp.rewards:motion_relative_body_position_error_exp
+      params:
+        command_name: motion
+        std: 0.3
+      weight: 1.0
+    motion_body_ori:
+      func: whole_body_tracking.tasks.tracking.mdp.rewards:motion_relative_body_orientation_error_exp
+      params:
+        command_name: motion
+        std: 0.4
+      weight: 1.0
+    motion_body_lin_vel:
+      func: whole_body_tracking.tasks.tracking.mdp.rewards:motion_global_body_linear_velocity_error_exp
+      params:
+        command_name: motion
+        std: 1.0
+      weight: 1.0
+    motion_body_ang_vel:
+      func: whole_body_tracking.tasks.tracking.mdp.rewards:motion_global_body_angular_velocity_error_exp
+      params:
+        command_name: motion
+        std: 3.14
+      weight: 1.0
+    action_rate_l2:
+      func: isaaclab.envs.mdp.rewards:action_rate_l2
+      params: {}
+      weight: -0.1
+    joint_limit:
+      func: isaaclab.envs.mdp.rewards:joint_pos_limits
+      params:
+        asset_cfg:
+          name: robot
+          joint_names:
+          - .*
+          joint_ids: slice(None,None,None)
+          fixed_tendon_names: null
+          fixed_tendon_ids: slice(None,None,None)
+          body_names: null
+          body_ids: slice(None,None,None)
+          object_collection_names: null
+          object_collection_ids: slice(None,None,None)
+          preserve_order: false
+      weight: -10.0
+    undesired_contacts:
+      func: isaaclab.envs.mdp.rewards:undesired_contacts
+      params:
+        sensor_cfg:
+          name: contact_forces
+          joint_names: null
+          joint_ids: slice(None,None,None)
+          fixed_tendon_names: null
+          fixed_tendon_ids: slice(None,None,None)
+          body_names:
+          - ^(?!left_hip_pitch_link$)(?!right_hip_pitch_link$)(?!left_hip_roll_link$)(?!right_hip_roll_link$)(?!left_hip_yaw_link$)(?!right_hip_yaw_link$)(?!left_knee_link$)(?!right_knee_link$)(?!left_ankle_pitch_link$)(?!right_ankle_pitch_link$)(?!left_ankle_roll_link$)(?!right_ankle_roll_link$)(?!left_wrist_yaw_link$)(?!right_wrist_yaw_link$).+$
+          body_ids: slice(None,None,None)
+          object_collection_names: null
+          object_collection_ids: slice(None,None,None)
+          preserve_order: false
+        threshold: 1.0
+      weight: -0.1
+  terminations:
+    time_out:
+      func: isaaclab.envs.mdp.terminations:time_out
+      params: {}
+      time_out: true
+    anchor_pos:
+      func: whole_body_tracking.tasks.tracking.mdp.terminations:bad_anchor_pos_z_only
+      params:
+        command_name: motion
+        threshold: 0.25
+      time_out: false
+    anchor_ori:
+      func: whole_body_tracking.tasks.tracking.mdp.terminations:bad_anchor_ori
+      params:
+        asset_cfg:
+          name: robot
+          joint_names: null
+          joint_ids: slice(None,None,None)
+          fixed_tendon_names: null
+          fixed_tendon_ids: slice(None,None,None)
+          body_names: null
+          body_ids: slice(None,None,None)
+          object_collection_names: null
+          object_collection_ids: slice(None,None,None)
+          preserve_order: false
+        command_name: motion
+        threshold: 0.8
+      time_out: false
+    ee_body_pos:
+      func: whole_body_tracking.tasks.tracking.mdp.terminations:bad_motion_body_pos_z_only
+      params:
+        command_name: motion
+        threshold: 0.25
+        body_names:
+        - left_ankle_roll_link
+        - right_ankle_roll_link
+        - left_wrist_yaw_link
+        - right_wrist_yaw_link
+      time_out: false
+  curriculum:
+    stair_lane:
+      func: whole_body_tracking.tasks.tracking.mdp.curriculum:stair_lane_by_iter
+      params:
+        lane_heights:
+        - 0.09
+        - 0.0822
+        - 0.0744
+        - 0.0667
+        - 0.0589
+        - 0.0511
+        - 0.0433
+        - 0.0356
+        - 0.0278
+        - 0.02
+        lane_parked_y:
+        - 100.0
+        - 103.0
+        - 106.0
+        - 109.0
+        - 112.0
+        - 115.0
+        - 118.0
+        - 121.0
+        - 124.0
+        - 127.0
+        start_iter: 5000
+        end_iter: 15000
+        num_stairs: 6
+        step_riser: 0.3
+        step_tread: 0.076
+        step_extend: 0.01
+        step_shift_x: -0.05
+        step_shift_z: 0.0
+  commands:
+    motion:
+      class_type: whole_body_tracking.tasks.tracking.mdp.commands:MotionCommand
+      resampling_time_range:
+      - 1000000000.0
+      - 1000000000.0
+      debug_vis: true
+      asset_name: robot
+      motion_file: {}
+      anchor_body_name: torso_link
+      body_names:
+      - pelvis
+      - left_hip_roll_link
+      - left_knee_link
+      - left_ankle_roll_link
+      - right_hip_roll_link
+      - right_knee_link
+      - right_ankle_roll_link
+      - torso_link
+      - left_shoulder_roll_link
+      - left_elbow_link
+      - left_wrist_yaw_link
+      - right_shoulder_roll_link
+      - right_elbow_link
+      - right_wrist_yaw_link
+      pose_range:
+        x:
+        - -0.0
+        - 0.0
+        'y':
+        - -0.0
+        - 0.0
+        z:
+        - 0.02
+        - 0.05
+        roll:
+        - 0.0
+        - 0.0
+        pitch:
+        - 0.0
+        - 0.0
+        yaw:
+        - 0.0
+        - 0.0
+      velocity_range:
+        x:
+        - -0.02
+        - 0.02
+        'y':
+        - -0.02
+        - 0.02
+        z:
+        - 0.02
+        - 0.05
+        roll:
+        - -0.01
+        - 0.01
+        pitch:
+        - -0.01
+        - 0.01
+        yaw:
+        - -0.01
+        - 0.01
+      joint_position_range:
+      - -0.0
+      - 0.0
+      adaptive_kernel_size: 1
+      adaptive_lambda: 0.8
+      adaptive_uniform_ratio: 0.1
+      adaptive_alpha: 0.001
+      anchor_visualizer_cfg:
+        prim_path: /Visuals/Command/pose
+        markers:
+          frame:
+            func: isaaclab.sim.spawners.from_files.from_files:spawn_from_usd
+            visible: true
+            semantic_tags: null
+            copy_from_source: true
+            mass_props: null
+            deformable_props: null
+            rigid_props: null
+            collision_props: null
+            activate_contact_sensors: false
+            scale:
+            - 0.2
+            - 0.2
+            - 0.2
+            articulation_props: null
+            fixed_tendons_props: null
+            spatial_tendons_props: null
+            joint_drive_props: null
+            visual_material_path: material
+            visual_material: null
+            usd_path: https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Props/UIElements/frame_prim.usd
+            variants: null
+          connecting_line:
+            func: isaaclab.sim.spawners.shapes.shapes:spawn_cylinder
+            visible: true
+            semantic_tags: null
+            copy_from_source: true
+            mass_props: null
+            rigid_props: null
+            collision_props: null
+            activate_contact_sensors: false
+            visual_material_path: material
+            visual_material:
+              func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+              diffuse_color:
+              - 1.0
+              - 1.0
+              - 0.0
+              emissive_color:
+              - 0.0
+              - 0.0
+              - 0.0
+              roughness: 1.0
+              metallic: 0.0
+              opacity: 1.0
+            physics_material_path: material
+            physics_material: null
+            radius: 0.002
+            height: 1.0
+            axis: Z
+      body_visualizer_cfg:
+        prim_path: /Visuals/Command/pose
+        markers:
+          frame:
+            func: isaaclab.sim.spawners.from_files.from_files:spawn_from_usd
+            visible: true
+            semantic_tags: null
+            copy_from_source: true
+            mass_props: null
+            deformable_props: null
+            rigid_props: null
+            collision_props: null
+            activate_contact_sensors: false
+            scale:
+            - 0.1
+            - 0.1
+            - 0.1
+            articulation_props: null
+            fixed_tendons_props: null
+            spatial_tendons_props: null
+            joint_drive_props: null
+            visual_material_path: material
+            visual_material: null
+            usd_path: https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Props/UIElements/frame_prim.usd
+            variants: null
+          connecting_line:
+            func: isaaclab.sim.spawners.shapes.shapes:spawn_cylinder
+            visible: true
+            semantic_tags: null
+            copy_from_source: true
+            mass_props: null
+            rigid_props: null
+            collision_props: null
+            activate_contact_sensors: false
+            visual_material_path: material
+            visual_material:
+              func: isaaclab.sim.spawners.materials.visual_materials:spawn_preview_surface
+              diffuse_color:
+              - 1.0
+              - 1.0
+              - 0.0
+              emissive_color:
+              - 0.0
+              - 0.0
+              - 0.0
+              roughness: 1.0
+              metallic: 0.0
+              opacity: 1.0
+            physics_material_path: material
+            physics_material: null
+            radius: 0.002
+            height: 1.0
+            axis: Z
+agent:
+  seed: 42
+  device: cuda:0
+  num_steps_per_env: 24
+  max_iterations: 30000
+  empirical_normalization: true
+  obs_groups: {}
+  clip_actions: null
+  save_interval: 500
+  experiment_name: g1_flat
+  run_name: ''
+  logger: tensorboard
+  neptune_project: isaaclab
+  wandb_project: isaaclab
+  resume: false
+  load_run: .*
+  load_checkpoint: model_.*.pt
+  class_name: OnPolicyRunner
+  policy:
+    class_name: ActorCritic
+    init_noise_std: 1.0
+    noise_std_type: scalar
+    state_dependent_std: false
+    actor_obs_normalization: {}
+    critic_obs_normalization: {}
+    actor_hidden_dims:
+    - 512
+    - 256
+    - 128
+    critic_hidden_dims:
+    - 512
+    - 256
+    - 128
+    activation: elu
+  algorithm:
+    class_name: PPO
+    num_learning_epochs: 5
+    num_mini_batches: 4
+    learning_rate: 0.001
+    schedule: adaptive
+    gamma: 0.99
+    lam: 0.95
+    entropy_coef: 0.005
+    desired_kl: 0.01
+    max_grad_norm: 1.0
+    value_loss_coef: 1.0
+    use_clipped_value_loss: true
+    clip_param: 0.2
+    normalize_advantage_per_mini_batch: false
+    rnd_cfg: null
+    symmetry_cfg: null

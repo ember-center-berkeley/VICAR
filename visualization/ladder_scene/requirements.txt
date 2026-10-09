@@ -1,0 +1,6 @@
+viser==1.0.30
+yourdfpy==0.0.60
+numpy==1.26.4
+trimesh==4.5.1
+scipy==1.15.3
+PyYAML==6.0.2

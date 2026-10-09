@@ -426,11 +426,12 @@
       "id": "ladder-climbing",
       "title": "Ladder climbing",
       "kind": "ladder",
-      "description": "Replay the climb with the revised hand and toe-edge contact sequence. Toggle the ladder rungs and contact markers to inspect the motion.",
+      "description": "Replay the 50 Hz reference motion on the reconstructed A-frame ladder. Toggle the ladder, contact markers, floor grid, and pelvis/foot reference paths to inspect the climb.",
       "sources": [
         "refine_climbing_motion_g1.py",
         "augment_climbing_motions_g1.py",
-        "augment_climbing_motions_g1_vis.py"
+        "augment_climbing_motions_g1_vis.py",
+        "ladder_scene_20261008/viewer.py"
       ],
       "expected": [
         "refined_climbing_pick_g1/climbing.pkl",
@@ -460,9 +461,9 @@
       "augmentations": [
         {
           "id": "ladder-climbing",
-          "label": "Contact solution",
-          "script": "augment_climbing_motions_g1_vis.py",
-          "stage": "Fixed contact solution"
+          "label": "Ladder reference",
+          "script": "ladder_scene_20261008/viewer.py",
+          "stage": "Packaged reference motion"
         }
       ]
     }

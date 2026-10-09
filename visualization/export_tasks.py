@@ -16,10 +16,20 @@ OUTPUT = ROOT.parent / 'assets/augmentation/tasks'
 
 
 def load_task(key):
+    if key=='ladder-climbing':
+        from .ladder import load_ladder
+        return load_ladder()
     with np.load(DATA_DIR/f'{key}.npz',allow_pickle=False) as file:
         data = dict(file)
     data['metadata'] = json.loads(str(data['metadata']))
     return data
+
+
+def task_scene(server,key,data):
+    if key=='ladder-climbing':
+        from .ladder import LadderScene
+        return LadderScene(server,data)
+    return TaskScene(server,key,data)
 
 
 def wxyz(matrix):
@@ -107,24 +117,14 @@ class TaskScene:
         server.scene.reset()
         server.scene.set_up_direction('+z')
         server.scene.world_axes.visible=False
-        if key=='ladder-climbing':
-            server.scene.add_mesh_simple('/ground',
-                vertices=np.array([[-5,-5,0],[5,-5,0],[5,5,0],[-5,5,0]],dtype=np.float32),
-                faces=np.array([[0,1,2],[0,2,3],[0,2,1],[0,3,2]],dtype=np.uint32),
-                color=(120,120,120),opacity=.5,flat_shading=True)
-        else:
-            server.scene.add_grid('/Ground',width=8,height=8,cell_size=.25,section_size=1,
-                plane_color=(247,249,252),plane_opacity=1,cell_color=(223,229,238),section_color=(188,200,216))
+        server.scene.add_grid('/Ground',width=8,height=8,cell_size=.25,section_size=1,
+            plane_color=(247,249,252),plane_opacity=1,cell_color=(223,229,238),section_color=(188,200,216))
         self.model=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'))
         self.root=server.scene.add_frame('/base_new',show_axes=False)
         self.robot=ViserUrdf(server,self.model,root_node_name='/base_new')
         self.nodes={j.name:h.name for j,h in zip(self.robot._joint_map_values,self.robot._joint_frames)}
-        if key=='ladder-climbing':
-            self._climbing()
-            self.targets=None
-        else:
-            self._manipulation()
-        if key!='ladder-climbing' and 'table_pts_world' in data:
+        self._manipulation()
+        if 'table_pts_world' in data:
             points,colors,vertices,faces=table_geometry(key,data)
             server.scene.add_point_cloud('/table_pointcloud',points=points,colors=colors,point_size=.003)
             server.scene.add_mesh_simple('/table_voxels',vertices=vertices,faces=faces,
@@ -135,17 +135,15 @@ class TaskScene:
             camera=server.scene.add_camera_frustum('/camera_pose',fov=np.deg2rad(64),aspect=16/9,scale=.3,
                 wxyz=wxyz(data['_R0']),position=data['_t0'].reshape(3),color=(255,100,0),visible=False)
             self.layers.append(dict(id='camera',label='Capture camera',nodes=[camera.name],default=False))
-        if key!='ladder-climbing':
-            visible=key=='tabletop-right'
-            server.scene.add_box('/collision/platform',position=self.meta['PLATFORM_POSITION'],dimensions=self.meta['PLATFORM_DIMENSIONS'],
-                color=(255,80,0),opacity=.8 if visible else .2,visible=visible)
-            self.layers.append(dict(id='obstacles',label='Collision geometry',nodes=['/collision/platform'],default=visible))
+        visible=key=='tabletop-right'
+        server.scene.add_box('/collision/platform',position=self.meta['PLATFORM_POSITION'],dimensions=self.meta['PLATFORM_DIMENSIONS'],
+            color=(255,80,0),opacity=.8 if visible else .2,visible=visible)
+        self.layers.append(dict(id='obstacles',label='Collision geometry',nodes=['/collision/platform'],default=visible))
         self.dynamic=np.concatenate(self.values,axis=-1).astype('<f4') if self.values else None
         center=np.mean(data['poses'][:,4:],axis=0)
-        look=np.array([center[0]+.35,center[1],1.1 if key=='ladder-climbing' else .75])
+        look=np.array([center[0]+.35,center[1],.75])
         server.initial_camera.look_at=look
-        # View the climber from the approach side of the ladder.
-        server.initial_camera.position=look+([-2.2,-2.8,1.2] if key=='ladder-climbing' else [2.1,-2.8,1.4])
+        server.initial_camera.position=look+[2.1,-2.8,1.4]
         if key=='under-table-pickup':
             look[2]=.55
             server.initial_camera.look_at=look
@@ -244,21 +242,6 @@ class TaskScene:
             nodes.append(sphere.name)
         self.layers.append(dict(id='penetration',label='Contact diagnostics',nodes=nodes,default=True))
 
-    def _climbing(self):
-        m=self.meta
-        origin=self.data['STAIR_ORIGIN']
-        stairs=[]
-        for s in range(1,m['N_STAIRS']+1):
-            name=f'/stairs/step_{s}'
-            self.server.scene.add_box(name,position=origin+[(s-.5)*m['STAIR_TREAD'],0,.3*s],
-                dimensions=(m['STAIR_TREAD'],m['STAIR_DEPTH'],.05),color=(180,160,140))
-            stairs.append(name)
-        self.layers.append(dict(id='stairs',label='Ladder rungs',nodes=stairs,default=True))
-        for contact in m['visual_contacts']:
-            self.server.scene.add_icosphere(contact['node'],radius=.025,
-                color=tuple(contact['color']),position=contact['position'])
-            self.box_nodes.append(contact['node'])
-
     def update(self,frame,index):
         with self.server.atomic():
             pose=self.data['poses'][frame]
@@ -281,8 +264,8 @@ class TaskScene:
 def export_task(server,key):
     d=load_task(key)
     m=d['metadata']
-    if m['iterations']!=m['source_iterations']:raise ValueError('Refusing to publish a shortened development solve.')
-    scene=TaskScene(server,key,d)
+    if 'iterations' in m and m['iterations']!=m['source_iterations']:raise ValueError('Refusing to publish a shortened development solve.')
+    scene=task_scene(server,key,d)
     N,T,_=d['joints'].shape
     active=m['active_joints']
     names=scene.robot.get_actuated_joint_names()
@@ -298,8 +281,8 @@ def export_task(server,key):
     OUTPUT.mkdir(parents=True,exist_ok=True)
     (OUTPUT/f'{key}-base.viser').write_bytes(recording.serialize())
     compressed=gzip.compress(quats.tobytes(),mtime=0)
-    # The revised ladder has fewer active joints. Give its binary a content
-    # version so a cached old pack cannot be paired with the new scene.
+    # Version the ladder pack so cached rotations from an earlier source
+    # cannot be paired with the new scene or joint mapping.
     suffix=f'-{hashlib.sha256(compressed).hexdigest()[:12]}' if key=='ladder-climbing' else ''
     quaternion_file=f'{key}-quaternions{suffix}.bin.gz'
     (OUTPUT/quaternion_file).write_bytes(compressed)
@@ -308,9 +291,11 @@ def export_task(server,key):
         nodes=[scene.nodes[name] for name in active],owner='',axes=m['axes'],
         quaternions=quaternion_file,quaternionShape=list(quats.shape),
         shifts=d['shifts'].tolist(),displayLift=0,normalizeRootQuaternion=True,boxNodes=scene.box_nodes,
-        boxLabel='Show contacts' if key=='ladder-climbing' else 'Show contact region',
+        boxLabel='Contact markers' if key=='ladder-climbing' else 'Show contact region',
         layers=scene.layers,curves=[dict(node=c['node'],points=c['points'].tolist()) for c in scene.curves],
-        provenance={**m,'cost_min':float(d['costs'].min()),'cost_max':float(d['costs'].max())})
+        provenance=dict(m))
+    if 'costs' in d:
+        config['provenance'].update(cost_min=float(d['costs'].min()),cost_max=float(d['costs'].max()))
     if key=='under-table-pickup':
         config['visualizationEdits']=['Remove detached reconstruction leg beside pickup object from table point cloud and voxel mesh; source geometry and optimization unchanged']
     if scene.object_presentation is not None:
@@ -323,13 +308,13 @@ def export_task(server,key):
         (OUTPUT/object_file).write_bytes(objects)
         config['dynamic']=dict(file=object_file,frameStride=scene.dynamic.shape[-1],channels=scene.channels)
     (OUTPUT/f'{key}.json').write_text(json.dumps(config,separators=(',',':'))+'\n')
-    print(f'Exported {key}: {N} motions, {T} frames, {len(active)} optimized joints.',flush=True)
+    print(f'Exported {key}: {N} motions, {T} frames, {len(active)} animated joints.',flush=True)
 
 
 def view_task(key,host='127.0.0.1',port=8080):
     data=load_task(key)
     server=viser.ViserServer(host=host,port=port)
-    scene=TaskScene(server,key,data)
+    scene=task_scene(server,key,data)
     server.gui.add_markdown(f"## {key.replace('-',' ').title()}")
     controls=[]
     for axis in 'xyz':

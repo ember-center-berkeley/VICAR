@@ -157,6 +157,14 @@ const server = http.createServer((req, res) => {
     const grid=JSON.parse(fs.readFileSync(path.join(root,variant.augmentationPath.split('?')[0]),'utf8'));
     await page.waitForFunction(index=>document.querySelector('#augmentation-controls').dataset.selectedIndex===String(index),grid.defaultIndex,{timeout:60000});
     assert.equal(variant.sampleCount,grid.shifts.length);
+    if(scene.id==='ladder-climbing') {
+     assert.equal(grid.frames,605);
+     assert.equal(grid.fps,50);
+     assert.equal(grid.provenance.reference,'climbing_short_fs:v0');
+     assert.deepEqual(grid.layers.map(layer=>layer.label),['Reconstructed ladder','Floor grid','Reference paths']);
+     assert.equal(await page.getByRole('checkbox',{name:'Collision geometry',exact:true}).count(),0);
+     assert.equal(await page.locator('#show-hit-box-label').textContent(),'Contact markers');
+    }
     assert.match(await page.locator('#motion-meta').textContent(),/frames.*fps/);
     await frame.getByRole('button',{name:'Pause motion',exact:true}).click();
     const time=frame.getByRole('textbox',{name:'Playback time',exact:true});

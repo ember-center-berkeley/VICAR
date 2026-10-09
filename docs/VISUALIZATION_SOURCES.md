@@ -1,7 +1,8 @@
 # VICAR visualization source map
 
 Current audit: TT_PLayer revision `b377ba951d2bd12bef45e23a5e623342038121e0`.
-All ten website task categories now use the canonical augmentation scripts.
+Nine task categories use the canonical augmentation scripts; ladder climbing
+uses the supplied `ladder_scene_20261008` standalone reference package.
 Paths below are relative to the TT_PLayer checkout. The original training,
 refinement, and augmentation code remains there; `visualization/` contains the
 portable data preparation, renderer, local player, and static web exporter.
@@ -20,7 +21,7 @@ portable data preparation, renderer, local player, and static web exporter.
 | Tabletop, right hand | `augment_pick_motions_g1.py` | `refined_pick_g1/pick.pkl` | 306 |
 | Under-table pickup | `augment_ground_pick_motions_left_g1.py` | `refined_ground_pick_g1/ground_pick_left.pkl` | 250 |
 | Bimanual pick/place | `augment_bimanual_pick_motions_g1.py` | `refined_bimanual_pick_g1/bimanual_pick.pkl` | 50 |
-| Ladder climbing | `augment_climbing_motions_g1_vis.py` | `refined_climbing_pick_g1/climbing.pkl` | 1 fixed contact solution |
+| Ladder climbing | `ladder_scene_20261008/viewer.py` | `climbing_short_fs:v0` (`motion.npz`) | 1 reference, 605 frames at 50 Hz |
 
 Most source scripts contain their Viser setup and replay loop inside the
 optimization program. `--vis` also runs optimization and loads optional
@@ -28,9 +29,11 @@ training dependencies. For lightweight playback use `python -m visualization
 view --task <id>` from this website checkout.
 
 The serve model is `urdf/g1/g1_racket.urdf`, with a right racket and left ball
-holder. The other tasks display `g1_29dof_with_hand.urdf`, using the source's
+holder. The manipulation tasks display `g1_29dof_with_hand.urdf`, using the source's
 43-joint mapping and finger timelines. They optimize with `g1_29dof.urdf`, or
-`g1_29dof_feet_edge.urdf` for climbing. See
+`g1_29dof_feet_edge.urdf` for the archived climbing solve. The current ladder
+replays the package's `main.urdf`, all 35 referenced visual meshes, and reconstructed
+ladder GLB; checksums are in `visualization/ladder_scene/provenance.json`. See
 [SERVE_AUGMENTATION.md](SERVE_AUGMENTATION.md) and
 [TASK_AUGMENTATION.md](TASK_AUGMENTATION.md) for exact ranges, geometry,
 rendering adaptations, regeneration, and solver diagnostics.
@@ -54,7 +57,8 @@ include:
   canonical filename has no trailing underscore.
 - `augment_climbing_motions_g1.py`: the previous climbing source, replaced by
   `augment_climbing_motions_g1_vis.py` for its revised contact schedule, toe-edge
-  constraints, joint limits, and visualization geometry. The headless exporter
+  constraints, joint limits, and visualization geometry. Both solves are now
+  superseded on the website by the standalone reference package. The headless exporter
   disables source saving and writes uniquely named website NPZs.
 - `augment_serves_g1_vis.py`: older multi-motion serve overlay.
 - `coll_vis.py`, `coll_vis2.py`: collision/optimization experiments reading

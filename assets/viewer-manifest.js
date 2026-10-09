@@ -596,63 +596,74 @@ window.VICAR.viewer = {
     {
       "id": "ladder-climbing",
       "title": "Ladder climbing",
-      "description": "Replay the climb with the revised hand and toe-edge contact sequence. Toggle the ladder rungs and contact markers to inspect the motion.",
+      "description": "Replay the 50 Hz reference motion on the reconstructed A-frame ladder. Toggle the ladder, contact markers, floor grid, and pelvis/foot reference paths to inspect the climb.",
       "variants": [
         {
           "id": "ladder-climbing",
-          "label": "Contact solution",
-          "recording": "assets/augmentation/tasks/ladder-climbing-base.viser?v=a800c6827c64",
-          "augmentationPath": "assets/augmentation/tasks/ladder-climbing.json?v=a800c6827c64",
+          "label": "Ladder reference",
+          "recording": "assets/augmentation/tasks/ladder-climbing-base.viser?v=10f24f9f2cbb",
+          "augmentationPath": "assets/augmentation/tasks/ladder-climbing.json?v=10f24f9f2cbb",
           "axes": {
             "x": {
-              "min": 0.0,
-              "max": 0.0,
-              "step": 1.0,
-              "default": 0.0,
+              "min": 0,
+              "max": 0,
+              "step": 0.01,
+              "default": 0,
               "values": [
-                0.0
+                0
               ]
             },
             "y": {
-              "min": 0.0,
-              "max": 0.0,
-              "step": 1.0,
-              "default": 0.0,
+              "min": 0,
+              "max": 0,
+              "step": 0.01,
+              "default": 0,
               "values": [
-                0.0
+                0
               ]
             },
             "z": {
-              "min": 0.07,
-              "max": 0.07,
-              "step": 1.0,
-              "default": 0.07,
+              "min": 0,
+              "max": 0,
+              "step": 0.01,
+              "default": 0,
               "values": [
-                0.07
+                0
               ]
             }
           },
           "sampleCount": 1,
           "layers": [
             {
-              "id": "stairs",
-              "label": "Ladder rungs",
+              "id": "ladder",
+              "label": "Reconstructed ladder",
               "nodes": [
-                "/stairs/step_1",
-                "/stairs/step_2",
-                "/stairs/step_3",
-                "/stairs/step_4",
-                "/stairs/step_5",
-                "/stairs/step_6"
+                "/reconstructed_ladder"
               ],
               "default": true
+            },
+            {
+              "id": "floor",
+              "label": "Floor grid",
+              "nodes": [
+                "/floor"
+              ],
+              "default": false
+            },
+            {
+              "id": "paths",
+              "label": "Reference paths",
+              "nodes": [
+                "/paths"
+              ],
+              "default": false
             }
           ],
-          "boxLabel": "Show contacts",
-          "frames": 364,
-          "fps": 30.3030303030303,
-          "duration": 12.012,
-          "stage": "Fixed contact solution"
+          "boxLabel": "Contact markers",
+          "frames": 605,
+          "fps": 50.0,
+          "duration": 12.1,
+          "stage": "Packaged reference motion"
         }
       ]
     }

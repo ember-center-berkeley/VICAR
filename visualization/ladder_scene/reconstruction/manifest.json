@@ -1,0 +1,186 @@
+{
+  "source_video": "/home/dkalaria/.agentsdock/files/file_4418407f19c841a0/Climbing.mp4",
+  "kind": "fixed visual reconstruction; geometry inferred from monocular video",
+  "step_top_constraint": "Exact existing RL rung top positions and XY extents including +0.03 m display raise; horizontal faces unchanged",
+  "steps": [
+    {
+      "step": 1,
+      "top_center_world_m": [
+        0.34800000000000003,
+        0,
+        0.32999999999999996
+      ],
+      "top_size_xy_m": [
+        0.096,
+        0.5499999999999999
+      ],
+      "thickness_m": 0.035,
+      "top_bounds_xy_m": [
+        [
+          0.30000000000000004,
+          -0.27499999999999997
+        ],
+        [
+          0.396,
+          0.27499999999999997
+        ]
+      ],
+      "old_top_center_world_m": [
+        0.34800000000000003,
+        0,
+        0.32999999999999996
+      ]
+    },
+    {
+      "step": 2,
+      "top_center_world_m": [
+        0.42400000000000004,
+        0,
+        0.63
+      ],
+      "top_size_xy_m": [
+        0.096,
+        0.5
+      ],
+      "thickness_m": 0.035,
+      "top_bounds_xy_m": [
+        [
+          0.37600000000000006,
+          -0.25
+        ],
+        [
+          0.47200000000000003,
+          0.25
+        ]
+      ],
+      "old_top_center_world_m": [
+        0.42400000000000004,
+        0,
+        0.63
+      ]
+    },
+    {
+      "step": 3,
+      "top_center_world_m": [
+        0.5,
+        0,
+        0.9299999999999999
+      ],
+      "top_size_xy_m": [
+        0.096,
+        0.44999999999999996
+      ],
+      "thickness_m": 0.035,
+      "top_bounds_xy_m": [
+        [
+          0.452,
+          -0.22499999999999998
+        ],
+        [
+          0.548,
+          0.22499999999999998
+        ]
+      ],
+      "old_top_center_world_m": [
+        0.5,
+        0,
+        0.9299999999999999
+      ]
+    },
+    {
+      "step": 4,
+      "top_center_world_m": [
+        0.576,
+        0,
+        1.23
+      ],
+      "top_size_xy_m": [
+        0.096,
+        0.4
+      ],
+      "thickness_m": 0.035,
+      "top_bounds_xy_m": [
+        [
+          0.5279999999999999,
+          -0.2
+        ],
+        [
+          0.624,
+          0.2
+        ]
+      ],
+      "old_top_center_world_m": [
+        0.576,
+        0,
+        1.23
+      ]
+    },
+    {
+      "step": 5,
+      "top_center_world_m": [
+        0.6519999999999999,
+        0,
+        1.53
+      ],
+      "top_size_xy_m": [
+        0.096,
+        0.35
+      ],
+      "thickness_m": 0.035,
+      "top_bounds_xy_m": [
+        [
+          0.6039999999999999,
+          -0.175
+        ],
+        [
+          0.7,
+          0.175
+        ]
+      ],
+      "old_top_center_world_m": [
+        0.6519999999999999,
+        0,
+        1.53
+      ]
+    },
+    {
+      "step": 6,
+      "top_center_world_m": [
+        0.728,
+        0,
+        1.8299999999999998
+      ],
+      "top_size_xy_m": [
+        0.096,
+        0.3
+      ],
+      "thickness_m": 0.065,
+      "top_bounds_xy_m": [
+        [
+          0.6799999999999999,
+          -0.15
+        ],
+        [
+          0.776,
+          0.15
+        ]
+      ],
+      "old_top_center_world_m": [
+        0.728,
+        0,
+        1.8299999999999998
+      ]
+    }
+  ],
+  "estimated_dimensions": {
+    "silver_tread_thickness_m": 0.035,
+    "yellow_cap_thickness_m": 0.065,
+    "rear_foot_x_m": 1.48
+  },
+  "validation": {
+    "six_top_faces_match": true,
+    "max_top_position_error_m": 0.0,
+    "exported_glb_max_top_error_m": 4.291534438927158e-08
+  },
+  "mesh_count": 133
+}

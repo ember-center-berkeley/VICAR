@@ -1,5 +1,6 @@
 """Independent checks for task ranges, hand mapping, objects and browser poses."""
 import gzip
+import hashlib
 import json
 import unittest
 import msgspec
@@ -9,60 +10,78 @@ from scipy.spatial.transform import Rotation
 import yourdfpy
 from .data import ROOT, JOINT_NAMES
 
-# Audited from the five source scripts (including bimanual's +0.07 m Z shift).
+# Audited from the manipulation source scripts (including bimanual's +0.07 m Z shift).
 EXPECTED = {
     'tabletop-left': (306,320,[9,17,2],[0,-.3,.058133676052093526],[.2,.08,.07813367605209352],10000),
     'tabletop-right': (306,220,[9,17,2],[0,-.08,.058133676052093526],[.2,.3,.07813367605209352],20000),
     'under-table-pickup': (250,385,[5,10,5],[0,0,-.1],[.05,.1,0],10000),
     'bimanual-pick-place': (50,480,[5,1,10],[0,0,.57],[.05,0,.67],10000),
-    'ladder-climbing': (1,364,[1,1,1],[0,0,.07],[0,0,.07],10000),
 }
 DATA = ROOT/'motions/tasks'
 PUBLIC = ROOT.parent/'assets/augmentation/tasks'
 
 
 class TaskTests(unittest.TestCase):
-    def test_revised_ladder_contacts_geometry_and_limits(self):
-        with np.load(DATA/'ladder-climbing.npz',allow_pickle=False) as file:data=dict(file)
-        meta=json.loads(str(data['metadata']))
+    def test_packaged_ladder_motion_geometry_and_controls(self):
+        package=ROOT/'ladder_scene'
+        provenance=json.loads((package/'provenance.json').read_text())
+        for name,sha in provenance['files'].items():
+            self.assertEqual(hashlib.sha256((package/name).read_bytes()).hexdigest(),sha,name)
+        with np.load(package/'motion.npz',allow_pickle=False) as file:motion=dict(file)
+        mapping=json.loads((package/'mapping.json').read_text())
+        model=yourdfpy.URDF.load(package/'main.urdf',load_meshes=False,build_collision_scene_graph=False)
         grid=json.loads((PUBLIC/'ladder-climbing.json').read_text())
-        self.assertEqual(meta['script'],'augment_climbing_motions_g1_vis.py')
-        self.assertEqual(len(meta['active_joints']),24)
-        self.assertNotIn('left_hip_yaw_joint',meta['active_joints'])
-        self.assertNotIn('right_hip_yaw_joint',meta['active_joints'])
-        self.assertEqual(meta['HAND_ROT_INDICES'],[20,69,320,340])
-        self.assertEqual(meta['LEFT_FEET_CONTACTS'],[[0,69,0],[95,165,1],[206,363,3]])
-        self.assertEqual(meta['RIGHT_FEET_CONTACTS'],[[0,115,0],[150,225,2],[244,363,3]])
-        self.assertEqual(meta['LEFT_HAND_CONTACTS'],[[69,156,4],[206,297,6]])
-        self.assertEqual(meta['RIGHT_HAND_CONTACTS'],[[140,240,5],[280,297,6]])
-        np.testing.assert_allclose(data['STAIR_ORIGIN'],[.4,0,0])
-        for name in meta['active_joints']:
-            angles=data['body_joints'][:,:,JOINT_NAMES.index(name)]
-            lower,upper=meta['joint_limit_constraints'][name]
-            self.assertGreaterEqual(float(angles.min()),lower-2e-6)
-            self.assertLessEqual(float(angles.max()),upper+2e-6)
+        self.assertEqual((grid['frames'],grid['fps']),(605,50))
+        self.assertEqual(grid['quaternionShape'],[1,605,29,4])
+        self.assertEqual(grid['shifts'],[[0,0,0]])
+        self.assertEqual(grid['provenance']['reference'],'climbing_short_fs:v0')
+        self.assertNotIn('cost_min',grid['provenance'])
+        self.assertEqual([(layer['id'],layer['default']) for layer in grid['layers']],
+                         [('ladder',True),('floor',False),('paths',False)])
+        self.assertEqual(grid['boxNodes'],['/anchors'])
         recording=(PUBLIC/'ladder-climbing-base.viser').read_bytes()
         payload=zstandard.ZstdDecompressor().decompress(recording[8:])
-        header=msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])
-        messages={(m['type'],m.get('name')):m for t,m in header['messages'] if t==0}
-        self.assertEqual(len(grid['boxNodes']),10)
-        for contact in meta['visual_contacts']:
-            stair=contact['stair']
-            y=contact['position'][1]
-            visual=[.4+(stair-1)*.076,y,.3*stair+.07] if stair else [0,y,.03]
-            offset=.17 if 'foot' in contact['node'] else .12
-            target=[.4+(stair-1)*.076+offset,y,.3*stair+.09] if stair else [offset,y,.05]
-            np.testing.assert_allclose(contact['position'],visual,atol=1e-7)
-            np.testing.assert_allclose(contact['optimizer_position'],target,atol=1e-7)
-            np.testing.assert_allclose(messages['SetPositionMessage',contact['node']]['position'],visual,atol=1e-7)
-            self.assertLess(contact['end'],364)
-        for stair in range(1,7):
-            name=f'/stairs/step_{stair}'
-            np.testing.assert_allclose(messages['SetPositionMessage',name]['position'],[.4+(stair-.5)*.076,0,.3*stair])
-            np.testing.assert_allclose(messages['BoxMessage',name]['props']['dimensions'],[.076,1,.05])
-        self.assertFalse(any(layer['id']=='obstacles' for layer in grid['layers']))
-        self.assertFalse(any(m.get('name','').startswith(('/collision/','/obstacles/')) for _,m in header['messages']))
-        self.assertEqual(grid['quaternionShape'],[1,364,24,4])
+        length=int.from_bytes(payload[:8],'little')
+        header=msgspec.msgpack.decode(payload[8:8+length])
+        self.assertAlmostEqual(header['durationSeconds'],605/50,places=6)
+        initial={(m['type'],m.get('name')):m for t,m in header['messages'] if t==0}
+        np.testing.assert_allclose(initial['SetPositionMessage','/reconstructed_ladder']['position'],[.03,0,0])
+        np.testing.assert_allclose(initial['SetPositionMessage','/anchors']['position'],[.04,0,-.02])
+        self.assertFalse(any(m.get('name','').startswith(('/collision','/obstacles','/stairs','/generator_steps')) for _,m in header['messages']))
+        self.assertFalse(any('collision' in layer['label'].lower() for layer in grid['layers']))
+        # Compare the embedded asset bytes, not a substitute set of box rungs.
+        glb=initial['GlbMessage','/reconstructed_ladder/asset']['props']['glb_data']
+        self.assertEqual(glb,(package/'reconstruction/ladder_reconstructed.glb').read_bytes())
+        # Independent reference-marker coordinates, before the parent offset.
+        expected={
+            'LEFT_FEET':([0,1,3],.13), 'RIGHT_FEET':([0,2,3],-.13),
+            'LEFT_HAND':([4,6],.11), 'RIGHT_HAND':([5,6],-.11),
+        }
+        for prefix,(steps,y) in expected.items():
+            for i,step in enumerate(steps):
+                xyz=[.3+(step-1)*.076,y,.3*step+.07] if step else [0,y,.03]
+                np.testing.assert_allclose(initial['SetPositionMessage',f'/anchors/{prefix}_{i}']['position'],xyz,atol=1e-7)
+        for time,message in header['messages']:
+            if message.get('name')!='/robot':continue
+            frame=min(604,round(time*50))
+            if message['type']=='SetPositionMessage':
+                np.testing.assert_allclose(message['position'],motion['body_pos_w'][frame,0],atol=1e-7)
+            elif message['type']=='SetOrientationMessage':
+                q=motion['body_quat_w'][frame,0]
+                np.testing.assert_allclose(message['wxyz'],q/np.linalg.norm(q),atol=1e-7)
+        quats=np.frombuffer(gzip.decompress((PUBLIC/grid['quaternions']).read_bytes()),dtype='<f4').reshape(grid['quaternionShape'])
+        np.testing.assert_allclose(np.linalg.norm(quats,axis=-1),1,atol=1e-6)
+        for frame in [0,100,250,400,604]:
+            model.update_cfg(dict(zip(mapping['joint_names'],motion['joint_pos'][frame])))
+            root=Rotation.from_quat(motion['body_quat_w'][frame,0,[1,2,3,0]])
+            for i,name in enumerate(mapping['body_names']):
+                actual=root.apply(model.get_transform(name)[:3,3])+motion['body_pos_w'][frame,0]
+                np.testing.assert_allclose(actual,motion['body_pos_w'][frame,i],atol=2e-6)
+            for j,name in enumerate(grid['provenance']['active_joints']):
+                joint=model.joint_map[name]
+                actual=model.get_transform(joint.child,joint.parent)[:3,:3]
+                decoded=Rotation.from_quat(quats[0,frame,j,[1,2,3,0]]).as_matrix()
+                np.testing.assert_allclose(actual,decoded,atol=3e-7)
 
     def test_source_ranges_fingers_and_browser_kinematics(self):
         hands=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'))
@@ -122,7 +141,6 @@ class TaskTests(unittest.TestCase):
                 if key=='tabletop-left':
                     np.testing.assert_allclose(data['body_joints'][:,-1,[12,15]]-data['body_joints'][:,219,[12,15]],np.tile([-.8,-1.6],(N,1)),atol=3e-7)
                     np.testing.assert_array_equal(data['poses'][220:],np.tile(data['poses'][219],(100,1)))
-                if key=='ladder-climbing':np.testing.assert_array_equal(data['poses'][:,5],np.zeros(T))
                 quats=np.frombuffer(gzip.decompress((PUBLIC/grid['quaternions']).read_bytes()),dtype='<f4').reshape(grid['quaternionShape'])
                 self.assertEqual(quats.shape,(N,T,len(meta['active_joints']),4))
                 np.testing.assert_allclose(np.linalg.norm(quats,axis=-1),1,atol=1e-6)
@@ -137,7 +155,6 @@ class TaskTests(unittest.TestCase):
 
     def test_carried_objects_and_penetration_channels_against_independent_fk(self):
         for key,(N,T,*_) in EXPECTED.items():
-            if key=='ladder-climbing':continue
             with self.subTest(task=key):
                 with np.load(DATA/f'{key}.npz',allow_pickle=False) as file:data=dict(file)
                 meta=json.loads(str(data['metadata']))

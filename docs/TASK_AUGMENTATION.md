@@ -1,10 +1,12 @@
 # Pickup, bimanual, and climbing augmentation
 
-The four non-serve task categories use five canonical `augment_*` programs from
+The manipulation task categories use canonical `augment_*` programs from
 TT_PLayer revision `b377ba951d2bd12bef45e23a5e623342038121e0`. The tabletop pickup
 viewer exposes only the left-hand motion; the right-hand dataset is retained
-as an archive. All use the articulated 43-joint G1 visual
+as an archive. These use the articulated 43-joint G1 visual
 model from the source, with the original 29-joint body motion mapped by joint order.
+The ladder uses the supplied `ladder_scene_20261008` standalone package, including
+its original 29-joint robot and 605-frame reference motion.
 The six serve viewers are described in [SERVE_AUGMENTATION.md](SERVE_AUGMENTATION.md).
 
 ## Sources and controls
@@ -19,19 +21,17 @@ on an even-sized axis, so the initial displayed value always exists in the grid.
 | Tabletop, right hand (archived) | `augment_pick_motions_g1.py` | 9 × 17 × 2 / 306 | 0 to 0.20 | −0.08 to 0.30 | 0.058133676 to 0.078133676 | 220 / 10 |
 | Under-table pickup | `augment_ground_pick_motions_left_g1.py` | 5 × 10 × 5 / 250 | 0 to 0.05 | 0 to 0.10 | −0.10 to 0 | 385 / 30.30303 |
 | Bimanual pick/place | `augment_bimanual_pick_motions_g1.py` | 5 × 1 × 10 / 50 | 0 to 0.05 | 0, fixed | 0.57 to 0.67 | 480 / 30.30303 |
-| Ladder climbing | `augment_climbing_motions_g1_vis.py` | 1 fixed contact solution | — | — | — | 364 / 30.30303 |
+| Ladder climbing | `ladder_scene_20261008/viewer.py` | 1 reference motion | — | — | — | 605 / 50 |
 
 The site exposes **607 task motions** alongside the 4,374 serve motions, with
 ten tasks and ten viewers. The 306 archived right-hand tabletop motions are
 excluded from the public manifest and hand-selection controls.
 
 Bimanual Z includes the source script's additional **+0.07 m**. Its Y slider is
-disabled because `NY=1`. The climbing script declares only one shift, `[0,0,0.07]`,
-but its objective uses fixed stair anchors and does not shift them with XYZ.
-Consequently, climbing offers timeline and scene-layer controls without XYZ
-sliders. The website now follows `augment_climbing_motions_g1_vis.py`, including
-its ground contacts, revised contact schedule, toe-edge keypoints, and joint
-limits. The previous export used `augment_climbing_motions_g1.py`.
+disabled because `NY=1`. Climbing offers timeline and scene-layer controls without
+XYZ sliders: the supplied package contains one reference motion, not an
+augmentation grid. The earlier 364-frame optimization is retained in
+`visualization/motions/tasks/ladder-climbing.npz` but is no longer exported.
 
 The source GUIs use `(max-min)/8` even for axes with 2, 5, 10, or 17 samples. The
 website uses explicit sample arrays instead, ensuring that every slider stop
@@ -64,17 +64,17 @@ coordinates retain their original precision.
   the public JSON records the display size, surface heights and easing timing.
   This is a visual release animation, not rigid-body simulation; source contact
   targets, the original box dimensions and the solved robot motion are retained.
-- **Climbing:** six rungs starting at X = 0.40 m and ten hand/foot contact markers
-  (including two ground contacts). Collision geometry is omitted from both the
-  scene and display controls. It remains part of the source optimization data.
-  Root Y is zeroed.
-  Visual markers are read from that process’s `_stair_anchor` helper: rung
-  anchors use `x = origin_x + (s−1)·tread`, `z = 0.3s+0.07`; ground markers use
-  X = 0, Z = 0.03. Optimizer targets separately use +0.17 m toe-edge / +0.12 m
-  hand X offsets and `z = 0.3s+0.09` (ground Z = 0.05). This source distinction
-  is preserved in the export. The motion optimizes 24 joints; hip yaw remains
-  fixed to the input motion. Both visual and optimizer anchors are recorded
-  in `visual_contacts` in the NPZ metadata and public JSON provenance.
+- **Climbing:** the package's reconstructed A-frame ladder, original G1 model,
+  and `climbing_short_fs:v0` motion, played unchanged at 50 Hz for 605 frames.
+  Joint columns are mapped by the package's explicit joint names. The GLB already
+  includes the +3 cm Z raise; its parent adds only +3 cm X. Ten contact reference
+  markers retain the package's independent +4 cm X / −2 cm Z offset. These are
+  generator guides, not measured contacts or timing annotations for this motion.
+  Standard scene controls toggle the ladder, markers, optional floor grid, and
+  pelvis/ankle reference paths. The gray 6 × 6 m ground remains visible. Collision
+  geometry, old RL rungs, and generator slabs are excluded from the website.
+  See [`visualization/ladder_scene/README.md`](../visualization/ladder_scene/README.md)
+  for the source package and its exact file hashes.
 
 For the pickup tasks, the captured camera and collision geometry can be toggled independently, as can
 table points, voxels, paths, and contact diagnostics where relevant. Defaults
@@ -97,6 +97,7 @@ the recorded hashes identify the original source files.
 
 ## Optimization and interpretation
 
+For manipulation and the archived climbing solve,
 `visualization/task_augmentation.py` executes the original script's setup and
 postprocessing around `retarget/spa.py`. It selects baseline `ours`, preserves
 all source anchors, obstacles, active joints, limits, weights, smoothing, speed
@@ -131,7 +132,7 @@ python -m visualization view --task ladder-climbing
 
 Open the printed localhost URL. The local viewer has actual-range XYZ controls,
 scene-layer toggles, timeline, play, speed, and restart. It only needs the
-included NPZ data and reduced robot assets; no source checkout or torch/JAX is
+included NPZ data and robot assets; no source checkout or torch/JAX is
 needed for playback.
 
 ```sh
@@ -166,8 +167,9 @@ python -m visualization.task_augmentation --source-root /path/to/TT_PLayer \
   --task tabletop-left --trust-pickle
 ```
 
-Repeat with `under-table-pickup`, `bimanual-pick-place`, and
-`ladder-climbing`, then export. Input pickles are loaded only with explicit trust.
+Repeat with `under-table-pickup` and `bimanual-pick-place`, then export.
+The optional `ladder-climbing` generator only updates the archived solve; the
+public ladder exporter always reads the standalone package, without optimization. Input pickles are loaded only with explicit trust.
 The generator executes the trusted source program's headless setup and tail;
 it is not intended for untrusted Python files. A short `--max-iters` development
 run writes to the ignored `visualization/motions/tasks/previews/` directory,

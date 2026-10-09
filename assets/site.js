@@ -299,7 +299,7 @@
         $(`#shift-${axis}-value`).textContent = `${formatShift(shift[i])} m`;
         $(`#shift-${axis}-range`).textContent = settings.min === settings.max ? 'Fixed' : `${formatShift(settings.min)} to ${formatShift(settings.max)} m`;
       });
-      $('.augmentation-note').textContent = variant.sampleCount === 1 ? 'One fixed contact solution' : `${variant.sampleCount || 729} motions · ${['x','y','z'].map(a => variant.axes[a].values?.length || 9).join(' × ')} positions`;
+      $('.augmentation-note').textContent = variant.sampleCount === 1 ? 'One reference motion' : `${variant.sampleCount || 729} motions · ${['x','y','z'].map(a => variant.axes[a].values?.length || 9).join(' × ')} positions`;
       $('#reset-shift').hidden = variant.sampleCount === 1;
       $('#contact-controls-label').textContent = variant.sampleCount === 1 ? 'Scene layers' : 'Contact shift';
       $('#show-hit-box-label').textContent = variant.boxLabel || 'Show hit box';
@@ -388,7 +388,7 @@
     if (event.data?.gridUrl !== new URL(variant.augmentationPath, document.baseURI).href) return;
     if (event.data?.type === 'vicar:augmentation-ready') sendShift();
     if (event.data?.type === 'vicar:shift-applied' && event.data.requestId === shiftRequest) {
-      $('#demo-status').textContent = variant.sampleCount === 1 ? `${scene.title} · Fixed stair contacts. Drag to orbit; use the timeline to replay.` : `${scene.title} · X ${formatShift(shift[0])} m · Y ${formatShift(shift[1])} m · Z ${formatShift(shift[2])} m. Drag to orbit; pause or scrub to compare poses.`;
+      $('#demo-status').textContent = variant.sampleCount === 1 ? `${scene.title} · Reference motion. Drag to orbit; use the timeline to replay.` : `${scene.title} · X ${formatShift(shift[0])} m · Y ${formatShift(shift[1])} m · Z ${formatShift(shift[2])} m. Drag to orbit; pause or scrub to compare poses.`;
       $('#augmentation-controls').dataset.selectedIndex = event.data.index;
     }
     if (event.data?.type === 'vicar:augmentation-error') {
