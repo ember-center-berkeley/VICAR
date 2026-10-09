@@ -21,6 +21,26 @@ DATA = ROOT/'motions/tasks'
 PUBLIC = ROOT.parent/'assets/augmentation/tasks'
 
 
+def tabletop_height(data,xy):
+    """Vertical ray/triangle checks across the 30 cm box footprint.
+
+    The voxel surface can vary in height under different parts of the box;
+    checking only its center would miss a higher supporting patch near an edge.
+    Ray spacing is smaller than the 5 cm reconstruction voxels.
+    """
+    a,b,c=np.moveaxis(data['table_vox_verts'][data['table_vox_faces']],1,0)
+    denominator=(b[:,1]-c[:,1])*(a[:,0]-c[:,0])+(c[:,0]-b[:,0])*(a[:,1]-c[:,1])
+    valid=np.abs(denominator)>1e-12
+    a,b,c,denominator=a[valid],b[valid],c[valid],denominator[valid]
+    samples=np.array([(xy[0]+dx,xy[1]+dy) for dx in np.linspace(-.15,.15,9) for dy in np.linspace(-.15,.15,9)])
+    x,y=samples[:,0,None],samples[:,1,None]
+    u=((b[:,1]-c[:,1])*(x-c[:,0])+(c[:,0]-b[:,0])*(y-c[:,1]))/denominator
+    v=((c[:,1]-a[:,1])*(x-c[:,0])+(a[:,0]-c[:,0])*(y-c[:,1]))/denominator
+    inside=(u>=-1e-7)&(v>=-1e-7)&(u+v<=1+1e-7)
+    if not inside.any():raise AssertionError('No table surface below box footprint')
+    return (u*a[:,2]+v*b[:,2]+(1-u-v)*c[:,2])[inside].max()
+
+
 class TaskTests(unittest.TestCase):
     def test_packaged_ladder_motion_geometry_and_controls(self):
         package=ROOT/'ladder_scene'
@@ -197,6 +217,27 @@ class TaskTests(unittest.TestCase):
                 # The augmentation pack is checked separately at full precision.
                 np.testing.assert_allclose(Rotation.from_quat(quat[[1,2,3,0]]).as_matrix(),expected[:3,:3],atol=2e-5)
 
+    def test_bimanual_recomputed_right_hand_frame(self):
+        with np.load(DATA/'bimanual-pick-place.npz',allow_pickle=False) as file:data=dict(file)
+        meta=json.loads(str(data['metadata']))
+        self.assertEqual(meta['kinematic_urdf'],'bimanual-pick-place-kinematics.urdf')
+        self.assertEqual(meta['source_kinematic_urdf'],'g1_29dof.urdf')
+        self.assertEqual(meta['iterations'],10000)
+        model=yourdfpy.URDF.load(DATA/meta['kinematic_urdf'],load_meshes=False,build_collision_scene_graph=False)
+        original=yourdfpy.URDF.load(DATA/'g1_29dof.urdf',load_meshes=False,build_collision_scene_graph=False)
+        np.testing.assert_allclose(model.joint_map['right_hand_palm_joint'].origin[:3,3],[.1315,0,0])
+        np.testing.assert_allclose(model.joint_map['left_hand_palm_joint'].origin[:3,3],[.1915,0,0])
+        np.testing.assert_allclose(original.joint_map['right_hand_palm_joint'].origin[:3,3],[.1915,0,0])
+        for index in [0,24,49]:
+            for frame in [0,150,225,300,479]:
+                model.update_cfg(dict(zip(JOINT_NAMES,data['body_joints'][index,frame])))
+                root=data['poses'][frame]
+                rotation=Rotation.from_quat(root[[1,2,3,0]])
+                for side in ['left','right']:
+                    hand=side+'_rubber_hand'
+                    expected=rotation.apply(model.get_transform(hand)[:3,3])+root[4:]
+                    np.testing.assert_allclose(data['world_'+hand][index,frame],expected,atol=1e-6)
+
     def test_carried_objects_and_penetration_channels_against_independent_fk(self):
         for key,(N,T,*_) in EXPECTED.items():
             with self.subTest(task=key):
@@ -217,7 +258,7 @@ class TaskTests(unittest.TestCase):
                             expected=data['object_traj_batch'][index,np.clip(frame,150,300)].copy()
                             expected[2]=np.clip(expected[2]-.2,.15,2)
                             if frame>=318:
-                                expected[2]=.70+.30/2  # Displayed table top + half box height.
+                                expected[2]=tabletop_height(data,expected[:2])+.30/2
                         else:
                             picked=max(frame,meta['PICK_TIME'])
                             body.update_cfg(dict(zip(JOINT_NAMES,data['body_joints'][index,picked])))
@@ -253,8 +294,10 @@ class TaskTests(unittest.TestCase):
         packed=np.frombuffer(gzip.decompress((PUBLIC/spec['file']).read_bytes()),dtype='<f4').reshape(50,480,spec['frameStride'])
         positions=packed[:,:,channel['offset']:channel['offset']+3]
         presentation=config['objectPresentation']
+        with np.load(DATA/'bimanual-pick-place.npz',allow_pickle=False) as file:data=dict(file)
+        surfaces=np.array([tabletop_height(data,p[:2]) for p in positions[:,318]])
         np.testing.assert_allclose(presentation['dimensions'],[.3,.3,.3])
-        np.testing.assert_allclose(presentation['tabletopZ'],np.full(50,.7),atol=1e-6)
+        np.testing.assert_allclose(presentation['tabletopZ'],surfaces,atol=1e-6)
         self.assertEqual(presentation['releaseFrame'],300)
         self.assertEqual(presentation['settleEndFrame'],318)
 
@@ -266,9 +309,8 @@ class TaskTests(unittest.TestCase):
         # Check every augmentation, including both extreme X/Z placements.
         np.testing.assert_allclose(positions[:,:151,2]-.15,0,atol=1e-7)
         self.assertGreaterEqual(float(positions[:,:,2].min()),.15-1e-7)
-        np.testing.assert_allclose(positions[:,318:,2]-.15,.7,atol=1e-6)
-        with np.load(DATA/'bimanual-pick-place.npz',allow_pickle=False) as data:
-            carried=data['object_traj_batch'][:,np.clip(np.arange(480),150,300)].copy()
+        np.testing.assert_allclose(positions[:,318:,2]-.15,np.broadcast_to(surfaces[:,None],(50,162)),atol=1e-6)
+        carried=data['object_traj_batch'][:,np.clip(np.arange(480),150,300)].copy()
         carried[:,:,2]=np.clip(carried[:,:,2]-.2,.15,2.)
         np.testing.assert_array_equal(positions[:,:301],carried[:,:301])
         np.testing.assert_array_equal(positions[:,:,:2],carried[:,:,:2])
@@ -276,7 +318,7 @@ class TaskTests(unittest.TestCase):
         self.assertTrue((descent<=0).all())
         self.assertLess(float(np.abs(descent).max()),.03)
         self.assertLess(float(np.abs(descent[:,[0,-1]]).max()),.001)
-        np.testing.assert_allclose(positions[:,309,2],(positions[:,300,2]+.85)/2,atol=1e-6)
+        np.testing.assert_allclose(positions[:,309,2],(positions[:,300,2]+surfaces+.15)/2,atol=1e-6)
 
     def test_selected_branch_kinematics_and_gradients(self):
         import torch

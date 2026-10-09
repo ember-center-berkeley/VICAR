@@ -32,7 +32,10 @@ The serve model is `urdf/g1/g1_racket.urdf`, with a right racket and left ball
 holder. Pickup tasks display `g1_29dof_with_hand.urdf`, using the source's
 43-joint mapping and finger timelines. Bimanual and ladder share the ladder
 package's exact 29-joint visual model; bimanual maps its solved body joint
-angles by name. Manipulation tasks optimize with `g1_29dof.urdf`, or
+angles by name. The bimanual solve uses the requested right-hand origin
+`(0.1315, 0, 0)` m in the original motion URDF; its separately saved
+`bimanual-pick-place-kinematics.urdf` preserves that configuration.
+Manipulation tasks optimize with `g1_29dof.urdf`, or
 `g1_29dof_feet_edge.urdf` for the archived climbing solve. The current ladder
 replays the package's `main.urdf`, all 35 referenced visual meshes, and reconstructed
 ladder GLB; checksums are in `visualization/ladder_scene/provenance.json`. See

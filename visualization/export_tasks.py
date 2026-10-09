@@ -289,9 +289,9 @@ def export_task(server,key):
     OUTPUT.mkdir(parents=True,exist_ok=True)
     (OUTPUT/f'{key}-base.viser').write_bytes(recording.serialize())
     compressed=gzip.compress(quats.tobytes(),mtime=0)
-    # Version the ladder pack so cached rotations from an earlier source
-    # cannot be paired with the new scene or joint mapping.
-    suffix=f'-{hashlib.sha256(compressed).hexdigest()[:12]}' if key=='ladder-climbing' else ''
+    # Version regenerated packs so cached rotations from an earlier solve
+    # cannot be paired with new geometry, object paths, or joint mappings.
+    suffix=f'-{hashlib.sha256(compressed).hexdigest()[:12]}' if key in ('ladder-climbing','bimanual-pick-place') else ''
     quaternion_file=f'{key}-quaternions{suffix}.bin.gz'
     (OUTPUT/quaternion_file).write_bytes(compressed)
     config=dict(version=3,title=m['label'],frames=T,fps=m['fps'],defaultIndex=scene.default,

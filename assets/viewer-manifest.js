@@ -496,8 +496,8 @@ window.VICAR.viewer = {
         {
           "id": "bimanual-pick-place",
           "label": "Contact augmentation",
-          "recording": "assets/augmentation/tasks/bimanual-pick-place-base.viser?v=48c1c37a647f",
-          "augmentationPath": "assets/augmentation/tasks/bimanual-pick-place.json?v=48c1c37a647f",
+          "recording": "assets/augmentation/tasks/bimanual-pick-place-base.viser?v=d5fbf5afeb25",
+          "augmentationPath": "assets/augmentation/tasks/bimanual-pick-place.json?v=d5fbf5afeb25",
           "axes": {
             "x": {
               "min": 0.0,

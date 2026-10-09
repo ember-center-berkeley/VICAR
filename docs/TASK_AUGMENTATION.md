@@ -59,17 +59,25 @@ coordinates retain their original precision.
 - **Bimanual:** the ladder package's original robot URDF and meshes, including
   its torso geometry and fixed rubber hands, driven by the original 29 body
   joint angles for all 50 motions. `robotModel` in the public JSON identifies
-  the shared model and its hash. The source optimizer and solved arrays remain
-  the same. The scene retains the source object trajectory and ±0.15 m hand paths, contact interval
+  the shared display model and its hash. The motion was regenerated with the
+  original motion URDF's `right_hand_palm_joint` translation changed from
+  `(0.1915, 0, 0)` to `(0.1315, 0, 0)` m. The left-hand offset remains
+  `(0.1915, 0, 0)` m. All 50 variants use the full 10,000-iteration source solve.
+  Reference hand keypoints, object targets and the source table alignment are
+  recalculated before solving. The revised kinematic URDF is preserved separately
+  as `visualization/motions/tasks/bimanual-pick-place-kinematics.urdf`, so the
+  other task datasets retain their original kinematic snapshots. The scene keeps
+  the source object trajectory and ±0.15 m hand paths, contact interval
   150–300, and source table. The displayed box is reduced to 0.3 × 0.3 × 0.3 m,
   so its initial 0.15 m center height puts the bottom on the ground. It follows
   the source's −0.2 m/clamped visual path while carried. After release at frame
   300, a smooth 18-frame (0.594 s) descent settles its bottom onto the visible
-  voxel tabletop beneath its footprint (Z = 0.70 m), then holds it there.
+  voxel tabletop beneath its footprint, then holds it there. The surface height
+  is measured again from the regenerated table geometry at each placement.
   XY placement is preserved for all 50 augmentations. `objectPresentation` in
   the public JSON records the display size, surface heights and easing timing.
   This is a visual release animation, not rigid-body simulation; source contact
-  targets, the original box dimensions and the solved robot motion are retained.
+  targets and the original box dimensions remain recorded in the source data.
 - **Climbing:** the package's reconstructed A-frame ladder, original G1 model,
   and `climbing_short_fs:v0` motion, played unchanged at 50 Hz for 605 frames.
   Joint columns are mapped by the package's explicit joint names. The GLB already
@@ -174,6 +182,10 @@ python -m visualization.task_augmentation --source-root /path/to/TT_PLayer \
 ```
 
 Repeat with `under-table-pickup` and `bimanual-pick-place`, then export.
+To reproduce the current bimanual data, first set only `right_hand_palm_joint`'s
+origin in the source `g1_29dof.urdf` to `xyz="0.1315 0 0"`, retaining its zero
+RPY and the original left-hand joint. Source hashes in the NPZ identify this
+modified URDF even when the checkout commit itself is unchanged.
 The optional `ladder-climbing` generator only updates the archived solve; the
 public ladder exporter always reads the standalone package, without optimization. Input pickles are loaded only with explicit trust.
 The generator executes the trusted source program's headless setup and tail;

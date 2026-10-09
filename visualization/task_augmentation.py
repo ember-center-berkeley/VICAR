@@ -268,10 +268,14 @@ def export_data(source,key,env,costs,components,converged,source_iters,iteration
         default_query.append(default)
     default_index = int(np.linalg.norm(shifts-default_query,axis=1).argmin())
     revision = subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip()
+    # Bimanual uses a user-adjusted hand frame. Keep its kinematic snapshot
+    # separate from the original URDF still referenced by the pickup datasets.
+    kinematic_file = f'{key}-kinematics.urdf' if key=='bimanual-pick-place' else env['urdf_path']
     metadata = {**spec,'key':key,'source_revision':revision,'axes':axes,'default_index':default_index,
         'source_script_sha256':hashlib.sha256((source/spec['script']).read_bytes()).hexdigest(),
         'solver_sha256':hashlib.sha256((source/'retarget/spa.py').read_bytes()).hexdigest(),
-        'kinematic_urdf':env['urdf_path'],'kinematic_urdf_sha256':hashlib.sha256((source/env['urdf_path']).read_bytes()).hexdigest(),
+        'kinematic_urdf':kinematic_file,'source_kinematic_urdf':env['urdf_path'],
+        'kinematic_urdf_sha256':hashlib.sha256((source/env['urdf_path']).read_bytes()).hexdigest(),
         'active_joints':env['active_joint_names'],'source_iterations':source_iters,'iterations':iterations,
         'converged':int(converged.sum()),'target_cost':env['TARGET_COST'],'baseline':env.get('BASELINE','ours'),'elapsed_seconds':round(elapsed,2),
         'torch_version':torch.__version__,'root_y_zeroed':key=='ladder-climbing',
@@ -329,7 +333,7 @@ def export_data(source,key,env,costs,components,converged,source_iters,iteration
         costs=costs.numpy(),converged=converged.numpy(),metadata=json.dumps(metadata),
         **{k:v.numpy() for k,v in components.items()},**arrays)
     urdf_text=(source/env['urdf_path']).read_text()
-    (destination/env['urdf_path']).write_text('\n'.join(line.rstrip() for line in urdf_text.splitlines())+'\n')
+    (destination/kinematic_file).write_text('\n'.join(line.rstrip() for line in urdf_text.splitlines())+'\n')
     print(f'Saved {key}: {N} motions; costs {costs.min():.5f}–{costs.max():.5f}; converged {int(converged.sum())}; {elapsed:.1f}s',flush=True)
 
 
