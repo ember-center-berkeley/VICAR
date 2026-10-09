@@ -12,6 +12,13 @@ from .data import ROOT
 PACKAGE = ROOT / 'ladder_scene'
 
 
+def load_robot_model():
+    """Shared visual model for the ladder and bimanual task players."""
+    return yourdfpy.URDF.load(PACKAGE / 'main.urdf',
+        filename_handler=lambda fname: str(PACKAGE / fname.removeprefix('package://unitree_description/')),
+        build_collision_scene_graph=False, load_collision_meshes=False)
+
+
 def load_ladder():
     with np.load(PACKAGE / 'motion.npz', allow_pickle=False) as file:
         motion = dict(file)
@@ -52,6 +59,7 @@ class LadderScene:
     """Package visuals with the same scene-layer and timeline controls as tasks."""
     def __init__(self, server, data):
         self.server, self.data, self.meta = server, data, data['metadata']
+        self.joints = data['joints']
         self.N, self.T, _ = data['joints'].shape
         self.default = 0
         self.targets = self.dynamic = self.object_presentation = None
@@ -70,9 +78,7 @@ class LadderScene:
             faces=np.array([[0, 1, 2], [0, 2, 3]], dtype=np.uint32), color=(210, 213, 216), side='double')
         server.scene.add_grid('/floor', width=6, height=6, cell_size=.1, section_size=1,
                               position=(0, 0, .0005), visible=False)
-        self.model = yourdfpy.URDF.load(PACKAGE / 'main.urdf',
-            filename_handler=lambda fname: str(PACKAGE / fname.removeprefix('package://unitree_description/')),
-            build_collision_scene_graph=False, load_collision_meshes=False)
+        self.model = load_robot_model()
         self.root = server.scene.add_frame('/robot', show_axes=False)
         self.robot = ViserUrdf(server, self.model, root_node_name='/robot', load_collision_meshes=False)
         self.nodes = {j.name: h.name for j, h in zip(self.robot._joint_map_values, self.robot._joint_frames)}

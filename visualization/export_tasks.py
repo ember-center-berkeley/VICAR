@@ -9,7 +9,7 @@ from scipy.spatial.transform import Rotation
 import viser
 from viser.extras import ViserUrdf
 import yourdfpy
-from .data import ROOT
+from .data import ROOT, JOINT_NAMES
 from .task_augmentation import DATA_DIR, TASKS
 
 OUTPUT = ROOT.parent / 'assets/augmentation/tasks'
@@ -119,7 +119,15 @@ class TaskScene:
         server.scene.world_axes.visible=False
         server.scene.add_grid('/Ground',width=8,height=8,cell_size=.25,section_size=1,
             plane_color=(247,249,252),plane_opacity=1,cell_color=(223,229,238),section_color=(188,200,216))
-        self.model=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'))
+        if key=='bimanual-pick-place':
+            from .ladder import load_robot_model
+            self.model=load_robot_model()
+            # Use the original 29 body joints, mapped into this model's order.
+            # The archived 43-joint array includes the previous visual hands.
+            self.joints=data['body_joints'][:,:,[JOINT_NAMES.index(name) for name in self.model.actuated_joint_names]]
+        else:
+            self.model=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'))
+            self.joints=data['joints']
         self.root=server.scene.add_frame('/base_new',show_axes=False)
         self.robot=ViserUrdf(server,self.model,root_node_name='/base_new')
         self.nodes={j.name:h.name for j,h in zip(self.robot._joint_map_values,self.robot._joint_frames)}
@@ -249,7 +257,7 @@ class TaskScene:
             # unit quaternions, so normalize only the displayed orientation.
             self.root.wxyz=pose[:4]/np.linalg.norm(pose[:4])
             self.root.position=pose[4:]+[0,0,self.meta['lift']]
-            self.robot.update_cfg(self.data['joints'][index,frame])
+            self.robot.update_cfg(self.joints[index,frame])
             if self.targets is not None:self.marker.position=self.targets[index]
             for curve in self.curves:self.handles[curve['node']].points=curve['points'][index]
             if self.dynamic is not None:
@@ -272,7 +280,7 @@ def export_task(server,key):
     quats=np.empty((N,T,len(active),4),dtype='<f4')
     for i,name in enumerate(active):
         joint=scene.model.joint_map[name]
-        rotation=Rotation.from_matrix(joint.origin[:3,:3])*Rotation.from_rotvec(d['joints'][:,:,names.index(name)].reshape(-1,1)*joint.axis)
+        rotation=Rotation.from_matrix(joint.origin[:3,:3])*Rotation.from_rotvec(scene.joints[:,:,names.index(name)].reshape(-1,1)*joint.axis)
         quats[:,:,i]=rotation.as_quat()[:,[3,0,1,2]].reshape(N,T,4)
     recording=server.get_scene_serializer()
     for frame in range(T):
@@ -300,6 +308,10 @@ def export_task(server,key):
         config['visualizationEdits']=['Remove detached reconstruction leg beside pickup object from table point cloud and voxel mesh; source geometry and optimization unchanged']
     if scene.object_presentation is not None:
         config['objectPresentation']=scene.object_presentation
+    if key=='bimanual-pick-place':
+        config['robotModel']=dict(urdf='visualization/ladder_scene/main.urdf',
+            sha256=hashlib.sha256((ROOT/'ladder_scene/main.urdf').read_bytes()).hexdigest(),
+            sharedWith='ladder-climbing',jointNames=list(names),motionSource='body_joints')
     if scene.targets is not None:config.update(targetNode='/pick_point',targets=scene.targets.tolist())
     if scene.dynamic is not None:
         objects=gzip.compress(scene.dynamic.tobytes(),mtime=0)

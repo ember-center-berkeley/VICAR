@@ -29,8 +29,10 @@ training dependencies. For lightweight playback use `python -m visualization
 view --task <id>` from this website checkout.
 
 The serve model is `urdf/g1/g1_racket.urdf`, with a right racket and left ball
-holder. The manipulation tasks display `g1_29dof_with_hand.urdf`, using the source's
-43-joint mapping and finger timelines. They optimize with `g1_29dof.urdf`, or
+holder. Pickup tasks display `g1_29dof_with_hand.urdf`, using the source's
+43-joint mapping and finger timelines. Bimanual and ladder share the ladder
+package's exact 29-joint visual model; bimanual maps its solved body joint
+angles by name. Manipulation tasks optimize with `g1_29dof.urdf`, or
 `g1_29dof_feet_edge.urdf` for the archived climbing solve. The current ladder
 replays the package's `main.urdf`, all 35 referenced visual meshes, and reconstructed
 ladder GLB; checksums are in `visualization/ladder_scene/provenance.json`. See

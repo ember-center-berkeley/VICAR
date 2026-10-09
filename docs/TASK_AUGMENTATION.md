@@ -3,8 +3,10 @@
 The manipulation task categories use canonical `augment_*` programs from
 TT_PLayer revision `b377ba951d2bd12bef45e23a5e623342038121e0`. The tabletop pickup
 viewer exposes only the left-hand motion; the right-hand dataset is retained
-as an archive. These use the articulated 43-joint G1 visual
-model from the source, with the original 29-joint body motion mapped by joint order.
+as an archive. Pickup viewers use the articulated 43-joint G1 visual
+model from the source. Bimanual pick/place displays the exact 29-joint model
+from the ladder package, with its existing body motion mapped by joint name.
+Its archived 43-joint data has static finger joints; no finger animation is lost.
 The ladder uses the supplied `ladder_scene_20261008` standalone package, including
 its original 29-joint robot and 605-frame reference motion.
 The six serve viewers are described in [SERVE_AUGMENTATION.md](SERVE_AUGMENTATION.md).
@@ -54,7 +56,11 @@ coordinates retain their original precision.
   remain in the source data.
   Contact diagnostics color and resize arm-keypoint spheres using penetration
   into the original collision box.
-- **Bimanual:** source object trajectory and ±0.15 m hand paths, contact interval
+- **Bimanual:** the ladder package's original robot URDF and meshes, including
+  its torso geometry and fixed rubber hands, driven by the original 29 body
+  joint angles for all 50 motions. `robotModel` in the public JSON identifies
+  the shared model and its hash. The source optimizer and solved arrays remain
+  the same. The scene retains the source object trajectory and ±0.15 m hand paths, contact interval
   150–300, and source table. The displayed box is reduced to 0.3 × 0.3 × 0.3 m,
   so its initial 0.15 m center height puts the bottom on the ground. It follows
   the source's −0.2 m/clamped visual path while carried. After release at frame

@@ -85,6 +85,7 @@ class TaskTests(unittest.TestCase):
 
     def test_source_ranges_fingers_and_browser_kinematics(self):
         hands=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'))
+        ladder=yourdfpy.URDF.load(ROOT/'ladder_scene/main.urdf',load_meshes=False,build_collision_scene_graph=False)
         self.assertEqual(len(hands.actuated_joint_names),43)
         for key,(N,T,counts,minimum,maximum,iterations) in EXPECTED.items():
             with self.subTest(task=key):
@@ -146,12 +147,55 @@ class TaskTests(unittest.TestCase):
                 np.testing.assert_allclose(np.linalg.norm(quats,axis=-1),1,atol=1e-6)
                 for index in sorted(set([0,N//2,N-1])):
                     for frame in sorted(set([0,grid['hitFrame'],T-1])):
-                        hands.update_cfg(data['joints'][index,frame])
+                        model=ladder if key=='bimanual-pick-place' else hands
+                        if key=='bimanual-pick-place':
+                            model.update_cfg(dict(zip(JOINT_NAMES,data['body_joints'][index,frame])))
+                        else:
+                            model.update_cfg(data['joints'][index,frame])
                         for j,name in enumerate(meta['active_joints']):
-                            joint=hands.joint_map[name]
-                            actual=hands.get_transform(joint.child,joint.parent)[:3,:3]
+                            joint=model.joint_map[name]
+                            actual=model.get_transform(joint.child,joint.parent)[:3,:3]
                             decoded=Rotation.from_quat(quats[index,frame,j,[1,2,3,0]]).as_matrix()
                             np.testing.assert_allclose(decoded,actual,atol=3e-7)
+
+    def test_bimanual_uses_ladder_robot_model(self):
+        def recording(key):
+            compressed=(PUBLIC/f'{key}-base.viser').read_bytes()
+            payload=zstandard.ZstdDecompressor().decompress(compressed[8:])
+            return msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])
+        ladder,bimanual=recording('ladder-climbing'),recording('bimanual-pick-place')
+        # Compare the actual exported visual geometry/materials, not only metadata.
+        def meshes(header,root):
+            return {m['name'].removeprefix(root):hashlib.sha256(m['props']['glb_data']).hexdigest()
+                    for _,m in header['messages'] if m['type']=='GlbMessage' and m['name'].startswith(root+'/')}
+        expected=meshes(ladder,'/robot')
+        self.assertEqual(len(expected),35)
+        self.assertEqual(meshes(bimanual,'/base_new'),expected)
+        config=json.loads((PUBLIC/'bimanual-pick-place.json').read_text())
+        self.assertEqual(config['robotModel']['sha256'],hashlib.sha256((ROOT/'ladder_scene/main.urdf').read_bytes()).hexdigest())
+        self.assertEqual(config['robotModel']['jointNames'],JOINT_NAMES)
+        model=yourdfpy.URDF.load(ROOT/'ladder_scene/main.urdf',load_meshes=False,build_collision_scene_graph=False)
+        frames={m['name'] for _,m in bimanual['messages'] if m['type']=='FrameMessage' and m['name'].startswith('/base_new/visual/')}
+        self.assertFalse(any('_thumb_' in name or '_index_' in name or '_middle_' in name for name in frames))
+        nodes={joint.name:next(name for name in frames if name.endswith('/'+joint.child))
+               for joint in model.robot.joints if joint.type!='fixed'}
+        with np.load(DATA/'bimanual-pick-place.npz',allow_pickle=False) as data:
+            angles=data['body_joints'][config['defaultIndex']]
+        # Verify all 29 recorded joints, including fixed-across-augmentation
+        # body joints, against independent FK in the ladder's exact skeleton.
+        for frame in [0,150,250,300,318,479]:
+            model.update_cfg(dict(zip(JOINT_NAMES,angles[frame])))
+            state={(m['type'],m.get('name')):m for t,m in bimanual['messages'] if t<=frame/config['fps']+1e-7}
+            for joint in model.robot.joints:
+                if joint.type=='fixed':continue
+                node=nodes[joint.name]
+                position=state.get(('SetPositionMessage',node),{}).get('position',[0,0,0])
+                quat=np.asarray(state.get(('SetOrientationMessage',node),{}).get('wxyz',[1,0,0,0]))
+                expected=model.get_transform(joint.child,joint.parent)
+                np.testing.assert_allclose(position,expected[:3,3],atol=1e-7)
+                # Viser skips successive poses that pass np.allclose (rtol=1e-5).
+                # The augmentation pack is checked separately at full precision.
+                np.testing.assert_allclose(Rotation.from_quat(quat[[1,2,3,0]]).as_matrix(),expected[:3,:3],atol=2e-5)
 
     def test_carried_objects_and_penetration_channels_against_independent_fk(self):
         for key,(N,T,*_) in EXPECTED.items():
