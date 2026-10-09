@@ -67,6 +67,7 @@ def bimanual_object_motion(data):
     # Raise the center by half the added height to preserve the bottom's
     # trajectory, including its initial ground contact and tabletop landing.
     reference_height=.3
+    dimensions[1]=.26
     dimensions[2]=.4
     center_lift=(dimensions[2]-reference_height)/2
     half_height=dimensions[2]/2
