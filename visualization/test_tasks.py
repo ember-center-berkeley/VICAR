@@ -22,7 +22,7 @@ PUBLIC = ROOT.parent/'assets/augmentation/tasks'
 
 
 def tabletop_height(data,xy):
-    """Vertical ray/triangle checks across the 30 × 24 cm box footprint.
+    """Vertical ray/triangle checks across the 26 × 24 cm box footprint.
 
     The voxel surface can vary in height under different parts of the box;
     checking only its center would miss a higher supporting patch near an edge.
@@ -32,7 +32,7 @@ def tabletop_height(data,xy):
     denominator=(b[:,1]-c[:,1])*(a[:,0]-c[:,0])+(c[:,0]-b[:,0])*(a[:,1]-c[:,1])
     valid=np.abs(denominator)>1e-12
     a,b,c,denominator=a[valid],b[valid],c[valid],denominator[valid]
-    samples=np.array([(xy[0]+dx,xy[1]+dy) for dx in np.linspace(-.15,.15,9) for dy in np.linspace(-.12,.12,9)])
+    samples=np.array([(xy[0]+dx,xy[1]+dy) for dx in np.linspace(-.13,.13,9) for dy in np.linspace(-.12,.12,9)])
     x,y=samples[:,0,None],samples[:,1,None]
     u=((b[:,1]-c[:,1])*(x-c[:,0])+(c[:,0]-b[:,0])*(y-c[:,1]))/denominator
     v=((c[:,1]-a[:,1])*(x-c[:,0])+(a[:,0]-c[:,0])*(y-c[:,1]))/denominator
@@ -296,7 +296,7 @@ class TaskTests(unittest.TestCase):
         presentation=config['objectPresentation']
         with np.load(DATA/'bimanual-pick-place.npz',allow_pickle=False) as file:data=dict(file)
         surfaces=np.array([tabletop_height(data,p[:2]) for p in positions[:,318]])
-        np.testing.assert_allclose(presentation['dimensions'],[.3,.24,.4])
+        np.testing.assert_allclose(presentation['dimensions'],[.26,.24,.4])
         np.testing.assert_allclose(presentation['tabletopZ'],surfaces,atol=1e-6)
         self.assertEqual(presentation['releaseFrame'],300)
         self.assertEqual(presentation['settleEndFrame'],318)
@@ -305,7 +305,7 @@ class TaskTests(unittest.TestCase):
         payload=zstandard.ZstdDecompressor().decompress(recording[8:])
         header=msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])
         box=next(m for _,m in header['messages'] if m['type']=='BoxMessage' and m['name']=='/object_cuboid')
-        np.testing.assert_allclose(box['props']['dimensions'],[.3,.24,.4])
+        np.testing.assert_allclose(box['props']['dimensions'],[.26,.24,.4])
         # Check every augmentation, including both extreme X/Z placements.
         np.testing.assert_allclose(positions[:,:151,2]-.2,0,atol=1e-7)
         self.assertGreaterEqual(float(positions[:,:,2].min()),.2-1e-7)
