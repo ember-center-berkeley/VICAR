@@ -491,13 +491,13 @@ window.VICAR.viewer = {
     {
       "id": "bimanual-pick-place",
       "title": "Bimanual pick-and-place",
-      "description": "Move the box placement in X and Z and replay the coordinated two-handed motion. Y stays fixed. Green traces the object path; cyan and pink show the left- and right-hand contact paths.",
+      "description": "Move the box placement in X and Z and replay the coordinated two-handed motion. The box starts on the ground and settles onto the tabletop after release. Y stays fixed. Green traces the object path; cyan and pink show the left- and right-hand contact paths.",
       "variants": [
         {
           "id": "bimanual-pick-place",
           "label": "Contact augmentation",
-          "recording": "assets/augmentation/tasks/bimanual-pick-place-base.viser",
-          "augmentationPath": "assets/augmentation/tasks/bimanual-pick-place.json",
+          "recording": "assets/augmentation/tasks/bimanual-pick-place-base.viser?v=3aae982ed65c",
+          "augmentationPath": "assets/augmentation/tasks/bimanual-pick-place.json?v=3aae982ed65c",
           "axes": {
             "x": {
               "min": 0.0,

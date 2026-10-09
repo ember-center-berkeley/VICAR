@@ -47,6 +47,50 @@ def table_geometry(key,data):
     return points,colors,vertices,faces
 
 
+def bimanual_object_motion(data):
+    """Visual pickup and release; leave the source contact solve untouched."""
+    meta=data['metadata']
+    path=data['object_traj_batch']
+    start,end=meta['CONTACT_START_FRAME'],meta['CONTACT_END_FRAME']
+    frames=np.arange(path.shape[1])
+    dimensions=np.asarray(meta['OBJECT_DIMS'],dtype=float).copy()
+    # The source's minimum center height is 15 cm. A 30 cm height rests on
+    # the ground while retaining the 30 cm width between the grasping hands.
+    dimensions[2]=.3
+    half_height=dimensions[2]/2
+    positions=path[:,np.clip(frames,start,end)].copy()
+    positions[:,:,2]=np.clip(positions[:,:,2]-.2,half_height,2.)
+
+    # Land on the visible voxel tabletop under each box footprint, rather
+    # than the differently aligned collision proxy used by the optimizer.
+    triangles=data['table_vox_verts'][data['table_vox_faces']]
+    lower,upper=triangles.min(axis=1),triangles.max(axis=1)
+    tabletop=[]
+    for position in positions[:,end]:
+        overlaps=np.all((upper[:,:2]>=position[:2]-dimensions[:2]/2)
+                        & (lower[:,:2]<=position[:2]+dimensions[:2]/2),axis=1)
+        if not overlaps.any():
+            raise ValueError('No reconstructed table beneath the box placement.')
+        tabletop.append(float(upper[overlaps,2].max()))
+    tabletop=np.asarray(tabletop)
+    landing=tabletop+half_height
+    release=positions[:,end,2].copy()
+    if np.any(landing>release+1e-6):
+        raise ValueError('Box must be above the tabletop at release.')
+
+    settle_end=min(end+round(.6*meta['fps']),len(frames)-1)
+    progress=np.clip((frames-end)/(settle_end-end),0,1)
+    # Quintic easing has zero velocity and acceleration at both ends.
+    easing=progress**3*(10-15*progress+6*progress**2)
+    after=frames>end
+    positions[:,after,2]=release[:,None]+(landing-release)[:,None]*easing[after]
+    presentation=dict(dimensions=dimensions.tolist(),groundZ=0,
+        tabletopZ=tabletop.tolist(),releaseFrame=end,settleEndFrame=settle_end,
+        settleSeconds=(settle_end-end)/meta['fps'],easing='quintic smoothstep',
+        note='Visual release animation; source contact targets and robot motions are unchanged')
+    return dimensions,positions,presentation
+
+
 class TaskScene:
     def __init__(self,server,key,data):
         self.server,self.key,self.data = server,key,data
@@ -59,6 +103,7 @@ class TaskScene:
         self.curves=[]
         self.layers=[]
         self.box_nodes=[]
+        self.object_presentation=None
         server.scene.reset()
         server.scene.set_up_direction('+z')
         server.scene.world_axes.visible=False
@@ -150,9 +195,8 @@ class TaskScene:
             self.curve('/traj_object',path[:,start:end],(0,255,0))
             self.curve('/traj_left_hand',path[:,start:end]+[0,.15,0],(0,180,255),2)
             self.curve('/traj_right_hand',path[:,start:end]+[0,-.15,0],(255,80,200),2)
-            objects=path[:,np.clip(np.arange(self.T),start,end)].copy()
-            objects[:,:,2]=np.clip(objects[:,:,2]-.2,.15,2.)
-            self.object=self.server.scene.add_box('/object_cuboid',dimensions=m['OBJECT_DIMS'],color=(255,200,0),opacity=.9)
+            dimensions,objects,self.object_presentation=bimanual_object_motion(d)
+            self.object=self.server.scene.add_box('/object_cuboid',dimensions=tuple(dimensions),color=(255,200,0),opacity=.9)
             self.channel(self.object,'position',objects)
         else:
             pick=m['PICK_TIME']
@@ -269,10 +313,15 @@ def export_task(server,key):
         provenance={**m,'cost_min':float(d['costs'].min()),'cost_max':float(d['costs'].max())})
     if key=='under-table-pickup':
         config['visualizationEdits']=['Remove detached reconstruction leg beside pickup object from table point cloud and voxel mesh; source geometry and optimization unchanged']
+    if scene.object_presentation is not None:
+        config['objectPresentation']=scene.object_presentation
     if scene.targets is not None:config.update(targetNode='/pick_point',targets=scene.targets.tolist())
     if scene.dynamic is not None:
-        (OUTPUT/f'{key}-objects.bin.gz').write_bytes(gzip.compress(scene.dynamic.tobytes(),mtime=0))
-        config['dynamic']=dict(file=f'{key}-objects.bin.gz',frameStride=scene.dynamic.shape[-1],channels=scene.channels)
+        objects=gzip.compress(scene.dynamic.tobytes(),mtime=0)
+        suffix=f'-{hashlib.sha256(objects).hexdigest()[:12]}' if key=='bimanual-pick-place' else ''
+        object_file=f'{key}-objects{suffix}.bin.gz'
+        (OUTPUT/object_file).write_bytes(objects)
+        config['dynamic']=dict(file=object_file,frameStride=scene.dynamic.shape[-1],channels=scene.channels)
     (OUTPUT/f'{key}.json').write_text(json.dumps(config,separators=(',',':'))+'\n')
     print(f'Exported {key}: {N} motions, {T} frames, {len(active)} optimized joints.',flush=True)
 

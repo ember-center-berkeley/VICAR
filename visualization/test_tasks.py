@@ -155,6 +155,8 @@ class TaskTests(unittest.TestCase):
                         if key=='bimanual-pick-place':
                             expected=data['object_traj_batch'][index,np.clip(frame,150,300)].copy()
                             expected[2]=np.clip(expected[2]-.2,.15,2)
+                            if frame>=318:
+                                expected[2]=.70+.30/2  # Displayed table top + half box height.
                         else:
                             picked=max(frame,meta['PICK_TIME'])
                             body.update_cfg(dict(zip(JOINT_NAMES,data['body_joints'][index,picked])))
@@ -181,6 +183,39 @@ class TaskTests(unittest.TestCase):
                             np.testing.assert_allclose(value(node,'color',index,frame),color,atol=1)
                             radius=.012+.02*fraction if depth>0 else .007
                             self.assertAlmostEqual(value(node,'scale',index,frame)[0],radius/.007,places=5)
+
+    def test_bimanual_box_ground_contact_and_smooth_table_release(self):
+        config=json.loads((PUBLIC/'bimanual-pick-place.json').read_text())
+        spec=config['dynamic']
+        channels={(c['node'],c['property']):c for c in spec['channels']}
+        channel=channels['/object_cuboid','position']
+        packed=np.frombuffer(gzip.decompress((PUBLIC/spec['file']).read_bytes()),dtype='<f4').reshape(50,480,spec['frameStride'])
+        positions=packed[:,:,channel['offset']:channel['offset']+3]
+        presentation=config['objectPresentation']
+        np.testing.assert_allclose(presentation['dimensions'],[.3,.3,.3])
+        np.testing.assert_allclose(presentation['tabletopZ'],np.full(50,.7),atol=1e-6)
+        self.assertEqual(presentation['releaseFrame'],300)
+        self.assertEqual(presentation['settleEndFrame'],318)
+
+        recording=(PUBLIC/'bimanual-pick-place-base.viser').read_bytes()
+        payload=zstandard.ZstdDecompressor().decompress(recording[8:])
+        header=msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])
+        box=next(m for _,m in header['messages'] if m['type']=='BoxMessage' and m['name']=='/object_cuboid')
+        np.testing.assert_allclose(box['props']['dimensions'],[.3,.3,.3])
+        # Check every augmentation, including both extreme X/Z placements.
+        np.testing.assert_allclose(positions[:,:151,2]-.15,0,atol=1e-7)
+        self.assertGreaterEqual(float(positions[:,:,2].min()),.15-1e-7)
+        np.testing.assert_allclose(positions[:,318:,2]-.15,.7,atol=1e-6)
+        with np.load(DATA/'bimanual-pick-place.npz',allow_pickle=False) as data:
+            carried=data['object_traj_batch'][:,np.clip(np.arange(480),150,300)].copy()
+        carried[:,:,2]=np.clip(carried[:,:,2]-.2,.15,2.)
+        np.testing.assert_array_equal(positions[:,:301],carried[:,:301])
+        np.testing.assert_array_equal(positions[:,:,:2],carried[:,:,:2])
+        descent=np.diff(positions[:,300:319,2],axis=1)
+        self.assertTrue((descent<=0).all())
+        self.assertLess(float(np.abs(descent).max()),.03)
+        self.assertLess(float(np.abs(descent[:,[0,-1]]).max()),.001)
+        np.testing.assert_allclose(positions[:,309,2],(positions[:,300,2]+.85)/2,atol=1e-6)
 
     def test_selected_branch_kinematics_and_gradients(self):
         import torch

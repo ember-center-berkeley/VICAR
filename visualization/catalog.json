@@ -298,7 +298,7 @@
       "id": "bimanual-pick-place",
       "title": "Bimanual pick-and-place",
       "kind": "bimanual",
-      "description": "Move the box placement in X and Z and replay the coordinated two-handed motion. Y stays fixed. Green traces the object path; cyan and pink show the left- and right-hand contact paths.",
+      "description": "Move the box placement in X and Z and replay the coordinated two-handed motion. The box starts on the ground and settles onto the tabletop after release. Y stays fixed. Green traces the object path; cyan and pink show the left- and right-hand contact paths.",
       "sources": [
         "refine_bimanual_pick_motion_g1.py",
         "augment_bimanual_pick_motions_g1.py"

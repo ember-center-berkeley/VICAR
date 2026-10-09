@@ -55,9 +55,15 @@ coordinates retain their original precision.
   Contact diagnostics color and resize arm-keypoint spheres using penetration
   into the original collision box.
 - **Bimanual:** source object trajectory and ±0.15 m hand paths, contact interval
-  150–300, 0.3 × 0.3 × 0.4 m box, and source table. The box follows the prescribed
-  object trajectory with the source's −0.2 m/clamped visual offset. It is not a
-  simulated rigid body or a measurement of the achieved contact.
+  150–300, and source table. The displayed box is reduced to 0.3 × 0.3 × 0.3 m,
+  so its initial 0.15 m center height puts the bottom on the ground. It follows
+  the source's −0.2 m/clamped visual path while carried. After release at frame
+  300, a smooth 18-frame (0.594 s) descent settles its bottom onto the visible
+  voxel tabletop beneath its footprint (Z = 0.70 m), then holds it there.
+  XY placement is preserved for all 50 augmentations. `objectPresentation` in
+  the public JSON records the display size, surface heights and easing timing.
+  This is a visual release animation, not rigid-body simulation; source contact
+  targets, the original box dimensions and the solved robot motion are retained.
 - **Climbing:** six rungs starting at X = 0.40 m and ten hand/foot contact markers
   (including two ground contacts). Collision geometry is omitted from both the
   scene and display controls. It remains part of the source optimization data.
