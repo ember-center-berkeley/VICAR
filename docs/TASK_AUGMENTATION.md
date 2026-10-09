@@ -68,9 +68,9 @@ coordinates retain their original precision.
   as `visualization/motions/tasks/bimanual-pick-place-kinematics.urdf`, so the
   other task datasets retain their original kinematic snapshots. The scene keeps
   the source object trajectory and ±0.15 m hand paths, contact interval
-  150–300, and source table. The displayed box measures 0.3 × 0.3 × 0.35 m,
-  with its center raised 0.025 m from the previous 0.3 m tall box throughout
-  the animation. Its initial 0.175 m center height puts the bottom on the ground.
+  150–300, and source table. The displayed box measures 0.3 × 0.3 × 0.4 m,
+  with its center raised 0.05 m from the original 0.3 m tall box throughout
+  the animation. Its initial 0.2 m center height puts the bottom on the ground.
   It follows the source's −0.2 m/clamped visual path plus the center lift while
   carried, preserving the bottom's trajectory. After release at frame
   300, a smooth 18-frame (0.594 s) descent settles its bottom onto the visible
