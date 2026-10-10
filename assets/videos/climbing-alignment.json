@@ -1,8 +1,8 @@
 {
   "video": "assets/videos/ladder-climbing.mp4",
   "poster": "assets/images/ladder-climbing-poster.jpg",
-  "bytes": 3448524,
-  "width": 1166,
+  "bytes": 2523126,
+  "width": 984,
   "height": 864,
   "fps": 60,
   "duration": 11.8,
@@ -13,50 +13,25 @@
       "sha256": "94b5b102adc14178b4f85da3e7b3d49f9569a541418d3ab3da12b80ae75bc9ba"
     },
     {
-      "file": "climbing_in_sim_new.mov",
-      "bytes": 4754795,
-      "sha256": "4419b9fde86d98a66c241334631f165990aa0462cf6e18b4eaa3608922d8fa0e"
+      "file": "ladder_reference_matched_1080x1920.mp4",
+      "bytes": 3425376,
+      "sha256": "1be91674c4352c380e529446491f270f7e0de3df575af4bbe7fdf778b5ff32fb"
     }
   ],
   "alignment": [
     {
       "outputSeconds": 0.0,
-      "simulationSeconds": 0.0,
+      "referenceSeconds": 0.0,
       "phase": "Start"
     },
     {
-      "outputSeconds": 2.6,
-      "simulationSeconds": 2.85,
-      "phase": "First foot lift"
-    },
-    {
-      "outputSeconds": 4.6,
-      "simulationSeconds": 4.7,
-      "phase": "Next raised-knee phase"
-    },
-    {
-      "outputSeconds": 6.3,
-      "simulationSeconds": 6.3,
-      "phase": "Upper-rung transfer"
-    },
-    {
-      "outputSeconds": 7.8,
-      "simulationSeconds": 7.85,
-      "phase": "Trailing foot joins upper rung"
-    },
-    {
-      "outputSeconds": 8.7,
-      "simulationSeconds": 8.65,
-      "phase": "Stand upright"
-    },
-    {
       "outputSeconds": 11.8,
-      "simulationSeconds": 11.8,
+      "referenceSeconds": 12.0,
       "phase": "End"
     }
   ],
-  "note": "Human at original speed; simulation timing aligned by climbing phase for comparison.",
-  "color": "SDR BT.709; human HLG tone-mapped, simulation converted from Display P3",
+  "note": "Human at original speed; complete 12-second reference uniformly fit to 11.8 seconds for comparison.",
+  "color": "SDR BT.709 output; human HLG tone-mapped, SDR reference retained without additional grading",
   "humanGrade": {
     "version": "robot-match-1",
     "target": "human view only",

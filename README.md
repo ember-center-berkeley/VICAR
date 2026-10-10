@@ -112,14 +112,16 @@ python scripts/prepare_videos.py '/path/to/VICAR 2' --only forehand-side-spin ba
 ```
 
 The climbing comparison preserves the complete human demonstration at its
-original speed and makes small, continuous timing adjustments to the simulation
-at visually reviewed foot-lift and standing phases. It has no view labels, with
-an alignment note in the caption. The portrait views are preserved without
-cropping, with the human on the left and simulation on the right. Phone HLG and
-screen-recording P3 colors are converted to SDR BT.709 for browser playback.
+original speed and pairs it with `ladder_reference_matched_1080x1920.mp4` on the
+right. The complete 12-second reference is uniformly fit to the human's 11.8
+seconds, after reviewing the climbing phases. Both portrait views use equal
+widths without cropping or view labels; an alignment note appears in the caption.
+The human's existing HLG-to-SDR conversion and color grade are preserved, while
+the new SDR reference receives no additional color grading. The 984 × 864 export
+uses SDR BT.709 for browser playback.
 
 ```sh
-python scripts/prepare_climbing_video.py /path/to/Climbing.mp4 /path/to/climbing_in_sim_new.mov
+python scripts/prepare_climbing_video.py /path/to/Climbing.mp4 /path/to/ladder_reference_matched_1080x1920.mp4
 ```
 
 This export's source hashes, timing landmarks, dimensions, and size are recorded

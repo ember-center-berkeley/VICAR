@@ -168,10 +168,10 @@ window.VICAR = {
         "Simulation"
       ],
       "art": "ladder",
-      "src": "assets/videos/ladder-climbing.mp4?v=robot-match-1",
-      "poster": "assets/images/ladder-climbing-poster.jpg?v=robot-match-1",
+      "src": "assets/videos/ladder-climbing.mp4?v=reference-20261009",
+      "poster": "assets/images/ladder-climbing-poster.jpg?v=reference-20261009",
       "captions": "",
-      "width": 1166,
+      "width": 984,
       "height": 864,
       "duration": 11.8,
       "wide": true,
