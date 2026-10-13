@@ -172,7 +172,9 @@ The manipulation tasks use their canonical `augment_*` scripts: left-hand tablet
 The organized `visualization/` package runs the same viewers locally and exports them for GitHub Pages. See [the serve augmentation guide](docs/SERVE_AUGMENTATION.md), [the other task guide](docs/TASK_AUGMENTATION.md), [general viewer instructions](docs/VISER.md), and [the source map](docs/VISUALIZATION_SOURCES.md).
 
 All 250 under-table pickup variants use a 25 cm tall object, placed 4 cm farther
-in world −Y and upright on the ground before pickup. From frame 130 it follows
+in world −Y and upright before pickup. One shared world-Z correction grounds
+only the lowest pickup placement; the others keep their original height
+differences, spanning about 9.6 cm. From frame 130 the object follows
 the wrist with a fixed offset calculated for each variant. The display table is
 lowered by 5 cm. The [executable handoff notebook](docs/UNDER_TABLE_OBJECT_PLACEMENT.ipynb)
 records the exact offsets, transform equations, export steps and validation.

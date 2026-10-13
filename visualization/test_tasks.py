@@ -323,7 +323,7 @@ class TaskTests(unittest.TestCase):
         self.assertLess(float(np.abs(descent[:,[0,-1]]).max()),.001)
         np.testing.assert_allclose(positions[:,309,2],(positions[:,300,2]+surfaces+.2)/2,atol=1e-6)
 
-    def test_all_under_table_objects_grounded_then_rigidly_attached(self):
+    def test_under_table_shared_ground_reference_and_rigid_attachment(self):
         from .export_tasks import load_task, table_geometry
         data=load_task('under-table-pickup')
         config=json.loads((PUBLIC/'under-table-pickup.json').read_text())
@@ -337,11 +337,26 @@ class TaskTests(unittest.TestCase):
         pick=130
         np.testing.assert_array_equal(quats[:,:pick],np.broadcast_to([1,0,0,0],(250,pick,4)))
         np.testing.assert_array_equal(positions[:,:pick],np.broadcast_to(positions[:,0:1],(250,pick,3)))
-        np.testing.assert_array_equal(positions[:,0,2],np.full(250,.125))
         hand=data['world_left_rubber_hand'].astype(float)
         rotation=data['rotation_left_rubber_hand'].astype(float)
         original=(hand[:,pick]+rotation[:,pick]@[-.08,-.01,.06]).astype(np.float32)
         np.testing.assert_allclose(positions[:,0,:2]-original[:,:2],[np.array([0,-.04])]*250,atol=3e-8)
+        # A single bank-wide height correction preserves the original spread.
+        # Only its lowest placement is on the floor, rather than every variant.
+        expected_z=original[:,2].astype(float)-float(original[:,2].min())+.125
+        np.testing.assert_allclose(positions[:,0,2],expected_z,atol=1e-8,rtol=0)
+        bottom=positions[:,0,2]-.125
+        self.assertEqual(float(bottom.min()),0.)
+        self.assertEqual(int(np.argmin(bottom)),int(np.argmin(original[:,2])))
+        self.assertGreater(float(bottom.max()),.09)
+        self.assertEqual(int(np.count_nonzero(bottom<1e-8)),1)
+        np.testing.assert_allclose(positions[:,0,2]-positions[0,0,2],original[:,2]-original[0,2],atol=1e-8,rtol=0)
+        from .under_table_object import under_table_object_motion
+        subset={**data, 'world_left_rubber_hand':data['world_left_rubber_hand'][110:111],
+            'rotation_left_rubber_hand':data['rotation_left_rubber_hand'][110:111]}
+        _,subset_positions,_,_=under_table_object_motion(subset,
+            reference_original_z=config['objectPresentation']['groundReferenceOriginalZ'])
+        np.testing.assert_array_equal(subset_positions[0],positions[110])
         # Invert each animated contact frame independently: the carried offset
         # must stay constant, even when the wrist turns away from world -Y.
         local=np.linalg.solve(rotation[:,pick:],(positions[:,pick:]-hand[:,pick:])[...,None])[...,0]
@@ -349,9 +364,7 @@ class TaskTests(unittest.TestCase):
         expected_q=Rotation.from_matrix(rotation[:,pick:].reshape(-1,3,3)).as_quat()[:,[3,0,1,2]].reshape(250,255,4)
         np.testing.assert_allclose(quats[:,pick:],expected_q,atol=1e-7)
         np.testing.assert_allclose(positions[:,pick],positions[:,pick-1],atol=1e-7)
-        np.testing.assert_allclose(config['objectPresentation']['localOffsets'][110],
-            [-.06597936635148535,-.05214003319013345,-.0791340828793831],atol=1e-12)
-        np.testing.assert_allclose(positions[110,0],[.5729764699935913,.22471149265766144,.125],atol=1e-8)
+        np.testing.assert_allclose(positions[110,0],[.5729764699935913,.22471149265766144,.13285687565803528],atol=1e-8)
         recording=(PUBLIC/'under-table-pickup-base.viser').read_bytes()
         payload=zstandard.ZstdDecompressor().decompress(recording[8:])
         header=msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])

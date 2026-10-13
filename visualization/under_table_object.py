@@ -1,4 +1,4 @@
-"""Grounded placement and rigid carrying for every under-table pickup variant.
+"""Shared ground reference and rigid carrying for under-table pickup variants.
 
 The source motion/URDF is read-only. See docs/UNDER_TABLE_OBJECT_PLACEMENT.ipynb
 for the derivation, the exact variant-110 offset and executable handoff checks.
@@ -12,12 +12,16 @@ WORLD_PLACEMENT_SHIFT = np.array([0.0, -0.04, 0.0])
 TABLE_DISPLAY_SHIFT = np.array([0.0, 0.0, -0.05])
 
 
-def under_table_object_motion(data):
+def under_table_object_motion(data, *, reference_original_z=None):
     """Return dimensions, [N,T,3] centers, [N,T,4] wxyz, and metadata.
 
     Apply the world shift once at placement, then solve a constant contact-frame
-    offset separately for each variant. The object stands upright before PICK_TIME
-    and uses the original wrist rotation from PICK_TIME onward. No blending,
+    offset separately for each variant. A single world-Z correction grounds only
+    the lowest original pickup position and preserves all height differences.
+    When processing a subset, pass reference_original_z from the full bank;
+    never recalibrate the ground reference when switching the selected variant.
+    The object is upright before PICK_TIME and uses the original wrist rotation
+    from PICK_TIME onward. No blending,
     later floor clamping, robot changes or contact re-optimization is performed.
     """
     pick = int(data['metadata']['PICK_TIME'])
@@ -30,8 +34,11 @@ def under_table_object_motion(data):
     # Reconstruct the ORIGINAL visual center, never an already shifted export.
     # Match the prior website/RL float32 placement before applying the new shift.
     original = (hand[:, pick] + rotation[:, pick] @ SOURCE_LOCAL_OFFSET).astype(np.float32).astype(np.float64)
+    if reference_original_z is None:
+        reference_original_z = float(original[:, 2].min())
+    height_shift = OBJECT_DIMENSIONS[2] / 2 - reference_original_z
     placement = original + WORLD_PLACEMENT_SHIFT
-    placement[:, 2] = OBJECT_DIMENSIONS[2] / 2
+    placement[:, 2] += height_shift
     # solve() also handles tiny non-orthogonality in stored float32 FK matrices.
     offsets = np.linalg.solve(rotation[:, pick], (placement - hand[:, pick])[..., None])[..., 0]
     positions = hand + np.einsum('ntij,nj->nti', rotation, offsets)
@@ -44,9 +51,11 @@ def under_table_object_motion(data):
         attachedReferenceLink='left_rubber_hand',
         sourceLocalOffset=SOURCE_LOCAL_OFFSET.tolist(),
         worldPlacementShift=WORLD_PLACEMENT_SHIFT.tolist(),
+        groundReferenceOriginalZ=reference_original_z, worldHeightShift=height_shift,
+        groundingPolicy='One world-Z correction from the full-bank lowest pickup center; preserve inter-variant height differences',
         originalPlacement=original.tolist(), initialPosition=placement.tolist(),
         localOffsets=offsets.tolist(), tableDisplayShift=TABLE_DISPLAY_SHIFT.tolist(),
-        beforePickup='Stationary; identity wxyz [1,0,0,0]; whole bottom face on z=0',
+        beforePickup='Stationary; identity wxyz [1,0,0,0]; only the lowest pickup placement has its bottom face on z=0',
         fromPickup='Fixed per-variant contact-frame offset and unchanged wrist rotation',
         shiftScope='World -Y shift at placement only; offset rotates with the wrist after pickup',
         note='Display edit for all variants; robot/contact solve unchanged; later floor penetration is not clamped',

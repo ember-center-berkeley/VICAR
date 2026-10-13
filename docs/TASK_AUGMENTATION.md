@@ -57,8 +57,11 @@ coordinates retain their original precision.
   Both displayed table layers are then lowered by 5 cm in world Z, matching
   the standalone RL package. All 250 variants use a 4 × 4 × 25 cm object:
   its initial X is preserved, initial world Y is shifted by −4 cm, and its
-  center Z is 12.5 cm. It remains upright and stationary on the ground through
-  frame 129, then follows the original wrist rotation from frame 130. A fixed
+  center Z preserves its difference from the lowest source pickup placement.
+  A shared −0.13260898 m world-Z correction puts only that lowest placement
+  (variant 20) at center Z = 12.5 cm; the others retain their heights above it.
+  It remains upright and stationary through frame 129, then follows the original
+  wrist rotation from frame 130. A fixed
   `left_rubber_hand` offset is solved separately for each variant from that
   world placement; the correction rotates with the wrist while carried.
   `objectPresentation` in the public JSON stores every initial center and local

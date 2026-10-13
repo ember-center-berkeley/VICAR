@@ -321,7 +321,8 @@ def export_task(server,key):
         config['visualizationEdits']=[
             'Remove detached reconstruction leg beside pickup object from table point cloud and voxel mesh',
             'Lower displayed table points and voxels by 0.05 m in world Z',
-            'All 250 objects: 0.25 m tall, placement shifted -0.04 m in world Y, upright on the ground before pickup, fixed wrist-local attachment afterward',
+            'All 250 objects: 0.25 m tall, placement shifted -0.04 m in world Y, upright before pickup, fixed wrist-local attachment afterward',
+            'One shared world-Z correction grounds only the lowest pickup placement and preserves the original height differences across variants',
             'Source robot motions, contact targets, and optimization geometry unchanged',
         ]
     if scene.object_presentation is not None:
