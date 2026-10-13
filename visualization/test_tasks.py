@@ -267,9 +267,12 @@ class TaskTests(unittest.TestCase):
                             side='right' if key=='tabletop-right' else 'left'
                             hand=body.get_transform(f'{side}_rubber_hand')
                             offset=[-.08,.01,.06] if side=='right' else [-.08,-.01,-.03 if key=='tabletop-left' else .06]
+                            if key=='under-table-pickup':
+                                offset=config['objectPresentation']['localOffsets'][index]
                             expected=root[4:]+R@(hand[:3,3]+hand[:3,:3]@offset)
                             orientation=Rotation.from_quat(value('/object_cuboid','wxyz',index,frame)[[1,2,3,0]]).as_matrix()
-                            np.testing.assert_allclose(orientation,R@hand[:3,:3],atol=1e-6)
+                            expected_orientation=np.eye(3) if key=='under-table-pickup' and frame<meta['PICK_TIME'] else R@hand[:3,:3]
+                            np.testing.assert_allclose(orientation,expected_orientation,atol=1e-6)
                         np.testing.assert_allclose(value('/object_cuboid','position',index,frame),expected,atol=1e-6)
                         body.update_cfg(dict(zip(JOINT_NAMES,data['body_joints'][index,frame])))
                         root=data['poses'][frame]
@@ -319,6 +322,47 @@ class TaskTests(unittest.TestCase):
         self.assertLess(float(np.abs(descent).max()),.03)
         self.assertLess(float(np.abs(descent[:,[0,-1]]).max()),.001)
         np.testing.assert_allclose(positions[:,309,2],(positions[:,300,2]+surfaces+.2)/2,atol=1e-6)
+
+    def test_all_under_table_objects_grounded_then_rigidly_attached(self):
+        from .export_tasks import load_task, table_geometry
+        data=load_task('under-table-pickup')
+        config=json.loads((PUBLIC/'under-table-pickup.json').read_text())
+        spec=config['dynamic']
+        pack=np.frombuffer(gzip.decompress((PUBLIC/spec['file']).read_bytes()),dtype='<f4').reshape(250,385,spec['frameStride'])
+        channels={(c['node'],c['property']):c for c in spec['channels']}
+        def values(prop):
+            c=channels['/object_cuboid',prop]
+            return pack[:,:,c['offset']:c['offset']+c['width']]
+        positions,quats=values('position'),values('wxyz')
+        pick=130
+        np.testing.assert_array_equal(quats[:,:pick],np.broadcast_to([1,0,0,0],(250,pick,4)))
+        np.testing.assert_array_equal(positions[:,:pick],np.broadcast_to(positions[:,0:1],(250,pick,3)))
+        np.testing.assert_array_equal(positions[:,0,2],np.full(250,.125))
+        hand=data['world_left_rubber_hand'].astype(float)
+        rotation=data['rotation_left_rubber_hand'].astype(float)
+        original=(hand[:,pick]+rotation[:,pick]@[-.08,-.01,.06]).astype(np.float32)
+        np.testing.assert_allclose(positions[:,0,:2]-original[:,:2],[np.array([0,-.04])]*250,atol=3e-8)
+        # Invert each animated contact frame independently: the carried offset
+        # must stay constant, even when the wrist turns away from world -Y.
+        local=np.linalg.solve(rotation[:,pick:],(positions[:,pick:]-hand[:,pick:])[...,None])[...,0]
+        np.testing.assert_allclose(local,np.broadcast_to(local[:,0:1],local.shape),atol=1e-7)
+        expected_q=Rotation.from_matrix(rotation[:,pick:].reshape(-1,3,3)).as_quat()[:,[3,0,1,2]].reshape(250,255,4)
+        np.testing.assert_allclose(quats[:,pick:],expected_q,atol=1e-7)
+        np.testing.assert_allclose(positions[:,pick],positions[:,pick-1],atol=1e-7)
+        np.testing.assert_allclose(config['objectPresentation']['localOffsets'][110],
+            [-.06597936635148535,-.05214003319013345,-.0791340828793831],atol=1e-12)
+        np.testing.assert_allclose(positions[110,0],[.5729764699935913,.22471149265766144,.125],atol=1e-8)
+        recording=(PUBLIC/'under-table-pickup-base.viser').read_bytes()
+        payload=zstandard.ZstdDecompressor().decompress(recording[8:])
+        header=msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])
+        box=next(m for _,m in header['messages'] if m['type']=='BoxMessage' and m['name']=='/object_cuboid')
+        np.testing.assert_allclose(box['props']['dimensions'],[.04,.04,.25])
+        # Both visual table layers receive the previously requested -5 cm shift.
+        points,_,vertices,_=table_geometry('under-table-pickup',data)
+        raw=data['table_pts_world']
+        keep=~np.all((raw>=[.4,.1,0])&(raw<=[.6,.4,.65]),axis=1)
+        np.testing.assert_allclose(points,raw[keep]+[0,0,-.05],atol=1e-8)
+        np.testing.assert_allclose([vertices[:,2].min(),vertices[:,2].max()],[.05,.9],atol=1e-8)
 
     def test_selected_branch_kinematics_and_gradients(self):
         import torch

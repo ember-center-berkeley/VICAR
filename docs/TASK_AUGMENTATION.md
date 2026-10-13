@@ -54,6 +54,18 @@ coordinates retain their original precision.
   displayed table layers (585 points and 15 voxels). This cleanup runs only
   when rendering/exporting; the raw reconstruction, optimization and motions
   remain in the source data.
+  Both displayed table layers are then lowered by 5 cm in world Z, matching
+  the standalone RL package. All 250 variants use a 4 × 4 × 25 cm object:
+  its initial X is preserved, initial world Y is shifted by −4 cm, and its
+  center Z is 12.5 cm. It remains upright and stationary on the ground through
+  frame 129, then follows the original wrist rotation from frame 130. A fixed
+  `left_rubber_hand` offset is solved separately for each variant from that
+  world placement; the correction rotates with the wrist while carried.
+  `objectPresentation` in the public JSON stores every initial center and local
+  offset. The executable [implementation notebook](UNDER_TABLE_OBJECT_PLACEMENT.ipynb)
+  explains the transform, exact variant-110 numbers, event boundary and checks.
+  Source motion, contact targets and the collision proxy are unchanged; later
+  floor penetration is not clamped or physically re-optimized.
   Contact diagnostics color and resize arm-keypoint spheres using penetration
   into the original collision box.
 - **Bimanual:** the ladder package's original robot URDF and meshes, including

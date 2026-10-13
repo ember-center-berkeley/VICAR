@@ -11,6 +11,7 @@ from viser.extras import ViserUrdf
 import yourdfpy
 from .data import ROOT, JOINT_NAMES
 from .task_augmentation import DATA_DIR, TASKS
+from .under_table_object import TABLE_DISPLAY_SHIFT, under_table_object_motion
 
 OUTPUT = ROOT.parent / 'assets/augmentation/tasks'
 
@@ -54,6 +55,10 @@ def table_geometry(key,data):
         used,indices=np.unique(faces,return_inverse=True)
         vertices=vertices[used]
         faces=indices.reshape(-1,3).astype(np.uint32)
+        # Match the standalone RL scene; derive from source each time so the
+        # translation is never applied twice. Solver collision proxies stay raw.
+        points=points+TABLE_DISPLAY_SHIFT
+        vertices=vertices+TABLE_DISPLAY_SHIFT
     return points,colors,vertices,faces
 
 
@@ -220,9 +225,13 @@ class TaskScene:
             rotations=d[f'rotation_{hand}'][:,frames]
             offset=np.array([-.08,.01,.06]) if side=='right' else np.array([-.08,-.01,-.03 if self.key=='tabletop-left' else .06])
             position=d[f'world_{hand}'][:,frames]+np.einsum('ntij,j->nti',rotations,offset)
-            self.object=self.server.scene.add_box('/object_cuboid',dimensions=(.04,.04,.15),color=(255,200,0),opacity=.9)
+            dimensions=(.04,.04,.15)
+            orientation=wxyz(rotations)
+            if self.key=='under-table-pickup':
+                dimensions,position,orientation,self.object_presentation=under_table_object_motion(d)
+            self.object=self.server.scene.add_box('/object_cuboid',dimensions=tuple(dimensions),color=(255,200,0),opacity=.9)
             self.channel(self.object,'position',position)
-            self.channel(self.object,'wxyz',wxyz(rotations))
+            self.channel(self.object,'wxyz',orientation)
             if self.key in ['tabletop-right','under-table-pickup']:
                 self._penetration(side)
             if self.key=='under-table-pickup':
@@ -309,7 +318,12 @@ def export_task(server,key):
     if 'costs' in d:
         config['provenance'].update(cost_min=float(d['costs'].min()),cost_max=float(d['costs'].max()))
     if key=='under-table-pickup':
-        config['visualizationEdits']=['Remove detached reconstruction leg beside pickup object from table point cloud and voxel mesh; source geometry and optimization unchanged']
+        config['visualizationEdits']=[
+            'Remove detached reconstruction leg beside pickup object from table point cloud and voxel mesh',
+            'Lower displayed table points and voxels by 0.05 m in world Z',
+            'All 250 objects: 0.25 m tall, placement shifted -0.04 m in world Y, upright on the ground before pickup, fixed wrist-local attachment afterward',
+            'Source robot motions, contact targets, and optimization geometry unchanged',
+        ]
     if scene.object_presentation is not None:
         config['objectPresentation']=scene.object_presentation
     if key=='bimanual-pick-place':
@@ -319,7 +333,7 @@ def export_task(server,key):
     if scene.targets is not None:config.update(targetNode='/pick_point',targets=scene.targets.tolist())
     if scene.dynamic is not None:
         objects=gzip.compress(scene.dynamic.tobytes(),mtime=0)
-        suffix=f'-{hashlib.sha256(objects).hexdigest()[:12]}' if key=='bimanual-pick-place' else ''
+        suffix=f'-{hashlib.sha256(objects).hexdigest()[:12]}' if key in ('bimanual-pick-place','under-table-pickup') else ''
         object_file=f'{key}-objects{suffix}.bin.gz'
         (OUTPUT/object_file).write_bytes(objects)
         config['dynamic']=dict(file=object_file,frameStride=scene.dynamic.shape[-1],channels=scene.channels)
