@@ -9,7 +9,7 @@ from scipy.spatial.transform import Rotation
 OBJECT_DIMENSIONS = np.array([0.04, 0.04, 0.25])
 SOURCE_LOCAL_OFFSET = np.array([-0.08, -0.01, 0.06])
 WORLD_PLACEMENT_SHIFT = np.array([0.0, -0.04, 0.0])
-TABLE_DISPLAY_SHIFT = np.array([0.0, 0.0, -0.05])
+TABLE_DISPLAY_SHIFT = np.array([0.0, 0.0, -0.07])
 
 
 def under_table_object_motion(data, *, reference_original_z=None):

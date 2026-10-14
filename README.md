@@ -176,7 +176,7 @@ in world −Y and upright before pickup. One shared world-Z correction grounds
 only the lowest pickup placement; the others keep their original height
 differences, spanning about 9.6 cm. From frame 130 the object follows
 the wrist with a fixed offset calculated for each variant. The display table is
-lowered by 5 cm. The [executable handoff notebook](docs/UNDER_TABLE_OBJECT_PLACEMENT.ipynb)
+lowered by 7 cm. The [executable handoff notebook](docs/UNDER_TABLE_OBJECT_PLACEMENT.ipynb)
 records the exact offsets, transform equations, export steps and validation.
 The under-table robot retains its left Dex3 hand and uses the ladder model's
 fixed Unitree rubber hand on the right wrist. Its task-specific URDF is

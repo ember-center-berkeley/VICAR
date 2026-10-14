@@ -410,12 +410,12 @@ class TaskTests(unittest.TestCase):
         header=msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])
         box=next(m for _,m in header['messages'] if m['type']=='BoxMessage' and m['name']=='/object_cuboid')
         np.testing.assert_allclose(box['props']['dimensions'],[.04,.04,.25])
-        # Both visual table layers receive the previously requested -5 cm shift.
+        # Both visual table layers receive the previously requested -7 cm shift.
         points,_,vertices,_=table_geometry('under-table-pickup',data)
         raw=data['table_pts_world']
         keep=~np.all((raw>=[.4,.1,0])&(raw<=[.6,.4,.65]),axis=1)
-        np.testing.assert_allclose(points,raw[keep]+[0,0,-.05],atol=1e-8)
-        np.testing.assert_allclose([vertices[:,2].min(),vertices[:,2].max()],[.05,.9],atol=1e-8)
+        np.testing.assert_allclose(points,raw[keep]+[0,0,-.07],atol=1e-8)
+        np.testing.assert_allclose([vertices[:,2].min(),vertices[:,2].max()],[.03,.88],atol=1e-8)
 
     def test_selected_branch_kinematics_and_gradients(self):
         import torch

@@ -65,7 +65,7 @@ coordinates retain their original precision.
   displayed table layers (585 points and 15 voxels). This cleanup runs only
   when rendering/exporting; the raw reconstruction, optimization and motions
   remain in the source data.
-  Both displayed table layers are then lowered by 5 cm in world Z, matching
+  Both displayed table layers are then lowered by 7 cm in world Z, matching
   the standalone RL package. All 250 variants use a 4 × 4 × 25 cm object:
   its initial X is preserved, initial world Y is shifted by −4 cm, and its
   center Z preserves its difference from the lowest source pickup placement.
