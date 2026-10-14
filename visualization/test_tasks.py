@@ -3,6 +3,7 @@ import gzip
 import hashlib
 import json
 import unittest
+import xml.etree.ElementTree as ET
 import msgspec
 import zstandard
 import numpy as np
@@ -105,6 +106,7 @@ class TaskTests(unittest.TestCase):
 
     def test_source_ranges_fingers_and_browser_kinematics(self):
         hands=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'))
+        under=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1_under_table.urdf'))
         ladder=yourdfpy.URDF.load(ROOT/'ladder_scene/main.urdf',load_meshes=False,build_collision_scene_graph=False)
         self.assertEqual(len(hands.actuated_joint_names),43)
         for key,(N,T,counts,minimum,maximum,iterations) in EXPECTED.items():
@@ -167,11 +169,12 @@ class TaskTests(unittest.TestCase):
                 np.testing.assert_allclose(np.linalg.norm(quats,axis=-1),1,atol=1e-6)
                 for index in sorted(set([0,N//2,N-1])):
                     for frame in sorted(set([0,grid['hitFrame'],T-1])):
-                        model=ladder if key=='bimanual-pick-place' else hands
+                        model=ladder if key=='bimanual-pick-place' else under if key=='under-table-pickup' else hands
                         if key=='bimanual-pick-place':
                             model.update_cfg(dict(zip(JOINT_NAMES,data['body_joints'][index,frame])))
                         else:
-                            model.update_cfg(data['joints'][index,frame])
+                            model.update_cfg({name:data['joints'][index,frame,hands.actuated_joint_names.index(name)]
+                                              for name in model.actuated_joint_names})
                         for j,name in enumerate(meta['active_joints']):
                             joint=model.joint_map[name]
                             actual=model.get_transform(joint.child,joint.parent)[:3,:3]
@@ -322,6 +325,43 @@ class TaskTests(unittest.TestCase):
         self.assertLess(float(np.abs(descent).max()),.03)
         self.assertLess(float(np.abs(descent[:,[0,-1]]).max()),.001)
         np.testing.assert_allclose(positions[:,309,2],(positions[:,300,2]+surfaces+.2)/2,atol=1e-6)
+
+    def test_under_table_right_fixed_hand_and_unchanged_left_kinematics(self):
+        path=ROOT/'robot-hands/g1_under_table.urdf'
+        source=yourdfpy.URDF.load(ROOT/'robot-hands/g1.urdf',load_meshes=False)
+        model=yourdfpy.URDF.load(path,load_meshes=False)
+        self.assertEqual(len(source.actuated_joint_names),43)
+        self.assertEqual(len(model.actuated_joint_names),36)
+        self.assertEqual([n for n in model.actuated_joint_names if n.startswith('left_hand_')],
+                         [n for n in source.actuated_joint_names if n.startswith('left_hand_')])
+        self.assertFalse(any(n.startswith('right_hand_') for n in model.actuated_joint_names))
+        tree=ET.parse(path)
+        self.assertIsNone(tree.find("link[@name='right_hand_palm_link']"))
+        mount=tree.find("joint[@name='right_hand_palm_joint']")
+        self.assertEqual(mount.get('type'),'fixed')
+        self.assertEqual(mount.find('child').get('link'),'right_unitree_hand')
+        np.testing.assert_allclose(np.fromstring(mount.find('origin').get('xyz'),sep=' '),[.0415,-.003,0])
+        hand=tree.find("link[@name='right_unitree_hand']")
+        mesh=path.parent/hand.find('visual/geometry/mesh').get('filename')
+        self.assertEqual(mesh.read_bytes(),(ROOT/'ladder_scene/meshes/g1/right_rubber_hand.STL').read_bytes())
+        with np.load(DATA/'under-table-pickup.npz',allow_pickle=False) as data:
+            for i in [0,110,249]:
+                for t in [0,130,200,384]:
+                    source.update_cfg(data['joints'][i,t])
+                    model.update_cfg({n:data['joints'][i,t,source.actuated_joint_names.index(n)] for n in model.actuated_joint_names})
+                    for link in set(source.link_map)&set(model.link_map):
+                        np.testing.assert_allclose(model.get_transform(link),source.get_transform(link),atol=1e-12)
+                    actual=model.get_transform('right_unitree_hand','right_wrist_yaw_link')
+                    np.testing.assert_allclose(actual[:3,3],[.0415,-.003,0],atol=1e-12)
+                    np.testing.assert_allclose(actual[:3,:3],np.eye(3),atol=1e-12)
+        config=json.loads((PUBLIC/'under-table-pickup.json').read_text())
+        self.assertEqual(config['robotModel']['jointNames'],model.actuated_joint_names)
+        recording=(PUBLIC/'under-table-pickup-base.viser').read_bytes()
+        payload=zstandard.ZstdDecompressor().decompress(recording[8:])
+        header=msgspec.msgpack.decode(payload[8:8+int.from_bytes(payload[:8],'little')])
+        for _,message in header['messages']:
+            self.assertFalse(any(part in message.get('name','') for part in
+                                 ['right_hand_thumb_','right_hand_middle_','right_hand_index_']))
 
     def test_under_table_shared_ground_reference_and_rigid_attachment(self):
         from .export_tasks import load_task, table_geometry

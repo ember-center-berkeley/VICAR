@@ -178,6 +178,10 @@ differences, spanning about 9.6 cm. From frame 130 the object follows
 the wrist with a fixed offset calculated for each variant. The display table is
 lowered by 5 cm. The [executable handoff notebook](docs/UNDER_TABLE_OBJECT_PLACEMENT.ipynb)
 records the exact offsets, transform equations, export steps and validation.
+The under-table robot retains its left Dex3 hand and uses the ladder model's
+fixed Unitree rubber hand on the right wrist. Its task-specific URDF is
+`visualization/robot-hands/g1_under_table.urdf`; the 36 remaining joints are
+mapped by name from the unchanged source motion.
 
 The viewer starts loading as its section approaches the screen; with the browser's data saver on, it waits for **Load 3D demo**. Scrolling over it moves the page until the visitor clicks the scene (then the wheel zooms); touch screens show a “Tap to interact” layer instead. The browser loads geometry and the compact augmentation data once. Slider changes select actual optimized trajectories; they do not run the optimizer or reload the viewer. Other scene controls retain standard Viser playback.
 

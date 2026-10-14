@@ -135,8 +135,11 @@ class TaskScene:
             # The archived 43-joint array includes the previous visual hands.
             self.joints=data['body_joints'][:,:,[JOINT_NAMES.index(name) for name in self.model.actuated_joint_names]]
         else:
-            self.model=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'))
-            self.joints=data['joints']
+            source_model=yourdfpy.URDF.load(str(ROOT/'robot-hands/g1.urdf'),load_meshes=False)
+            self.model=yourdfpy.URDF.load(str(ROOT/'robot-hands'/('g1_under_table.urdf' if key=='under-table-pickup' else 'g1.urdf')))
+            # Under-table has only the seven left-hand finger DOFs. Map by name
+            # so dropping the right Dex3 cannot reorder wrist/body motion.
+            self.joints=data['joints'][:,:,[source_model.actuated_joint_names.index(name) for name in self.model.actuated_joint_names]]
         self.root=server.scene.add_frame('/base_new',show_axes=False)
         self.robot=ViserUrdf(server,self.model,root_node_name='/base_new')
         self.nodes={j.name:h.name for j,h in zip(self.robot._joint_map_values,self.robot._joint_frames)}
@@ -331,6 +334,12 @@ def export_task(server,key):
         config['robotModel']=dict(urdf='visualization/ladder_scene/main.urdf',
             sha256=hashlib.sha256((ROOT/'ladder_scene/main.urdf').read_bytes()).hexdigest(),
             sharedWith='ladder-climbing',jointNames=list(names),motionSource='body_joints')
+    if key=='under-table-pickup':
+        config['robotModel']=dict(urdf='visualization/robot-hands/g1_under_table.urdf',
+            sha256=hashlib.sha256((ROOT/'robot-hands/g1_under_table.urdf').read_bytes()).hexdigest(),
+            leftHand='Dex3',rightHand='Fixed Unitree rubber hand',jointNames=list(names),
+            rightHandLink='right_unitree_hand',rightHandMountXYZ=[.0415,-.003,0],
+            rightHandMountRPY=[0,0,0],motionSource='joints mapped by name; right finger columns omitted')
     if scene.targets is not None:config.update(targetNode='/pick_point',targets=scene.targets.tolist())
     if scene.dynamic is not None:
         objects=gzip.compress(scene.dynamic.tobytes(),mtime=0)

@@ -29,8 +29,12 @@ training dependencies. For lightweight playback use `python -m visualization
 view --task <id>` from this website checkout.
 
 The serve model is `urdf/g1/g1_racket.urdf`, with a right racket and left ball
-holder. Pickup tasks display `g1_29dof_with_hand.urdf`, using the source's
-43-joint mapping and finger timelines. Bimanual and ladder share the ladder
+holder. Tabletop pickup displays `g1_29dof_with_hand.urdf`, using the source's
+43-joint mapping and finger timelines. Under-table pickup uses the derived
+`robot-hands/g1_under_table.urdf`: left Dex3, fixed right Unitree rubber hand,
+and 36 movable joints mapped by name from the unchanged source arrays.
+`scripts/build_under_table_robot.py` copies the right hand and its mount from
+the ladder model. Bimanual and ladder share the ladder
 package's exact 29-joint visual model; bimanual maps its solved body joint
 angles by name. The bimanual solve uses the requested right-hand origin
 `(0.1315, 0, 0)` m in the original motion URDF; its separately saved

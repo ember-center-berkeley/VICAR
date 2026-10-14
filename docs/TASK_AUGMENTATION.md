@@ -3,8 +3,10 @@
 The manipulation task categories use canonical `augment_*` programs from
 TT_PLayer revision `b377ba951d2bd12bef45e23a5e623342038121e0`. The tabletop pickup
 viewer exposes only the left-hand motion; the right-hand dataset is retained
-as an archive. Pickup viewers use the articulated 43-joint G1 visual
-model from the source. Bimanual pick/place displays the exact 29-joint model
+as an archive. Tabletop pickup uses the articulated 43-joint G1 visual
+model from the source. Under-table pickup uses a task-specific 36-joint version:
+the left Dex3 is retained, while the right wrist carries the fixed Unitree rubber
+hand from the ladder package. Bimanual pick/place displays the exact 29-joint model
 from the ladder package, with its existing body motion mapped by joint name.
 Its archived 43-joint data has static finger joints; no finger animation is lost.
 The ladder uses the supplied `ladder_scene_20261008` standalone package, including
@@ -50,6 +52,15 @@ coordinates retain their original precision.
   display lift; overlays retain their original coordinates.
 - **Under-table:** frame-130 left-hand pickup and finger closure, the 30-frame
   contact path, right-hand support anchors, carried object, and source table.
+  `robot-hands/g1_under_table.urdf` replaces the right Dex3 palm and seven finger
+  joints with `right_unitree_hand`, mounted by a fixed joint at
+  `(0.0415, -0.003, 0)` m from `right_wrist_yaw_link`, with zero RPY. The left
+  hand and all 29 body joints keep their original kinematics. The source
+  43-column motion arrays are retained; playback maps the remaining 36 joints
+  by name. Rebuild this URDF with `python scripts/build_under_table_robot.py`.
+  `robotModel` in the exported JSON records the model, mounting transform and
+  runtime joint names. This changes the display hand, not the optimized
+  right-hand support/contact frame.
   The detached reconstruction leg beside the object is removed from both
   displayed table layers (585 points and 15 voxels). This cleanup runs only
   when rendering/exporting; the raw reconstruction, optimization and motions
