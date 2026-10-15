@@ -1,0 +1,128 @@
+[
+  {
+    "scene": "forehand",
+    "source": "assets/videos/forehand.mp4",
+    "timeSeconds": 3,
+    "cropXYWH": [
+      340,
+      80,
+      640,
+      640
+    ],
+    "image": "assets/images/human-references/forehand.jpg",
+    "bytes": 72079,
+    "sha256": "2f40d03ca3f00d4f499665c47968ede044ad89d64c75c8c594d03260fabcf711"
+  },
+  {
+    "scene": "backhand",
+    "source": "assets/videos/backhand.mp4",
+    "timeSeconds": 3,
+    "cropXYWH": [
+      300,
+      20,
+      600,
+      640
+    ],
+    "image": "assets/images/human-references/backhand.jpg",
+    "bytes": 69836,
+    "sha256": "78e2574c394144cd96fda4dde2f8762d2383358d48ba072f1c264fa29ae62393"
+  },
+  {
+    "scene": "forehand-chop",
+    "source": "assets/videos/forehand-top-spin.mp4",
+    "timeSeconds": 3,
+    "cropXYWH": [
+      300,
+      20,
+      600,
+      640
+    ],
+    "image": "assets/images/human-references/forehand-chop.jpg",
+    "bytes": 74493,
+    "sha256": "391c6548947dd3373d8df918a5f3a37c23c09742edf36003b661cfc87a773501"
+  },
+  {
+    "scene": "backhand-chop",
+    "source": "assets/videos/backhand-top-spin.mp4",
+    "timeSeconds": 3,
+    "cropXYWH": [
+      300,
+      20,
+      600,
+      640
+    ],
+    "image": "assets/images/human-references/backhand-chop.jpg",
+    "bytes": 72525,
+    "sha256": "bf3924ce8199db730b88f0512b2eabe0bc1f3c64db07eaf3b118cb7e67b7fa12"
+  },
+  {
+    "scene": "forehand-side-spin",
+    "source": "assets/videos/forehand-side-spin.mp4",
+    "timeSeconds": 8.45,
+    "cropXYWH": [
+      100,
+      30,
+      620,
+      660
+    ],
+    "image": "assets/images/human-references/forehand-side-spin.jpg",
+    "bytes": 70022,
+    "sha256": "397c28420da08e71c346de412dfe09bf28270ee86d2ee8adac66e06b24ce06f9"
+  },
+  {
+    "scene": "backhand-side-spin",
+    "source": "assets/videos/backhand-side-spin.mp4",
+    "timeSeconds": 7,
+    "cropXYWH": [
+      90,
+      40,
+      600,
+      660
+    ],
+    "image": "assets/images/human-references/backhand-side-spin.jpg",
+    "bytes": 87560,
+    "sha256": "2f75f505b74813c92da0cc3b229f84da4e7fd00c7dea4c3c1399ab2c7460912c"
+  },
+  {
+    "scene": "tabletop-pickup",
+    "source": "assets/videos/tabletop-pickup.mp4",
+    "timeSeconds": 6,
+    "cropXYWH": [
+      480,
+      0,
+      760,
+      670
+    ],
+    "image": "assets/images/human-references/tabletop-pickup.jpg",
+    "bytes": 61676,
+    "sha256": "fa35716d37f1d89134a39de39fb72bcf57363c9c648fe787556e43368a634623"
+  },
+  {
+    "scene": "under-table-pickup",
+    "source": "assets/videos/under-table-pickup.mp4",
+    "timeSeconds": 9,
+    "cropXYWH": [
+      430,
+      130,
+      700,
+      530
+    ],
+    "image": "assets/images/human-references/under-table-pickup.jpg",
+    "bytes": 57775,
+    "sha256": "adb53dfa2ee668b822097b08bfdbc188b1cd45dc4723c1bdcefbc39a08746554"
+  },
+  {
+    "scene": "bimanual-pick-place",
+    "source": "assets/videos/bimanual-pick-place.mp4",
+    "timeSeconds": 8,
+    "cropXYWH": [
+      430,
+      170,
+      700,
+      490
+    ],
+    "image": "assets/images/human-references/bimanual-pick-place.jpg",
+    "bytes": 65884,
+    "sha256": "92ce02a59268b31ebdc6c93ef17f1fa23e4999666413a9f56cd62a1017781fb9"
+  }
+]

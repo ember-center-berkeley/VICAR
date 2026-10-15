@@ -53,6 +53,7 @@ const server = http.createServer((req, res) => {
   assert.equal(await page.locator('#hero-toggle').isHidden(),true);
   await page.waitForFunction(()=>document.querySelector('#hero-source img').naturalWidth>0);
   assert.equal(await page.locator('#hero-source').isVisible(),true,'The human demonstration card must show');
+  assert.equal(await page.locator('#hero-source .human-contact-dot').count(),3,'Ladder human frame marks one hand and both feet');
   assert.equal(await page.locator('.hero').getAttribute('class'),'hero');
   // Abstract: gap, idea and result cards, with the full text collapsed until asked for.
   assert.deepEqual(await page.locator('.idea-label').allTextContents(),['The gap','The idea','The result']);
@@ -130,6 +131,7 @@ const server = http.createServer((req, res) => {
   }
   await touch.locator('#demo-stage').scrollIntoViewIfNeeded();
   await touch.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor({timeout:20000});
+  await touch.locator('#viewer-shield').waitFor({state:'visible'});
   assert.equal(await touch.locator('#viewer-shield').isVisible(),true);
   await touch.locator('#viewer-shield').tap();
   assert.equal(await touch.locator('#viewer-shield').isVisible(),false);
@@ -143,6 +145,13 @@ const server = http.createServer((req, res) => {
    assert.ok(scene.variants.length,`${scene.id} must have a populated viewer`);
    const firstResponse=page.waitForResponse(r=>r.url().includes(scene.variants[0].recording) && r.request().method()==='GET' && r.status()===200);
    await page.locator('#demo-scene').selectOption(scene.id);
+   const human = await page.evaluate(id => window.VICAR.humanReferences[id], scene.id);
+   assert.ok(human?.image, `${scene.id} must have a human reference`);
+   await page.waitForFunction(id => document.querySelector('#demo-reference').dataset.scene === id &&
+     document.querySelector('#demo-reference img')?.naturalWidth > 0, scene.id);
+   assert.equal(await page.locator('#demo-reference img').getAttribute('src'), human.image);
+   assert.equal(await page.locator('#demo-reference-title').textContent(), scene.title);
+   assert.equal(await page.locator('#demo-reference .human-contact-dot').count(),scene.id==='ladder-climbing'?3:0);
    await firstResponse;
    assert.equal(await page.locator('#demo-variants').isVisible(),scene.variants.length>1);
    for(const [i,variant] of scene.variants.entries()) {

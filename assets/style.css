@@ -228,6 +228,22 @@ h3 {
   height:auto;
   border-radius:9px
 }
+.human-frame {
+  position:relative;
+  display:block;
+  line-height:0
+}
+.human-frame img {display:block;width:100%;height:auto}
+.human-contact-dots {position:absolute;inset:0;pointer-events:none}
+.human-contact-dot {
+  position:absolute;
+  width:5%;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:#eb2f3d;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 0 1px rgba(255,255,255,.6)
+}
 .hero-source figcaption {
   display:flex;
   align-items:center;
@@ -1046,6 +1062,34 @@ h3 {
   position:relative;
   background:#edf1f6;
   min-height:485px
+}
+.demo-comparison {
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  min-width:0
+}
+.demo-comparison.has-reference {grid-template-columns:200px minmax(0,1fr)}
+.demo-reference {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:12px;
+  margin:0;
+  padding:18px 14px;
+  border-right:1px solid var(--line);
+  background:#f9fafc;
+  min-width:0
+}
+.demo-reference img {border-radius:9px}
+.demo-reference figcaption {font-size:12px;font-weight:600;line-height:1.5;color:var(--ink)}
+.reference-label {display:block;margin-bottom:5px;font-size:10px;font-weight:500;color:var(--muted)}
+@media(max-width:1000px) {
+  .demo-comparison.has-reference {grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(485px,1fr)}
+  .demo-reference {display:grid;grid-template-columns:120px minmax(0,1fr);align-items:center;gap:18px;border-right:0;border-bottom:1px solid var(--line)}
+  .demo-reference .human-frame {max-width:120px}
+}
+@media(max-width:760px) {
+  .demo-comparison.has-reference {grid-template-rows:auto minmax(390px,1fr)}
 }
 .demo-cover {
   min-height:485px;

@@ -12,6 +12,29 @@
     if (text !== undefined) node.textContent = text;
     return node;
   };
+  // Normalized image coordinates keep contact markers aligned at every size.
+  function renderHumanFrame(container, source, lazy = false) {
+    const image = element('img');
+    image.alt = source.alt || '';
+    image.loading = lazy ? 'lazy' : 'eager';
+    image.decoding = 'async';
+    if (source.width && source.height) {
+      image.width = source.width;
+      image.height = source.height;
+    }
+    const dots = element('span', 'human-contact-dots');
+    dots.setAttribute('aria-hidden', 'true');
+    (source.contacts || []).forEach(contact => {
+      const dot = element('span', 'human-contact-dot');
+      dot.style.left = `${contact.x * 100}%`;
+      dot.style.top = `${contact.y * 100}%`;
+      dot.title = contact.label || 'Contact';
+      dots.append(dot);
+    });
+    container.replaceChildren(image, dots);
+    image.src = source.image;
+    return image;
+  }
   document.querySelectorAll('[data-resource]').forEach(link => {
     link.href = content.links[link.dataset.resource] || './';
   });
@@ -82,10 +105,8 @@
   // The human demonstration the robot's motion was retargeted from.
   if (hero.source?.image) {
     const card = $('#hero-source');
-    const image = card.querySelector('img');
-    image.alt = hero.source.alt || '';
+    const image = renderHumanFrame(card.querySelector('.human-frame'), hero.source);
     image.addEventListener('error', () => { card.hidden = true; }, {once: true});
-    image.src = hero.source.image;
     card.querySelector('figcaption').textContent = hero.source.caption || '';
     card.hidden = false;
   }
@@ -210,6 +231,22 @@
     return url.href;
   }
   function updateViewerInfo() {
+    const reference = content.humanReferences?.[scene.id];
+    const card = $('#demo-reference');
+    if (card.dataset.scene !== scene.id) {
+      card.dataset.scene = scene.id;
+      card.hidden = !reference?.image;
+      $('#demo-comparison').classList.toggle('has-reference', Boolean(reference?.image));
+      if (reference?.image) {
+        const image = renderHumanFrame(card.querySelector('.human-frame'), reference, true);
+        $('#demo-reference-title').textContent = scene.title;
+        image.addEventListener('error', () => {
+          if (!image.isConnected) return;
+          card.hidden = true;
+          $('#demo-comparison').classList.remove('has-reference');
+        }, {once: true});
+      } else card.querySelector('.human-frame').replaceChildren();
+    }
     const available = Boolean(variant);
     $('#open-viewer').hidden = !available;
     if (available) $('#open-viewer').href = viewerURL();
