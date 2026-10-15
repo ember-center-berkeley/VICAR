@@ -46,6 +46,11 @@ def main():
     viser.SceneApi.add_mesh_trimesh=smooth_robot
     server=viser.ViserServer(host='127.0.0.1',port=args.port)
     data=load_task('under-table-pickup');scene=task_scene(server,'under-table-pickup',data)
+    # Select the existing solved motion at max X/max Y, retaining default Z.
+    selected_shift=data['shifts'][scene.default].copy()
+    selected_shift[:2]=data['shifts'][:,:2].max(axis=0)
+    scene.default=int(np.linalg.norm(data['shifts']-selected_shift,axis=1).argmin())
+    np.testing.assert_allclose(data['shifts'][scene.default],selected_shift,atol=1e-12)
     # Lower both table layers another 3 cm for the hero composition.
     for name in ['/table_pointcloud','/table_voxels']:
         handle=server.scene._handle_from_node_name[name]
@@ -54,6 +59,15 @@ def main():
     hidden=['/Ground','/collision','/camera_pose','/right_anchor','/pick_point','/hit_box','/hit_box_mesh','/penetration','/traj_left_hand','/traj_right_hand']
     for name,h in server.scene._handle_from_node_name.items():
         if any(name==p or name.startswith(p+'/') for p in hidden):h.visible=False
+    # Fixed world-space task contacts, using the selected motion's pickup
+    # target and the support-hand anchor (not the hidden diagnostic spheres).
+    contacts=[dict(id='table-contact',position=list(scene.meta['RIGHT_HAND_CONTACT_POINT']),
+        source='RIGHT_HAND_CONTACT_POINT'),
+        dict(id='object-pick',position=scene.targets[scene.default].tolist(),
+        source='pos_left_hand_batch[selected_variant, PICK_TIME]')]
+    for contact in contacts:
+        server.scene.add_icosphere('/hero_contacts/'+contact['id'],position=contact['position'],
+            radius=.03,color=(235,47,61))
     server.scene.add_grid('/hero_floor',width=20,height=20,plane='xy',cell_size=.25,section_size=1,
         cell_thickness=.45,section_thickness=.8,cell_color=(225,230,237),section_color=(212,220,230),
         plane_color=(247,249,252),plane_opacity=1,shadow_opacity=.12,position=(0,0,-.005))
@@ -76,6 +90,8 @@ def main():
             Image.fromarray(raw).convert('RGB').save(args.output/f'frame-{frame:04d}.png')
             if frame%30==0 or args.preview:print(f'Rendered {frame}/{scene.T-1}',flush=True)
         (args.output/'render.json').write_text(json.dumps(dict(task='under-table-pickup',variant=scene.default,frames=scene.T,
+            selectedShift=selected_shift.tolist(),selection='Maximum X and Y; default Z retained',
+            contactDots=contacts,contactDotRadius=.03,contactDotColor=[235,47,61],
             fps=scene.meta['fps'],camera=dict(position=position.tolist(),look_at=look.tolist(),fov=fov),size=[1920,1080],
             sourceTableDisplayShift=scene.object_presentation['tableDisplayShift'],heroTableOffset=HERO_TABLE_OFFSET.tolist(),
             tableDisplayShift=(np.asarray(scene.object_presentation['tableDisplayShift'])+HERO_TABLE_OFFSET).tolist(),
