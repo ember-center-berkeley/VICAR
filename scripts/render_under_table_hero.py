@@ -8,6 +8,7 @@ from pathlib import Path
 import argparse,json,sys,time
 import numpy as np
 from PIL import Image
+from scipy.spatial.transform import Rotation
 import viser
 import yourdfpy,trimesh
 
@@ -59,14 +60,23 @@ def main():
     hidden=['/Ground','/collision','/camera_pose','/right_anchor','/pick_point','/hit_box','/hit_box_mesh','/penetration','/traj_left_hand','/traj_right_hand']
     for name,h in server.scene._handle_from_node_name.items():
         if any(name==p or name.startswith(p+'/') for p in hidden):h.visible=False
-    # Fixed world-space task contacts, using the selected motion's pickup
-    # target and the support-hand anchor (not the hidden diagnostic spheres).
+    # Put the dot on the visible front face at the pickup target's height.
+    # Parenting the dot to the cuboid makes it inherit the object's full pose.
+    scene.update(scene.meta['PICK_TIME'],scene.default)
+    object_rotation=Rotation.from_quat(np.asarray(scene.object.wxyz)[[1,2,3,0]]).as_matrix()
+    object_half=np.asarray(scene.object_presentation['dimensions'])/2
+    local_target=object_rotation.T@(scene.targets[scene.default]-scene.object.position)
+    object_contact_local=np.array([0.,-object_half[1],np.clip(local_target[2],-object_half[2],object_half[2])])
+    assert np.any(np.isclose(np.abs(object_contact_local),object_half))
     contacts=[dict(id='table-contact',position=list(scene.meta['RIGHT_HAND_CONTACT_POINT']),
         source='RIGHT_HAND_CONTACT_POINT'),
-        dict(id='object-pick',position=scene.targets[scene.default].tolist(),
-        source='pos_left_hand_batch[selected_variant, PICK_TIME]')]
+        dict(id='object-pick',parent=scene.object.name,localPosition=object_contact_local.tolist(),
+        source='Front cuboid face at the grasp height, in object coordinates',
+        motion='Inherits object translation and rotation')]
     for contact in contacts:
-        server.scene.add_icosphere('/hero_contacts/'+contact['id'],position=contact['position'],
+        parent=contact.get('parent','/hero_contacts')
+        position=contact['localPosition'] if 'parent' in contact else contact['position']
+        server.scene.add_icosphere(parent+'/'+contact['id'],position=position,
             radius=.03,color=(235,47,61))
     server.scene.add_grid('/hero_floor',width=20,height=20,plane='xy',cell_size=.25,section_size=1,
         cell_thickness=.45,section_thickness=.8,cell_color=(225,230,237),section_color=(212,220,230),

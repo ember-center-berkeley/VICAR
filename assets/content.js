@@ -8,8 +8,8 @@ window.VICAR = {
     "video": "#skills"
   },
   "hero": {
-    "video": "assets/videos/hero-under-table-pickup.mp4?v=cc43bc093f8a",
-    "poster": "assets/images/hero-under-table-pickup-poster.jpg?v=cc43bc093f8a",
+    "video": "assets/videos/hero-under-table-pickup.mp4?v=fe6d008a0aa9",
+    "poster": "assets/images/hero-under-table-pickup-poster.jpg?v=fe6d008a0aa9",
     "source": {
       "image": "assets/images/idea-human.jpg",
       "caption": "Human video",

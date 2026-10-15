@@ -20,12 +20,14 @@
     },
     {
       "id": "object-pick",
-      "position": [
-        0.670891523361206,
-        0.33367210626602173,
-        0.2454301416873932
+      "parent": "/object_cuboid",
+      "localPosition": [
+        0.0,
+        -0.02,
+        0.06985806813136818
       ],
-      "source": "pos_left_hand_batch[selected_variant, PICK_TIME]"
+      "source": "Front cuboid face at the grasp height, in object coordinates",
+      "motion": "Inherits object translation and rotation"
     }
   ],
   "contactDotRadius": 0.03,
@@ -75,6 +77,6 @@
   "durationSeconds": 12.705,
   "encoding": "H.264, CRF 22, yuv420p, no audio, MP4 faststart, 0.18 s white fades at loop boundaries",
   "posterFrame": 130,
-  "bytes": 955717,
-  "sha256": "cc43bc093f8af5cbb915a4d05ef85674d16e4d4152fb3b7fa7e07a123fa18bee"
+  "bytes": 954749,
+  "sha256": "fe6d008a0aa91843dc236e75297c5d4ab1dee2d08d0f235b0675a10fd716c5b1"
 }
