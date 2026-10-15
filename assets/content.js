@@ -8,12 +8,12 @@ window.VICAR = {
     "video": "#skills"
   },
   "hero": {
-    "video": "assets/videos/hero-box-pickup.mp4",
-    "poster": "assets/images/hero-box-pickup-poster.jpg",
+    "video": "assets/videos/hero-under-table-pickup.mp4",
+    "poster": "assets/images/hero-under-table-pickup-poster.jpg",
     "source": {
-      "image": "assets/images/hero-human.jpg",
+      "image": "assets/images/idea-human.jpg",
       "caption": "Human video",
-      "alt": "Human demonstration from the overview figure: a person bends to lift a crate, face blurred."
+      "alt": "Human demonstration of under-table pickup: a person kneels beside a table and reaches underneath, with the supporting and grasping contacts marked. Face blurred."
     }
   },
   "authors": [],

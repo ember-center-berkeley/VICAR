@@ -1,0 +1,38 @@
+{
+  "task": "under-table-pickup",
+  "variant": 112,
+  "frames": 385,
+  "fps": 30.3030303030303,
+  "camera": {
+    "position": [
+      -0.25,
+      -4.2,
+      1.66
+    ],
+    "look_at": [
+      -0.85,
+      0.0,
+      0.69
+    ],
+    "fov": 0.52
+  },
+  "size": [
+    1920,
+    1080
+  ],
+  "tableDisplayShift": [
+    0.0,
+    0.0,
+    -0.07
+  ],
+  "robot": "g1_under_table.urdf",
+  "fullResolution": true,
+  "video": "assets/videos/hero-under-table-pickup.mp4",
+  "poster": "assets/images/hero-under-table-pickup-poster.jpg",
+  "humanImage": "assets/images/idea-human.jpg",
+  "bytes": 944349,
+  "sha256": "fb90867484b04c2eda802cd6b7905b8bae31f5db093e3bc05e8ae157e7af7610",
+  "durationSeconds": 12.705,
+  "encoding": "H.264, CRF 22, yuv420p, no audio, MP4 faststart, 0.18 s white fades at loop boundaries",
+  "posterFrame": 130
+}
