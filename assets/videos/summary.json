@@ -1,0 +1,16 @@
+{
+  "frames": 3598,
+  "fps": 60,
+  "duration_seconds": 59.96666666666667,
+  "background_hex": "#f7f9fc",
+  "text_hex": "#202933",
+  "excluded_sections": [
+    "Opening serves",
+    "More results"
+  ],
+  "hardware_frames": 777,
+  "hardware_final_hold_frames": 0,
+  "video_bytes": 8149630,
+  "video_sha256": "d5593ad8deb20d5e937b0db6b97d3b07b2dc9bdcc4501c9ce6fb35557c3ee66a",
+  "source": "Website summary edit of the accepted VICAR overview; prepared layers with matching native titles."
+}

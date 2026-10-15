@@ -35,7 +35,7 @@ window.VICAR = {
     "arxiv": "https://arxiv.org/abs/2610.13079",
     "paper": "assets/papers/VICAR.pdf?v=1fea09b04e1b",
     "code": "https://github.com/ember-center-berkeley/VICAR",
-    "video": "#skills"
+    "video": "#summary"
   },
   "hero": window.VICAR_HERO_PRESETS["ladder-climbing"],
   "humanReferences": {

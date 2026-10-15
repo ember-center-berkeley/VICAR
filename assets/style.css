@@ -435,75 +435,29 @@ h3 {
 .text-accent {
   color:var(--blue)
 }
-/* The abstract as gap -> idea -> result cards, with the full text on demand. */
-.idea-cards {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:20px;
-  margin-top:34px
+/* The summary film shares the section's pale background. */
+.summary-section .summary-heading {
+  margin-bottom:24px;
+  color:var(--blue);
+  font-size:13px;
+  font-weight:700;
+  line-height:1.4;
+  letter-spacing:.14em
 }
-.idea-card {
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  background:white
+.summary-media {
+  background:var(--tint)
 }
-.idea-media {
-  position:relative;
-  aspect-ratio:1/1;
-  background:#edf1f6
-}
-.idea-media img {
-  position:absolute;
-  inset:0;
+.summary-media video {
   display:block;
   width:100%;
-  height:100%;
-  object-fit:cover
+  height:auto;
+  aspect-ratio:16/9;
+  background:var(--tint);
+  border-radius:12px
 }
-.idea-media .idea-human {
-  object-position:15% 50%
-}
-.idea-media .idea-retarget {
-  object-position:25% 50%
-}
-.idea-media figcaption {
-  position:absolute;
-  left:12px;
-  bottom:12px;
-  padding:4px 10px;
-  border-radius:999px;
-  background:rgba(32,41,51,.82);
-  color:white;
-  font-size:11px;
-  font-weight:600
-}
-.idea-body {
-  padding:18px 20px 22px
-}
-.idea-label {
-  margin-bottom:8px;
-  color:var(--blue);
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:.12em;
-  text-transform:uppercase
-}
-.idea-body h3 {
-  margin-bottom:8px;
-  font-size:18px
-}
-.idea-body p:last-child {
-  color:#515c69;
-  font-size:14px;
-  line-height:1.65
-}
-.idea-note {
-  margin-top:14px;
-  color:var(--muted);
-  font-size:12px
+.summary-media video:focus-visible {
+  outline:3px solid #6193ff;
+  outline-offset:4px
 }
 .abstract-details {
   margin-top:26px
@@ -1279,26 +1233,6 @@ pre {
     max-width:470px
   }
 }
-@media(max-width:900px) {
-  .idea-cards {
-    grid-template-columns:1fr;
-    gap:12px
-  }
-  .idea-card {
-    display:grid;
-    grid-template-columns:170px minmax(0,1fr)
-  }
-  .idea-media {
-    aspect-ratio:auto;
-    min-height:170px
-  }
-  .idea-media figcaption {
-    display:none
-  }
-  .idea-body {
-    padding:16px 18px
-  }
-}
 @media(max-width:1000px) {
   .hero-source {
     left:42%;
@@ -1427,23 +1361,6 @@ pre {
   }
   .abstract-section {
     padding:40px 0
-  }
-  .idea-card {
-    grid-template-columns:104px minmax(0,1fr)
-  }
-  .idea-media {
-    min-height:104px
-  }
-  .idea-body {
-    padding:12px 14px
-  }
-  .idea-body h3 {
-    margin-bottom:4px;
-    font-size:15px
-  }
-  .idea-body p:last-child {
-    font-size:12.5px;
-    line-height:1.55
   }
   .abstract-section h2 {
     font-size:24px

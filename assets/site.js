@@ -206,7 +206,7 @@
   const mediaObserver = new IntersectionObserver(entries => entries.forEach(entry => {
     if (!entry.isIntersecting) entry.target.pause();
   }), {threshold: .15});
-  document.querySelectorAll('.media-slot video').forEach(video => mediaObserver.observe(video));
+  document.querySelectorAll('.media-slot video, #summary-video').forEach(video => mediaObserver.observe(video));
 
   const sceneSelect = $('#demo-scene');
   const viewer = $('#viser-frame');

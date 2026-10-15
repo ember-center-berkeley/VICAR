@@ -11,10 +11,10 @@
   <meta property="og:image" content="https://ember-center-berkeley.github.io/VICAR/assets/images/overview.png">
   <title>VICAR | Video Imitation with Contact-Aware Retargeting</title>
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/style.css?v=human-refs-0863887c86ce">
-  <script defer src="assets/content.js?v=human-refs-8ffe6eab984b"></script>
+  <link rel="stylesheet" href="assets/style.css?v=website-summary-20261015">
+  <script defer src="assets/content.js?v=website-summary-20261015"></script>
   <script defer src="assets/viewer-manifest.js?v=under-table-table-7cm-20261014"></script>
-  <script defer src="assets/site.js?v=human-refs-3d6da20ee0e4"></script>
+  <script defer src="assets/site.js?v=website-summary-20261015"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -36,21 +36,21 @@
         <p class="hero-summary">Learn from human videos.<br>Preserve the contacts that make a skill work.</p>
         <div class="hero-actions">
           <a class="hero-button hero-button-primary" href="#interactive"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m12 3 9 5v9l-9 5-9-5V8zm0 0v10m9-5-9 5-9-5m9 5v9"/></svg> Interactive demo</a>
-          <a class="hero-button hero-button-secondary" data-resource="video" href="./"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></svg> Watch video</a>
+          <a class="hero-button hero-button-secondary" data-resource="video" href="#summary"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></svg> Watch video</a>
         </div>
       </div></div>
       <button id="hero-toggle" class="hero-toggle" type="button" aria-label="Pause background video" hidden><svg class="icon-pause" aria-hidden="true" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg><svg class="icon-play" aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg></button>
     </section>
 
-    <section class="abstract-section" id="abstract" aria-labelledby="abstract-title">
-      <div class="container"><p class="eyebrow">The idea</p><h2 id="abstract-title">Human motion. Robot embodiment.<br><span class="text-accent">Mimic contacts for the same interaction.</span></h2>
-      <div class="idea-cards">
-        <article class="idea-card"><figure class="idea-media"><img class="idea-human" src="assets/images/idea-human.jpg" width="366" height="306" alt="A person kneels at a table-tennis table, one hand on the table edge and one reaching underneath; red dots mark the contacts. Face blurred." loading="lazy"><figcaption>Human video</figcaption></figure><div class="idea-body"><p class="idea-label">The gap</p><h3>Contacts get lost in translation</h3><p>Contact-rich skills are defined by where, when and how fast contact happens. Those contacts rarely survive the move from a human body to a robot&#8217;s.</p></div></article>
-        <article class="idea-card"><figure class="idea-media"><img class="idea-retarget" src="assets/images/idea-retarget.jpg" width="444" height="286" alt="The retargeted humanoid kneels under the reconstructed table, keeping the same two contacts." loading="lazy"><figcaption>Retargeted</figcaption></figure><div class="idea-body"><p class="idea-label">The idea</p><h3>Contacts come first</h3><p>VICAR retargets the whole motion while treating contact poses, speed and collision clearance as top priorities, so the interaction stays intact.</p></div></article>
-        <article class="idea-card"><figure class="idea-media"><img class="idea-robot" src="assets/images/idea-robot.jpg" width="286" height="370" alt="The real humanoid robot kneels at the table, touching the same contact points." loading="lazy"><figcaption>Real robot</figcaption></figure><div class="idea-body"><p class="idea-label">The result</p><h3>From video to a real robot</h3><p>Learned skills transfer zero-shot to a real humanoid and adapt to new contact points at runtime.</p></div></article>
-      </div>
-      <p class="idea-note">Shown: the under-table pickup, from human video to retargeted motion to the real robot.</p>
-      <details class="abstract-details"><summary>Read the full abstract <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><p id="abstract-text">Third-person human videos offer a scalable alternative to task-specific reward engineering, teleoperation, and manually scripted demonstrations for humanoid loco-manipulation. VICAR learns interactive humanoid skills while preserving world-frame contact poses, motion speed, and collision clearance.</p></details>
+    <section class="abstract-section summary-section" id="summary" aria-labelledby="summary-title">
+      <div class="container"><h2 class="eyebrow summary-heading" id="summary-title">SUMMARY</h2>
+      <figure class="summary-media">
+        <video id="summary-video" controls playsinline preload="none" width="1920" height="1080" poster="assets/images/summary-poster.webp?v=20261015" aria-label="VICAR summary: from human video to contact-preserving humanoid motion">
+          <source src="assets/videos/summary.mp4?v=20261015" type="video/mp4">
+          <a href="assets/videos/summary.mp4">Download the VICAR summary video</a>.
+        </video>
+      </figure>
+      <details class="abstract-details" id="abstract"><summary>Read the full abstract <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><p id="abstract-text">Third-person human videos offer a scalable alternative to task-specific reward engineering, teleoperation, and manually scripted demonstrations for humanoid loco-manipulation. VICAR learns interactive humanoid skills while preserving world-frame contact poses, motion speed, and collision clearance.</p></details>
       </div>
     </section>
 
