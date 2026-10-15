@@ -62,7 +62,8 @@ const server = http.createServer((req, res) => {
   assert.ok((await page.locator('#abstract-text').textContent()).split(/\s+/).length>200,'The full abstract must be available');
   assert.equal(requests.some(url=>url.includes('.viser')),false,'Viewer must wait until its section is near');
   assert.equal(await page.locator('[data-resource=arxiv]').getAttribute('href'),'https://arxiv.org/abs/2610.13079');
-  assert.equal(await page.locator('.video-copy p').count(),0,'Task descriptions and comparison notes are omitted');
+  assert.equal(await page.locator('.video-copy p').count(),1,'Only the requested ladder comparison label is shown');
+  assert.equal(await page.locator('#ladder-climbing .comparison-note').textContent(),'Human demonstration (left) · Robot execution in sim (right)');
   // Reaching the section loads the viewer without a click.
   await page.locator('#demo-stage').scrollIntoViewIfNeeded();
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor({timeout:20000});

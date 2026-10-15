@@ -159,7 +159,7 @@ Place MP4 files in `assets/videos/`, then set each video's `src` in `assets/cont
 The six serves appear together in two columns and three rows on desktop and
 tablet, and one column on mobile screens up to 600 px. Their order and native
 video aspect ratios are preserved. Task cards show titles and tags without
-additional descriptions or comparison notes. The three pickup comparisons are
+additional descriptions. Only ladder climbing includes a human/simulation comparison label. The three pickup comparisons are
 individually titled, full-width rows, followed by a centered climbing comparison at 50% width (full width on
 mobile screens up to 600 px). Set each video's `width` and `height`
 in `assets/content.js` so the layout reserves the correct space before playback.

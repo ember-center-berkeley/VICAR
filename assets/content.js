@@ -229,6 +229,7 @@ window.VICAR = {
     {
       "id": "ladder-climbing",
       "title": "Ladder climbing",
+      "comparison": "Human demonstration (left) · Robot execution in sim (right)",
       "tags": [
         "Whole-body coordination",
         "Simulation"

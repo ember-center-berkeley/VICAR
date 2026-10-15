@@ -670,6 +670,12 @@ h3 {
   font-size:16px;
   letter-spacing:-.015em
 }
+.comparison-note {
+  margin:12px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5
+}
 .video-meta {
   display:flex;
   gap:6px;

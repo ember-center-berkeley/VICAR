@@ -159,6 +159,7 @@
     const meta = element('div', 'video-meta');
     (item.tags || []).forEach(tag => meta.append(element('span', '', tag)));
     copy.append(element('h3', '', item.title), meta);
+    if (item.comparison) copy.append(element('p', 'comparison-note', item.comparison));
     card.append(slot, copy);
     return card;
   }
