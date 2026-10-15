@@ -60,7 +60,7 @@ const server = http.createServer((req, res) => {
   await page.locator('.abstract-details summary').click();
   assert.ok((await page.locator('#abstract-text').textContent()).split(/\s+/).length>200,'The full abstract must be available');
   assert.equal(requests.some(url=>url.includes('.viser')),false,'Viewer must wait until its section is near');
-  assert.equal(await page.locator('[data-resource=arxiv]').getAttribute('href'),'./');
+  assert.equal(await page.locator('[data-resource=arxiv]').getAttribute('href'),'https://arxiv.org/abs/2610.13079');
   for (let i=0;i<6;i++) {
    await page.locator('#serve-dots button').nth(i).click();
    await page.waitForFunction(index=>document.querySelectorAll('#serve-dots button')[index].getAttribute('aria-current')==='true',i);

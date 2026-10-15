@@ -2,8 +2,8 @@
 // Interactive recordings are generated in viewer-manifest.js.
 window.VICAR = {
   "links": {
-    "arxiv": "./",
-    "paper": "./",
+    "arxiv": "https://arxiv.org/abs/2610.13079",
+    "paper": "assets/papers/VICAR.pdf",
     "code": "https://github.com/ember-center-berkeley/VICAR",
     "video": "#skills"
   },
