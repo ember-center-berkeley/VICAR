@@ -206,7 +206,36 @@
   const mediaObserver = new IntersectionObserver(entries => entries.forEach(entry => {
     if (!entry.isIntersecting) entry.target.pause();
   }), {threshold: .15});
-  document.querySelectorAll('.media-slot video, #summary-video').forEach(video => mediaObserver.observe(video));
+  document.querySelectorAll('.media-slot video').forEach(video => mediaObserver.observe(video));
+
+  // Start the summary on arrival, pause off screen, and respect a manual pause.
+  const summaryVideo = $('#summary-video');
+  if (summaryVideo) {
+    const canAutoplay = !reducedMotion.matches && !saveData;
+    summaryVideo.muted = true;
+    summaryVideo.autoplay = canAutoplay;
+    let summaryVisible = false;
+    let manuallyPaused = false;
+    let automaticPause = false;
+    const pauseSummary = () => {
+      if (summaryVideo.paused) return;
+      automaticPause = true;
+      summaryVideo.pause();
+    };
+    summaryVideo.addEventListener('pause', () => {
+      if (!automaticPause && summaryVisible && !summaryVideo.ended) manuallyPaused = true;
+      automaticPause = false;
+    });
+    summaryVideo.addEventListener('play', () => {
+      manuallyPaused = false;
+      if (!summaryVisible) pauseSummary();
+    });
+    new IntersectionObserver(([entry]) => {
+      summaryVisible = entry.isIntersecting && entry.intersectionRatio >= .15;
+      if (!summaryVisible) pauseSummary();
+      else if (canAutoplay && !manuallyPaused && !summaryVideo.ended) summaryVideo.play().catch(() => {});
+    }, {threshold: .15}).observe(summaryVideo);
+  }
 
   const sceneSelect = $('#demo-scene');
   const viewer = $('#viser-frame');
