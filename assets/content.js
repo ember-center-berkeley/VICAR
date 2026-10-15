@@ -103,7 +103,6 @@ window.VICAR = {
     {
       "id": "backhand-side-spin",
       "title": "Backhand side-spin",
-      "description": "A backhand side-spin serve with a movable hit pose.",
       "tags": [
         "Backhand",
         "Serve"
@@ -117,7 +116,6 @@ window.VICAR = {
     {
       "id": "forehand-side-spin",
       "title": "Forehand side-spin",
-      "description": "A lateral racket motion retaining the demonstrated style.",
       "tags": [
         "Forehand",
         "Serve"
@@ -131,7 +129,6 @@ window.VICAR = {
     {
       "id": "forehand",
       "title": "Simple forehand",
-      "description": "A forward racket stroke with a movable hit point.",
       "tags": [
         "Forehand",
         "Serve"
@@ -146,7 +143,6 @@ window.VICAR = {
     {
       "id": "backhand",
       "title": "Simple backhand",
-      "description": "A backhand stroke preserving the toss and hit interaction.",
       "tags": [
         "Backhand",
         "Serve"
@@ -161,7 +157,6 @@ window.VICAR = {
     {
       "id": "backhand-top-spin",
       "title": "Backhand top-spin",
-      "description": "A backhand top-spin serve executed on the humanoid.",
       "tags": [
         "Backhand",
         "Serve"
@@ -176,7 +171,6 @@ window.VICAR = {
     {
       "id": "forehand-top-spin",
       "title": "Forehand top-spin",
-      "description": "A forehand top-spin serve executed on the humanoid.",
       "tags": [
         "Forehand",
         "Serve"
@@ -193,7 +187,6 @@ window.VICAR = {
     {
       "id": "tabletop-pickup",
       "title": "Tabletop pickup",
-      "description": "Reach for an object on the table while preserving its grasp pose.",
       "tags": [
         "Object interaction",
         "Hardware"
@@ -204,12 +197,10 @@ window.VICAR = {
       "captions": "",
       "width": 2560,
       "height": 720,
-      "comparison": "Human demonstration (left) · Robot execution (right)"
     },
     {
       "id": "under-table-pickup",
       "title": "Under-table pickup",
-      "description": "Maintain right-hand table-edge support while the left hand reaches below.",
       "tags": [
         "Support contact",
         "Hardware"
@@ -220,12 +211,10 @@ window.VICAR = {
       "captions": "",
       "width": 2560,
       "height": 720,
-      "comparison": "Human demonstration (left) · Robot execution (right)"
     },
     {
       "id": "bimanual-pick-place",
       "title": "Bimanual pick-and-place",
-      "description": "Synchronize both hands to lift a box from the ground and place it on the table.",
       "tags": [
         "Two-hand coordination",
         "Hardware"
@@ -236,12 +225,10 @@ window.VICAR = {
       "captions": "",
       "width": 2560,
       "height": 720,
-      "comparison": "Human demonstration (left) · Robot execution (right)"
     },
     {
       "id": "ladder-climbing",
       "title": "Ladder climbing",
-      "description": "Coordinate sequential hand and foot contacts with the ladder supports.",
       "tags": [
         "Whole-body coordination",
         "Simulation"
@@ -254,7 +241,6 @@ window.VICAR = {
       "height": 864,
       "duration": 11.8,
       "wide": true,
-      "comparison": "Timing aligned for comparison."
     }
   ]
 };

@@ -42,9 +42,9 @@ const server = http.createServer((req, res) => {
   assert.equal(await page.locator('#other-skills article').count(),4);
   assert.equal(await page.locator('.media-slot video').count(),10,'All ten task videos must be present');
   assert.equal(await page.locator('.media-placeholder').count(),0,'All video slots are now populated');
-  assert.equal(requests.some(url=>url.includes('/assets/videos/')),false,'Clips must not download before play');
+  assert.equal(requests.some(url=>url.includes('/assets/videos/') && !url.includes('/assets/videos/summary.mp4')),false,'Task clips must not download before play');
   assert.equal(await page.locator('.media-slot video[preload="none"]').count(),10);
-  assert.equal(await page.locator('.hero-actions [data-resource="video"]').getAttribute('href'),'#skills');
+  assert.equal(await page.locator('.hero-actions [data-resource="video"]').getAttribute('href'),'#summary');
   // Hero: two actions, paper links in the nav, and a still poster under reduced motion.
   assert.equal(await page.locator('.hero-actions a').count(),2);
   assert.deepEqual(await page.locator('.nav-cta').allTextContents(),['arXiv','Paper','Code']);
@@ -55,21 +55,14 @@ const server = http.createServer((req, res) => {
   assert.equal(await page.locator('#hero-source').isVisible(),true,'The human demonstration card must show');
   assert.equal(await page.locator('#hero-source .human-contact-dot').count(),3,'Ladder human frame marks one hand and both feet');
   assert.equal(await page.locator('.hero').getAttribute('class'),'hero');
-  // Abstract: gap, idea and result cards, with the full text collapsed until asked for.
-  assert.deepEqual(await page.locator('.idea-label').allTextContents(),['The gap','The idea','The result']);
+  // Summary replaces the idea cards; the full abstract stays available on demand.
+  assert.equal(await page.locator('#summary-title').textContent(),'SUMMARY');
   assert.equal(await page.locator('#abstract-text').isVisible(),false);
   await page.locator('.abstract-details summary').click();
   assert.ok((await page.locator('#abstract-text').textContent()).split(/\s+/).length>200,'The full abstract must be available');
   assert.equal(requests.some(url=>url.includes('.viser')),false,'Viewer must wait until its section is near');
   assert.equal(await page.locator('[data-resource=arxiv]').getAttribute('href'),'https://arxiv.org/abs/2610.13079');
-  for (let i=0;i<6;i++) {
-   await page.locator('#serve-dots button').nth(i).click();
-   await page.waitForFunction(index=>document.querySelectorAll('#serve-dots button')[index].getAttribute('aria-current')==='true',i);
-  }
-  assert.equal(await page.locator('#serve-next').isDisabled(),true);
-  await page.locator('#serve-track').focus();
-  await page.keyboard.press('ArrowLeft');
-  await page.waitForFunction(()=>document.querySelectorAll('#serve-dots button')[4].getAttribute('aria-current')==='true');
+  assert.equal(await page.locator('.video-copy p').count(),0,'Task descriptions and comparison notes are omitted');
   // Reaching the section loads the viewer without a click.
   await page.locator('#demo-stage').scrollIntoViewIfNeeded();
   await page.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor({timeout:20000});
@@ -261,8 +254,14 @@ const server = http.createServer((req, res) => {
   for(const width of [1440,768,390,320]) {
    await page.setViewportSize({width,height:844});
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Overflow at ${width}px`);
-   const layout=await page.locator('#serve-track').evaluate(track=>({track:track.clientWidth,cards:Array.from(track.children).map(card=>card.getBoundingClientRect().width)}));
-   assert.ok(layout.cards.every(width=>Math.abs(width-layout.track)<2),'Show one full-width serve at every screen size');
+   const layout=await page.locator('#serve-track').evaluate(track=>({
+    width:track.clientWidth,gap:parseFloat(getComputedStyle(track).columnGap),
+    cards:Array.from(track.children).map(card=>{const r=card.getBoundingClientRect();return {width:r.width,x:r.x,y:r.y};})
+   }));
+   const columns=width>600 ? 2 : 1;
+   assert.equal(new Set(layout.cards.map(c=>Math.round(c.x))).size,columns);
+   assert.equal(new Set(layout.cards.map(c=>Math.round(c.y))).size,6/columns);
+   assert.ok(layout.cards.every(card=>Math.abs(card.width-(layout.width-layout.gap*(columns-1))/columns)<2));
    const climbingWidth=await page.locator('#ladder-climbing').evaluate(card=>card.getBoundingClientRect().width);
    const skillsWidth=await page.locator('#other-skills').evaluate(grid=>grid.getBoundingClientRect().width);
    const climbingScale=width>600 ? .5 : 1;
@@ -299,11 +298,7 @@ const server = http.createServer((req, res) => {
   // Decode, play and seek every supplied clip, with the actual Pages URL prefix.
   await page.setViewportSize({width:1440,height:1000});
   const clips=await page.evaluate(()=>[...window.VICAR.serves,...window.VICAR.skills].filter(item=>item.src));
-  for(const [index,clip] of clips.entries()) {
-   if(index<6) {
-    await page.locator('#serve-dots button').nth(index).click();
-    await page.waitForFunction(i=>document.querySelectorAll('#serve-dots button')[i].getAttribute('aria-current')==='true',index);
-   }
+  for(const clip of clips) {
    const video=page.locator(`#${clip.id} video`);
    await video.scrollIntoViewIfNeeded();
    assert.ok(fs.statSync(path.join(root,clip.src.split('?')[0])).size<=20_000_000,`${clip.id} exceeds 20 MB`);
@@ -319,7 +314,6 @@ const server = http.createServer((req, res) => {
    await page.waitForFunction(id=>{const v=document.querySelector(`#${id} video`);return !v.seeking && v.readyState>=2 && v.currentTime>v.duration*.7;},clip.id);
   }
   if(process.env.SCREENSHOT_DIR) {
-   await page.locator('#serve-dots button').first().click();
    await page.locator('#skills').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'serve-videos.png')});
    await page.locator('#under-table-pickup').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'pickup-comparison.png')});
    await page.locator('#ladder-climbing').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'climbing-comparison.png')});
@@ -328,6 +322,6 @@ const server = http.createServer((req, res) => {
    await page.locator('#ladder-climbing').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'climbing-mobile.png')});
   }
   assert.deepEqual(errors,[]);
-  console.log('PASS: all ten compressed videos play and seek, responsive aligned climbing comparison, native aspect ratios, no video preloading, full-width serve carousel, responsive widths, hero controls, all 10 tasks / 10 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: all ten compressed videos play and seek, responsive aligned climbing comparison, native aspect ratios, no task-video preloading, two-column serve grid, responsive widths, hero controls, all 10 tasks / 10 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

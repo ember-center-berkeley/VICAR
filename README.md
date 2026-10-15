@@ -145,22 +145,22 @@ Place MP4 files in `assets/videos/`, then set each video's `src` in `assets/cont
 
 | Group | ID / suggested filename | Skill |
 | --- | --- | --- |
-| Carousel | `backhand-side-spin.mp4` | Backhand side-spin serve |
-| Carousel | `forehand-side-spin.mp4` | Forehand side-spin serve |
-| Carousel | `forehand.mp4` | Simple forehand serve |
-| Carousel | `backhand.mp4` | Simple backhand serve |
-| Carousel | `backhand-top-spin.mp4` | Backhand top-spin serve |
-| Carousel | `forehand-top-spin.mp4` | Forehand top-spin serve |
+| Serve grid | `backhand-side-spin.mp4` | Backhand side-spin serve |
+| Serve grid | `forehand-side-spin.mp4` | Forehand side-spin serve |
+| Serve grid | `forehand.mp4` | Simple forehand serve |
+| Serve grid | `backhand.mp4` | Simple backhand serve |
+| Serve grid | `backhand-top-spin.mp4` | Backhand top-spin serve |
+| Serve grid | `forehand-top-spin.mp4` | Forehand top-spin serve |
 | Individual | `tabletop-pickup.mp4` | Tabletop pickup |
 | Individual | `under-table-pickup.mp4` | Under-table pickup |
 | Individual | `bimanual-pick-place.mp4` | Bimanual box pickup and placement |
 | Individual | `ladder-climbing.mp4` | Ladder climbing (simulation) |
 
-The six serves appear one at a time at full width on desktop, tablet, and mobile.
-The carousel supports buttons, keyboard arrows while the track is focused, six
-direct-selection dots, and touch scrolling. Its height adapts to each clip's
-aspect ratio. The three pickup comparisons are individually titled, full-width
-rows, followed by a centered climbing comparison at 50% width (full width on
+The six serves appear together in two columns and three rows on desktop and
+tablet, and one column on mobile screens up to 600 px. Their order and native
+video aspect ratios are preserved. Task cards show titles and tags without
+additional descriptions or comparison notes. The three pickup comparisons are
+individually titled, full-width rows, followed by a centered climbing comparison at 50% width (full width on
 mobile screens up to 600 px). Set each video's `width` and `height`
 in `assets/content.js` so the layout reserves the correct space before playback.
 
@@ -222,8 +222,7 @@ npm test
 ```
 
 The checks exercise playback and seeking for all ten videos, the 20 MB size
-limit, no video preloading, all six carousel selections, full-width cards at
-responsive sizes, keyboard navigation, all ten tasks and ten viewers, every
-sampled XYZ position, left-hand tabletop pickup, fixed axes, scene layers, preserved
+limit, no task-video preloading, the six-serve responsive grid, all ten tasks and
+ten viewers, every sampled XYZ position, left-hand tabletop pickup, fixed axes, scene layers, preserved
 playback, standalone controls, project-prefixed URLs, and missing-recording
 recovery. To use an existing Chrome installation, run `CHROME_CHANNEL=chrome npm test`.

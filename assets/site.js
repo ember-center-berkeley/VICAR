@@ -158,50 +158,13 @@
     const copy = element('div', 'video-copy');
     const meta = element('div', 'video-meta');
     (item.tags || []).forEach(tag => meta.append(element('span', '', tag)));
-    copy.append(element('h3', '', item.title), element('p', '', item.description), meta);
-    if (item.comparison) copy.append(element('p', 'comparison-caption', item.comparison));
+    copy.append(element('h3', '', item.title), meta);
     card.append(slot, copy);
     return card;
   }
   const track = $('#serve-track');
   content.serves.forEach((item, index) => track.append(videoCard(item, index + 1)));
   content.skills.forEach((item, index) => $('#other-skills').append(videoCard(item, index + 7)));
-  let activeServe = 0;
-  const dots = content.serves.map((serve, i) => {
-    const dot = element('button');
-    dot.setAttribute('aria-label', `Show ${serve.title.toLowerCase()}`);
-    dot.addEventListener('click', () => moveTo(i));
-    $('#serve-dots').append(dot);
-    return dot;
-  });
-  function updateCarousel() {
-    const step = track.children[1] ? track.children[1].offsetLeft - track.children[0].offsetLeft : 1;
-    activeServe = Math.max(0, Math.min(content.serves.length - 1, Math.round(track.scrollLeft / step)));
-    dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === activeServe)));
-    $('#serve-prev').disabled = activeServe === 0;
-    $('#serve-next').disabled = activeServe === content.serves.length - 1;
-    $('.carousel-note').textContent = `${activeServe + 1} / ${content.serves.length} · ${content.serves[activeServe].title}`;
-    // Match each clip's native aspect ratio without leaving a tall empty row
-    // beneath the side-by-side comparisons.
-    track.style.height = `${track.children[activeServe].offsetHeight + 11}px`;
-  }
-  function moveTo(index) {
-    index = Math.max(0, Math.min(content.serves.length - 1, index));
-    const target = track.children[index];
-    track.scrollTo({left: target.offsetLeft - track.firstElementChild.offsetLeft, behavior: reducedMotion.matches ? 'instant' : 'smooth'});
-  }
-  $('#serve-prev').addEventListener('click', () => moveTo(activeServe - 1));
-  $('#serve-next').addEventListener('click', () => moveTo(activeServe + 1));
-  track.addEventListener('keydown', event => {
-    if (event.target !== track) return;
-    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-      event.preventDefault();
-      moveTo(activeServe + (event.key === 'ArrowRight' ? 1 : -1));
-    }
-  });
-  track.addEventListener('scroll', updateCarousel, {passive: true});
-  new ResizeObserver(updateCarousel).observe(track);
-  updateCarousel();
   // Pause clips once they scroll away; never autoplay six videos at once.
   const mediaObserver = new IntersectionObserver(entries => entries.forEach(entry => {
     if (!entry.isIntersecting) entry.target.pause();

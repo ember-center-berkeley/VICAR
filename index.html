@@ -11,10 +11,10 @@
   <meta property="og:image" content="https://ember-center-berkeley.github.io/VICAR/assets/images/overview.png">
   <title>VICAR | Video Imitation with Contact-Aware Retargeting</title>
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/style.css?v=website-summary-20261015">
-  <script defer src="assets/content.js?v=website-summary-20261015"></script>
+  <link rel="stylesheet" href="assets/style.css?v=serve-grid-20261015">
+  <script defer src="assets/content.js?v=serve-grid-20261015"></script>
   <script defer src="assets/viewer-manifest.js?v=under-table-table-7cm-20261014"></script>
-  <script defer src="assets/site.js?v=summary-autoplay-20261015"></script>
+  <script defer src="assets/site.js?v=serve-grid-20261015"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -55,18 +55,14 @@
     </section>
 
     <section id="overview" class="section container" aria-labelledby="overview-title">
-      <div class="section-heading centered"><p class="eyebrow">From observation to execution</p><h2 id="overview-title">A pipeline built around contact</h2><p>Reconstruct the scene, preserve the interaction, and learn a reference that adapts.</p></div>
+      <div class="section-heading centered"><p class="eyebrow">From observation to execution</p><h2 id="overview-title">A pipeline built around contact</h2></div>
       <figure class="overview-figure"><a href="assets/images/overview.png" target="_blank" rel="noopener" aria-label="Open full-resolution VICAR overview figure"><img src="assets/images/overview.png" width="2600" height="1463" alt="VICAR pipeline: human videos and scene reconstruction feed contact-aware retargeting, contact-point augmentation, a motion generator, reinforcement learning, and zero-shot deployment on a humanoid robot." loading="lazy"></a><figcaption><strong>VICAR overview.</strong> Third-person human video becomes a contact-aware robot reference. Augmented contact points train a motion generator, whose outputs are tracked by a policy on the robot.</figcaption></figure>
       <div class="pipeline-steps"><div><span>01</span><h3>Recover</h3><p>Human motion and task-relevant scene geometry from video.</p></div><div><span>02</span><h3>Retarget</h3><p>Preserve global contacts, motion speed, and collision clearance.</p></div><div><span>03</span><h3>Augment</h3><p>Vary contact locations while retaining the demonstrated skill.</p></div><div><span>04</span><h3>Execute</h3><p>Track contact-conditioned references on the humanoid.</p></div></div>
     </section>
 
     <section id="skills" class="section section-tinted" aria-labelledby="serves-title"><div class="container">
       <div class="section-heading heading-row"><div><p class="eyebrow">01 — Table tennis</p><h2 id="serves-title">Six serves. Distinct styles.</h2><p>Watch the humanoid execute each serve, from simple strokes to spin.</p></div><span class="section-tag">6 serves</span></div>
-      <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Table tennis serve videos">
-        <div id="serve-track" class="serve-track" tabindex="0" aria-label="Serve videos. Use left and right arrow keys to browse."></div>
-        <div class="carousel-footer"><span class="carousel-note">Explore the six serve styles</span><div id="serve-dots" class="carousel-dots" aria-label="Choose a serve"></div><div class="carousel-arrows"><button id="serve-prev" class="round-button" aria-label="Previous serve">←</button><button id="serve-next" class="round-button" aria-label="Next serve">→</button></div></div>
-      </div>
-      <p class="media-note">Choose a serve with the arrows or dots, then press play. Swipe to browse on mobile.</p>
+      <div id="serve-track" class="serve-grid" role="region" aria-label="Table tennis serve videos"></div>
     </div></section>
 
     <section class="section container" aria-labelledby="other-skills-title">
