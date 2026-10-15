@@ -15,6 +15,8 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from visualization.export_tasks import load_task,task_scene
 
+HERO_TABLE_OFFSET = np.array([0.0, 0.0, -0.03])
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--output',type=Path,required=True)
@@ -44,7 +46,10 @@ def main():
     viser.SceneApi.add_mesh_trimesh=smooth_robot
     server=viser.ViserServer(host='127.0.0.1',port=args.port)
     data=load_task('under-table-pickup');scene=task_scene(server,'under-table-pickup',data)
-    # Keep the current robot, object and both reconstructed table layers.
+    # Lower both table layers another 3 cm for the hero composition.
+    for name in ['/table_pointcloud','/table_voxels']:
+        handle=server.scene._handle_from_node_name[name]
+        handle.position=np.asarray(handle.position)+HERO_TABLE_OFFSET
     # Hide debugging geometry and trajectory guides for the background clip.
     hidden=['/Ground','/collision','/camera_pose','/right_anchor','/pick_point','/hit_box','/hit_box_mesh','/penetration','/traj_left_hand','/traj_right_hand']
     for name,h in server.scene._handle_from_node_name.items():
@@ -72,7 +77,9 @@ def main():
             if frame%30==0 or args.preview:print(f'Rendered {frame}/{scene.T-1}',flush=True)
         (args.output/'render.json').write_text(json.dumps(dict(task='under-table-pickup',variant=scene.default,frames=scene.T,
             fps=scene.meta['fps'],camera=dict(position=position.tolist(),look_at=look.tolist(),fov=fov),size=[1920,1080],
-            tableDisplayShift=scene.object_presentation['tableDisplayShift'],robot='g1_under_table.urdf',fullResolution=bool(args.robot_urdf)),indent=2)+'\n')
+            sourceTableDisplayShift=scene.object_presentation['tableDisplayShift'],heroTableOffset=HERO_TABLE_OFFSET.tolist(),
+            tableDisplayShift=(np.asarray(scene.object_presentation['tableDisplayShift'])+HERO_TABLE_OFFSET).tolist(),
+            robot='g1_under_table.urdf',fullResolution=bool(args.robot_urdf)),indent=2)+'\n')
         (args.output/'complete').touch()
     finally:server.stop()
 if __name__=='__main__':main()

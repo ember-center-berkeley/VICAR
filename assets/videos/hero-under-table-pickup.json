@@ -20,19 +20,29 @@
     1920,
     1080
   ],
-  "tableDisplayShift": [
+  "sourceTableDisplayShift": [
     0.0,
     0.0,
     -0.07
+  ],
+  "heroTableOffset": [
+    0.0,
+    0.0,
+    -0.03
+  ],
+  "tableDisplayShift": [
+    0.0,
+    0.0,
+    -0.1
   ],
   "robot": "g1_under_table.urdf",
   "fullResolution": true,
   "video": "assets/videos/hero-under-table-pickup.mp4",
   "poster": "assets/images/hero-under-table-pickup-poster.jpg",
   "humanImage": "assets/images/idea-human.jpg",
-  "bytes": 944349,
-  "sha256": "fb90867484b04c2eda802cd6b7905b8bae31f5db093e3bc05e8ae157e7af7610",
   "durationSeconds": 12.705,
   "encoding": "H.264, CRF 22, yuv420p, no audio, MP4 faststart, 0.18 s white fades at loop boundaries",
-  "posterFrame": 130
+  "posterFrame": 130,
+  "bytes": 946390,
+  "sha256": "7f50463a6e420f2263ba886dea0a14bd5ad0acfafff660329e2c5f41ba9638d0"
 }
