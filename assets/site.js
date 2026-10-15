@@ -36,6 +36,7 @@
   const heroVideo = $('#hero-video');
   const heroToggle = $('#hero-toggle');
   const hero = content.hero || {};
+  if (hero.objectPositionMobile) heroVideo.style.setProperty('--hero-mobile-position', hero.objectPositionMobile);
   let videoFailed = !hero.video || reducedMotion.matches || saveData;
   let posterFailed = !hero.poster;
   const checkHeroMedia = () => {

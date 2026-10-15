@@ -1350,7 +1350,7 @@ pre {
     aspect-ratio:1/1
   }
   .hero-media video {
-    object-position:88% 50%
+    object-position:var(--hero-mobile-position,88% 50%)
   }
   .hero-source {
     left:6%;

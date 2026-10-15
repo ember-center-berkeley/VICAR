@@ -1,0 +1,196 @@
+{
+  "task": "ladder-climbing",
+  "variant": 0,
+  "frames": 605,
+  "fps": 50.0,
+  "source": "ladder_scene_20261008/viewer.py",
+  "reference": "climbing_short_fs:v0",
+  "archive_sha256": "281531cb5d9c65bbc3be3f96c21dbc905cc66fda2763d8152ec719af9b0a109b",
+  "camera": {
+    "position": [
+      -2.9859999999999998,
+      -4.59,
+      2.1
+    ],
+    "look_at": [
+      -0.986,
+      0.61,
+      1.1
+    ],
+    "fov": 0.54
+  },
+  "size": [
+    1920,
+    1080
+  ],
+  "robot": "visualization/ladder_scene/main.urdf",
+  "ladderOffset": [
+    0.03,
+    0,
+    0
+  ],
+  "anchorOffset": [
+    0.04,
+    0,
+    -0.02
+  ],
+  "contactDotColor": [
+    235,
+    47,
+    61
+  ],
+  "contactDotRadius": 0.025,
+  "contactDots": [
+    {
+      "node": "/anchors/LEFT_FEET_0",
+      "position": [
+        0,
+        0.13,
+        0.03
+      ],
+      "color": [
+        50,
+        200,
+        50
+      ]
+    },
+    {
+      "node": "/anchors/LEFT_FEET_1",
+      "position": [
+        0.3,
+        0.13,
+        0.37
+      ],
+      "color": [
+        50,
+        200,
+        50
+      ]
+    },
+    {
+      "node": "/anchors/LEFT_FEET_2",
+      "position": [
+        0.45199999999999996,
+        0.13,
+        0.97
+      ],
+      "color": [
+        50,
+        200,
+        50
+      ]
+    },
+    {
+      "node": "/anchors/RIGHT_FEET_0",
+      "position": [
+        0,
+        -0.13,
+        0.03
+      ],
+      "color": [
+        200,
+        50,
+        50
+      ]
+    },
+    {
+      "node": "/anchors/RIGHT_FEET_1",
+      "position": [
+        0.376,
+        -0.13,
+        0.6699999999999999
+      ],
+      "color": [
+        200,
+        50,
+        50
+      ]
+    },
+    {
+      "node": "/anchors/RIGHT_FEET_2",
+      "position": [
+        0.45199999999999996,
+        -0.13,
+        0.97
+      ],
+      "color": [
+        200,
+        50,
+        50
+      ]
+    },
+    {
+      "node": "/anchors/LEFT_HAND_0",
+      "position": [
+        0.528,
+        0.11,
+        1.27
+      ],
+      "color": [
+        50,
+        100,
+        255
+      ]
+    },
+    {
+      "node": "/anchors/LEFT_HAND_1",
+      "position": [
+        0.6799999999999999,
+        0.11,
+        1.8699999999999999
+      ],
+      "color": [
+        50,
+        100,
+        255
+      ]
+    },
+    {
+      "node": "/anchors/RIGHT_HAND_0",
+      "position": [
+        0.604,
+        -0.11,
+        1.57
+      ],
+      "color": [
+        200,
+        50,
+        255
+      ]
+    },
+    {
+      "node": "/anchors/RIGHT_HAND_1",
+      "position": [
+        0.6799999999999999,
+        -0.11,
+        1.8699999999999999
+      ],
+      "color": [
+        200,
+        50,
+        255
+      ]
+    }
+  ],
+  "contactNote": "Package reference guides; locations unchanged, recolored red for the hero.",
+  "motion": "Full reference motion at original speed; no pose or trajectory changes",
+  "video": "assets/videos/hero-ladder-climbing.mp4",
+  "poster": "assets/images/hero-ladder-climbing-poster.jpg",
+  "humanImage": "assets/images/hero-ladder-human.jpg",
+  "durationSeconds": 12.1,
+  "encoding": "H.264, CRF 22, yuv420p, no audio, MP4 faststart, 0.18 s white fades at loop boundaries",
+  "posterFrame": 300,
+  "bytes": 1105085,
+  "sha256": "c0da56d3d265d10e6dad92fefa1d7d91431fa5fac58688cb08387327fa8fa1af",
+  "humanSource": {
+    "video": "assets/videos/ladder-climbing.mp4",
+    "timeSeconds": 5,
+    "cropXYWH": [
+      15,
+      174,
+      462,
+      610
+    ],
+    "note": "Human panel of the existing graded climbing comparison"
+  }
+}

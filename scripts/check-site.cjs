@@ -48,7 +48,7 @@ const server = http.createServer((req, res) => {
   // Hero: two actions, paper links in the nav, and a still poster under reduced motion.
   assert.equal(await page.locator('.hero-actions a').count(),2);
   assert.deepEqual(await page.locator('.nav-cta').allTextContents(),['arXiv','Paper','Code']);
-  assert.match(await page.locator('#hero-video').getAttribute('poster'),/hero-under-table-pickup-poster/);
+  assert.match(await page.locator('#hero-video').getAttribute('poster'),/hero-ladder-climbing-poster/);
   assert.equal(await page.locator('#hero-video').getAttribute('src'),null,'Reduced motion must not play the hero loop');
   assert.equal(await page.locator('#hero-toggle').isHidden(),true);
   await page.waitForFunction(()=>document.querySelector('#hero-source img').naturalWidth>0);
@@ -110,7 +110,7 @@ const server = http.createServer((req, res) => {
   await saver.close();
   // Without a loop or poster, the hero falls back to centred text.
   const broken=await browser.newPage({viewport:{width:1440,height:900}});
-  await broken.route(/hero-under-table-pickup/,route=>route.fulfill({status:404,body:''}));
+  await broken.route(/hero-ladder-climbing/,route=>route.fulfill({status:404,body:''}));
   await broken.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
   await broken.waitForFunction(()=>document.querySelector('.hero').classList.contains('hero-centered'));
   assert.equal(await broken.locator('.hero-media').isHidden(),true);
@@ -121,7 +121,7 @@ const server = http.createServer((req, res) => {
   const touch=await phone.newPage();
   await touch.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
   // Without reduced motion the hero loop plays and its button pauses it.
-  assert.match(await touch.locator('#hero-video').getAttribute('src'),/hero-under-table-pickup\.mp4/);
+  assert.match(await touch.locator('#hero-video').getAttribute('src'),/hero-ladder-climbing\.mp4/);
   if (await touch.evaluate(()=>document.createElement('video').canPlayType('video/mp4; codecs="avc1.640028"'))) {
    await touch.waitForFunction(()=>!document.querySelector('#hero-video').paused);
    await touch.locator('#hero-toggle').tap();
