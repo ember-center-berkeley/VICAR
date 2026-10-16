@@ -11,10 +11,10 @@
   <meta property="og:image" content="https://ember-center-berkeley.github.io/VICAR/assets/images/overview.png?v=updated-viser-20261015">
   <title>VICAR | Video Imitation with Contact-Aware Retargeting</title>
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/style.css?v=code-coming-soon-20261015">
+  <link rel="stylesheet" href="assets/style.css?v=pipeline-stepper-20261016">
   <script defer src="assets/content.js?v=code-coming-soon-20261015"></script>
   <script defer src="assets/viewer-manifest.js?v=under-table-table-7cm-20261014"></script>
-  <script defer src="assets/site.js?v=serve-grid-ladder-label-20261015"></script>
+  <script defer src="assets/site.js?v=pipeline-stepper-20261016"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -55,9 +55,35 @@
     </section>
 
     <section id="overview" class="section container" aria-labelledby="overview-title">
-      <div class="section-heading centered"><p class="eyebrow">From observation to execution</p><h2 id="overview-title">A pipeline built around contact</h2></div>
-      <figure class="overview-figure"><a href="assets/images/overview.png?v=updated-viser-20261015" target="_blank" rel="noopener" aria-label="Open full-resolution VICAR overview figure"><img src="assets/images/overview.png?v=updated-viser-20261015" width="2600" height="1463" alt="VICAR pipeline: human videos and scene reconstruction feed contact-aware retargeting, contact-point augmentation, a motion generator, reinforcement learning, and zero-shot deployment on a humanoid robot." loading="lazy"></a><figcaption><strong>VICAR overview.</strong> Third-person human video becomes a contact-aware robot reference. Augmented contact points train a motion generator, whose outputs are tracked by a policy on the robot.</figcaption></figure>
-      <div class="pipeline-steps"><div><span>01</span><h3>Recover</h3><p>Human motion and task-relevant scene geometry from video.</p></div><div><span>02</span><h3>Retarget</h3><p>Preserve global contacts, motion speed, and collision clearance.</p></div><div><span>03</span><h3>Augment</h3><p>Vary contact locations while retaining the demonstrated skill.</p></div><div><span>04</span><h3>Execute</h3><p>Track contact-conditioned references on the humanoid.</p></div></div>
+      <div class="section-heading centered"><p class="eyebrow">From observation to execution</p><h2 id="overview-title">A pipeline built around contact</h2><p>Seven stages, one at a time. Choose a stage or step through them in order.</p></div>
+      <div class="stepper">
+        <div class="stepper-tabs" role="tablist" aria-label="Pipeline stages">
+          <button type="button" class="stepper-tab" role="tab" id="stepper-tab-1" aria-controls="stepper-panel" aria-selected="true" tabindex="0" data-image="assets/images/pipeline-watch.jpg" data-width="364" data-height="303" data-alt="A person kneels at a table-tennis table, one hand on the table edge and one reaching underneath; red dots mark the contacts. Face blurred." data-label="III-A · Human videos" data-text="Start from one ordinary third-person video of a person doing the task, here reaching under a table. Red dots mark where their hands touch the world." data-link=""><span class="stepper-num">1</span><span class="stepper-name">Watch</span></button>
+          <button type="button" class="stepper-tab" role="tab" id="stepper-tab-2" aria-controls="stepper-panel" aria-selected="false" tabindex="-1" data-image="assets/images/pipeline-rebuild.jpg" data-width="475" data-height="319" data-alt="The table and the object beneath it, reconstructed in 3D from the video, next to the humanoid model." data-label="III-B · Scene reconstruction" data-text="Recover the person’s motion and rebuild the objects that matter, like the table, in 3D from the same video." data-link=""><span class="stepper-num">2</span><span class="stepper-name">Rebuild</span></button>
+          <button type="button" class="stepper-tab" role="tab" id="stepper-tab-3" aria-controls="stepper-panel" aria-selected="false" tabindex="-1" data-image="assets/images/pipeline-retarget.jpg" data-width="448" data-height="318" data-alt="The retargeted humanoid kneels under the reconstructed table, keeping the demonstrated contacts." data-label="III-C · Contact-aware retargeting" data-text="Move the motion onto the robot while keeping the contacts, the speed and the clearance from the table. Contacts get top priority." data-link="&lt;a class=&quot;flow-link&quot; href=&quot;#interactive&quot; data-demo-scene=&quot;under-table-pickup&quot;&gt;See it in 3D &lt;svg aria-hidden=&quot;true&quot; viewBox=&quot;0 0 24 24&quot;&gt;&lt;path d=&quot;M12 5v14m-6-6 6 6 6-6&quot;/&gt;&lt;/svg&gt;&lt;/a&gt;"><span class="stepper-num">3</span><span class="stepper-name">Retarget</span></button>
+          <button type="button" class="stepper-tab" role="tab" id="stepper-tab-4" aria-controls="stepper-panel" aria-selected="false" tabindex="-1" data-image="assets/images/pipeline-vary.jpg" data-width="640" data-height="640" data-alt="Several overlaid poses of the robot reaching to different points inside the contact region under the table." data-label="III-D · Contact-point augmentation" data-text="Move the contact points around to create 250 new versions of the same skill." data-link="&lt;a class=&quot;flow-link&quot; href=&quot;#interactive&quot; data-demo-scene=&quot;under-table-pickup&quot; data-demo-focus=&quot;contacts&quot;&gt;Move the contacts &lt;svg aria-hidden=&quot;true&quot; viewBox=&quot;0 0 24 24&quot;&gt;&lt;path d=&quot;M12 5v14m-6-6 6 6 6-6&quot;/&gt;&lt;/svg&gt;&lt;/a&gt;"><span class="stepper-num">4</span><span class="stepper-name">Vary</span></button>
+          <button type="button" class="stepper-tab" role="tab" id="stepper-tab-5" aria-controls="stepper-panel" aria-selected="false" tabindex="-1" data-image="assets/images/pipeline-generate.jpg" data-width="714" data-height="253" data-alt="Diagram: a motion style and contact positions go into a motion generator, which outputs robot motions." data-label="III-D · Train motion generator" data-text="Those versions train a motion generator: give it a style and new contact positions, and it produces a matching motion." data-link=""><span class="stepper-num">5</span><span class="stepper-name">Generate</span></button>
+          <button type="button" class="stepper-tab" role="tab" id="stepper-tab-6" aria-controls="stepper-panel" aria-selected="false" tabindex="-1" data-image="assets/images/pipeline-train.jpg" data-width="687" data-height="318" data-alt="Diagram: generated motions feed a policy, trained across many simulated robots at once." data-label="III-E/F · RL training and rewards" data-text="Reinforcement learning in simulation trains a policy (π) to follow the generated motions, across many robots at once." data-link=""><span class="stepper-num">6</span><span class="stepper-name">Train</span></button>
+          <button type="button" class="stepper-tab" role="tab" id="stepper-tab-7" aria-controls="stepper-panel" aria-selected="false" tabindex="-1" data-image="assets/images/pipeline-deploy.jpg" data-width="292" data-height="377" data-alt="The real humanoid robot kneels at the table, touching the same contact points." data-label="IV-E · Zero-shot sim-to-real" data-text="The policy runs on the real robot straight away, with no real-robot training data." data-link=""><span class="stepper-num">7</span><span class="stepper-name">Deploy</span></button>
+        </div>
+        <div id="stepper-panel" class="stepper-panel" role="tabpanel" aria-labelledby="stepper-tab-1">
+          <figure class="stepper-media"><img src="assets/images/pipeline-watch.jpg" width="364" height="303" alt="A person kneels at a table-tennis table, one hand on the table edge and one reaching underneath; red dots mark the contacts. Face blurred." loading="lazy"></figure>
+          <div class="stepper-body">
+            <p class="stepper-count">Step <span class="stepper-current">1</span> of 7</p>
+            <h3 class="stepper-title">Watch</h3>
+            <p class="stepper-label">III-A · Human videos</p>
+            <p class="stepper-text">Start from one ordinary third-person video of a person doing the task, here reaching under a table. Red dots mark where their hands touch the world.</p>
+            <div class="stepper-link"></div>
+            <div class="stepper-nav"><button type="button" class="stepper-prev" disabled>&#8592; Previous</button><button type="button" class="stepper-next">Next &#8594;</button></div>
+          </div>
+        </div>
+        <p class="flow-footer"><a class="flow-figure-button" href="assets/images/overview.png?v=updated-viser-20261015" data-open-figure>View the full paper figure</a></p>
+      </div>
+      <dialog id="figure-dialog" class="figure-dialog" aria-labelledby="figure-dialog-title"><div class="figure-dialog-inner">
+        <div class="figure-dialog-head"><h3 id="figure-dialog-title">VICAR overview</h3><a href="assets/images/overview.png?v=updated-viser-20261015" target="_blank" rel="noopener">Full resolution <span aria-hidden="true">↗</span></a><button type="button" class="figure-dialog-close" aria-label="Close">&#215;</button></div>
+        <img src="assets/images/overview.png?v=updated-viser-20261015" width="2600" height="1463" alt="VICAR pipeline: human videos and scene reconstruction feed contact-aware retargeting, contact-point augmentation, a motion generator, reinforcement learning, and zero-shot deployment on a humanoid robot." loading="lazy">
+        <p class="figure-dialog-caption">Third-person human video becomes a contact-aware robot reference. Augmented contact points train a motion generator, whose outputs are tracked by a policy on the robot.</p>
+      </div></dialog>
     </section>
 
     <section id="skills" class="section section-tinted" aria-labelledby="serves-title"><div class="container">

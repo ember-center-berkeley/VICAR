@@ -39,6 +39,48 @@
     link.href = content.links[link.dataset.resource] || './';
   });
   $('#abstract-text').textContent = content.abstract;
+  // The paper figure opens in a dialog; without dialog support the link opens the image.
+  const figureDialog = $('#figure-dialog');
+  document.querySelectorAll('[data-open-figure]').forEach(link => link.addEventListener('click', event => {
+    if (!figureDialog.showModal) return;
+    event.preventDefault();
+    figureDialog.showModal();
+  }));
+  figureDialog.querySelector('.figure-dialog-close').addEventListener('click', () => figureDialog.close());
+  figureDialog.addEventListener('click', event => { if (event.target === figureDialog) figureDialog.close(); });
+  // Pipeline stepper: one stage per tab, arrow keys to move between stages.
+  const stepperTabs = [...document.querySelectorAll('.stepper-tab')];
+  const stepperPanel = $('#stepper-panel');
+  let activeStep = 0;
+  function showStep(index, focus = false) {
+    activeStep = Math.max(0, Math.min(stepperTabs.length - 1, index));
+    const tab = stepperTabs[activeStep];
+    stepperTabs.forEach(item => {
+      item.setAttribute('aria-selected', String(item === tab));
+      item.tabIndex = item === tab ? 0 : -1;
+    });
+    if (focus) tab.focus();
+    stepperPanel.setAttribute('aria-labelledby', tab.id);
+    const image = stepperPanel.querySelector('img');
+    Object.assign(image, {src: tab.dataset.image, width: tab.dataset.width, height: tab.dataset.height, alt: tab.dataset.alt});
+    stepperPanel.querySelector('.stepper-current').textContent = activeStep + 1;
+    stepperPanel.querySelector('.stepper-title').textContent = tab.lastChild.textContent;
+    stepperPanel.querySelector('.stepper-label').textContent = tab.dataset.label;
+    stepperPanel.querySelector('.stepper-text').textContent = tab.dataset.text;
+    stepperPanel.querySelector('.stepper-link').innerHTML = tab.dataset.link;
+    stepperPanel.querySelector('.stepper-prev').disabled = activeStep === 0;
+    stepperPanel.querySelector('.stepper-next').disabled = activeStep === stepperTabs.length - 1;
+  }
+  stepperTabs.forEach((tab, i) => tab.addEventListener('click', () => showStep(i)));
+  $('.stepper-tabs').addEventListener('keydown', event => {
+    const from = stepperTabs.includes(event.target) ? stepperTabs.indexOf(event.target) : activeStep;
+    const moves = {ArrowRight: from + 1, ArrowLeft: from - 1, Home: 0, End: stepperTabs.length - 1};
+    if (!(event.key in moves)) return;
+    event.preventDefault();
+    showStep(moves[event.key], true);
+  });
+  stepperPanel.querySelector('.stepper-prev').addEventListener('click', () => showStep(activeStep - 1));
+  stepperPanel.querySelector('.stepper-next').addEventListener('click', () => showStep(activeStep + 1));
   if (content.authors.length) {
     const authors = $('#authors');
     authors.hidden = false;
@@ -359,6 +401,22 @@
     variant = scene.variants[0];
     renderVariants();
     if (activated) loadViewer();
+  });
+  // Pipeline links open the explorer on their skill; "contacts" also points at the sliders.
+  // Delegated, because the stepper swaps its link in after load.
+  let highlightTimer;
+  document.addEventListener('click', event => {
+    const link = event.target.closest('[data-demo-scene]');
+    if (!link) return;
+    if (sceneSelect.value !== link.dataset.demoScene) {
+      sceneSelect.value = link.dataset.demoScene;
+      sceneSelect.dispatchEvent(new Event('change'));
+    }
+    if (link.dataset.demoFocus !== 'contacts') return;
+    const controls = $('#augmentation-controls');
+    controls.classList.add('is-highlighted');
+    clearTimeout(highlightTimer);
+    highlightTimer = setTimeout(() => controls.classList.remove('is-highlighted'), 2600);
   });
   $('#load-demo').addEventListener('click', loadViewer);
   $('#reset-viewer').addEventListener('click', loadViewer);

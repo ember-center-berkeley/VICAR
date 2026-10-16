@@ -47,7 +47,7 @@ const server = http.createServer((req, res) => {
   assert.equal(await page.locator('.hero-actions [data-resource="video"]').getAttribute('href'),'#summary');
   // Hero: two actions, paper links in the nav, and a still poster under reduced motion.
   assert.equal(await page.locator('.hero-actions a').count(),2);
-  assert.deepEqual(await page.locator('.nav-cta').allTextContents(),['arXiv','Paper','Code']);
+  assert.deepEqual(await page.locator('.nav-cta').allTextContents(),['arXiv','Paper','Code (coming soon)']);
   assert.match(await page.locator('#hero-video').getAttribute('poster'),/hero-ladder-climbing-poster/);
   assert.equal(await page.locator('#hero-video').getAttribute('src'),null,'Reduced motion must not play the hero loop');
   assert.equal(await page.locator('#hero-toggle').isHidden(),true);
@@ -93,6 +93,33 @@ const server = http.createServer((req, res) => {
   assert.equal(await timeInput.inputValue(),'4.5','Sliders must preserve paused playback time');
   await page.locator('#reset-shift').click();
   await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
+  // Pipeline: a seven-step stepper with a fixed-height panel and the paper figure on demand.
+  const stepper=await browser.newPage({viewport:{width:1440,height:1000}});
+  stepper.on('pageerror',e=>errors.push(e.message));
+  await stepper.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
+  assert.equal(await stepper.locator('.stepper-tab').count(),7);
+  assert.equal(await stepper.locator('.stepper-title').textContent(),'Watch');
+  const panelHeights=new Set();
+  for(let i=0;i<7;i++) {
+   await stepper.locator('.stepper-tab').nth(i).click();
+   await stepper.waitForFunction(i=>document.querySelector('#stepper-panel img').complete && document.querySelector('#stepper-panel img').naturalWidth>0 && document.querySelector('.stepper-current').textContent===String(i+1),i);
+   panelHeights.add(Math.round(await stepper.locator('#stepper-panel').evaluate(el=>el.getBoundingClientRect().height)));
+  }
+  assert.equal(panelHeights.size,1,'Switching steps must not change the panel height');
+  assert.equal(await stepper.locator('.stepper-next').isDisabled(),true);
+  await stepper.locator('.stepper-tab').nth(3).focus();
+  await stepper.keyboard.press('ArrowRight');
+  assert.equal(await stepper.locator('.stepper-title').textContent(),'Generate');
+  await stepper.locator('.stepper-prev').click();
+  assert.equal(await stepper.locator('.stepper-title').textContent(),'Vary');
+  await stepper.locator('#stepper-panel').getByRole('link',{name:'Move the contacts'}).click();
+  assert.equal(await stepper.locator('#demo-scene').inputValue(),'under-table-pickup','Stepper links must open the explorer on their skill');
+  assert.equal(await stepper.locator('#augmentation-controls').evaluate(el=>el.classList.contains('is-highlighted')),true);
+  await stepper.locator('.stepper [data-open-figure]').click();
+  assert.equal(await stepper.locator('#figure-dialog').isVisible(),true,'The paper figure must open in a dialog');
+  await stepper.keyboard.press('Escape');
+  assert.equal(await stepper.locator('#figure-dialog').isVisible(),false);
+  await stepper.close();
   // With data saver on, the viewer waits for the button.
   const saver=await browser.newPage({viewport:{width:1440,height:1000}});
   await saver.addInitScript(()=>Object.defineProperty(navigator,'connection',{value:{saveData:true}}));
@@ -323,6 +350,6 @@ const server = http.createServer((req, res) => {
    await page.locator('#ladder-climbing').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'climbing-mobile.png')});
   }
   assert.deepEqual(errors,[]);
-  console.log('PASS: all ten compressed videos play and seek, responsive aligned climbing comparison, native aspect ratios, no task-video preloading, two-column serve grid, responsive widths, hero controls, all 10 tasks / 10 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: seven-step pipeline stepper and paper-figure dialog, all ten compressed videos play and seek, responsive aligned climbing comparison, native aspect ratios, no task-video preloading, two-column serve grid, responsive widths, hero controls, all 10 tasks / 10 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

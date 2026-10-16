@@ -547,54 +547,233 @@ h3 {
   padding:5px 12px;
   background:white
 }
-.overview-figure {
-  padding:16px 16px 0;
+/* Pipeline: a stepper, one stage per tab, with the paper figure on demand. */
+.stepper {
+  margin-top:36px
+}
+.stepper-tabs {
+  position:relative;
+  display:flex;
+  justify-content:space-between;
+  gap:8px
+}
+.stepper-tabs::before {
+  content:"";
+  position:absolute;
+  left:24px;
+  right:24px;
+  top:50%;
+  height:2px;
+  background:var(--line);
+  z-index:-1
+}
+.stepper-tab {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 14px 6px 6px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:white;
+  color:#536072;
+  font-size:13px;
+  font-weight:600;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:border-color .2s,color .2s
+}
+.stepper-tab:hover {
+  border-color:#aeb8c6;
+  color:var(--ink)
+}
+.stepper-num {
+  display:grid;
+  place-items:center;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:var(--tint);
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700
+}
+.stepper-tab[aria-selected="true"] {
+  border-color:var(--blue);
+  background:var(--blue);
+  color:white
+}
+.stepper-tab[aria-selected="true"] .stepper-num {
+  background:white;
+  color:var(--blue)
+}
+.stepper-panel {
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);
+  overflow:hidden;
+  margin-top:24px;
   border:1px solid var(--line);
   border-radius:var(--radius);
   background:white
 }
-.overview-figure a {
-  display:block
+/* A fixed frame, so switching steps never changes the panel's height. */
+.stepper-media {
+  position:relative;
+  aspect-ratio:4/3;
+  margin:0;
+  background:var(--tint)
 }
-.overview-figure img {
+.stepper-media img {
+  position:absolute;
+  inset:20px;
+  width:calc(100% - 40px);
+  height:calc(100% - 40px);
+  object-fit:contain
+}
+.stepper-body {
+  display:flex;
+  flex-direction:column;
+  padding:32px 32px 24px
+}
+.stepper-count {
+  color:var(--blue);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase
+}
+.stepper-title {
+  margin:10px 0 4px;
+  font-size:28px
+}
+.stepper-label {
+  color:var(--muted);
+  font-size:12px
+}
+.stepper-text {
+  margin-top:16px;
+  color:#515c69;
+  font-size:15px;
+  line-height:1.7
+}
+.stepper-link:empty {
+  display:none
+}
+.stepper-nav {
+  display:flex;
+  justify-content:space-between;
+  margin-top:auto;
+  padding-top:20px;
+  border-top:1px solid var(--line)
+}
+.stepper-nav button {
+  padding:8px 14px;
+  border:1px solid #cfd6e0;
+  border-radius:999px;
+  background:white;
+  color:var(--ink);
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer
+}
+.stepper-nav button:hover:not(:disabled) {
+  border-color:var(--ink)
+}
+.stepper-nav button:disabled {
+  opacity:.4;
+  cursor:default
+}
+.flow-link {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:10px;
+  color:var(--blue);
+  font-size:12.5px;
+  font-weight:600
+}
+.flow-link svg {
+  width:14px;
+  height:14px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round
+}
+.flow-footer {
+  margin-top:36px;
+  text-align:center
+}
+.flow-figure-button {
+  display:inline-flex;
+  padding:9px 16px;
+  border:1px solid #cfd6e0;
+  border-radius:999px;
+  background:white;
+  color:var(--ink);
+  font-size:13px;
+  font-weight:600;
+  transition:border-color .2s
+}
+.flow-figure-button:hover {
+  border-color:var(--ink);
+  text-decoration:none
+}
+.figure-dialog {
+  width:min(1200px,calc(100% - 32px));
+  max-height:calc(100vh - 32px);
+  padding:0;
+  border:0;
+  border-radius:16px;
+  background:white;
+  box-shadow:0 30px 80px rgba(0,0,0,.35)
+}
+.figure-dialog::backdrop {
+  background:rgba(20,26,34,.6)
+}
+.figure-dialog-inner {
+  padding:16px 20px 20px
+}
+.figure-dialog-head {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:12px
+}
+.figure-dialog-head h3 {
+  margin-right:auto;
+  font-size:16px
+}
+.figure-dialog-head a {
+  font-size:12px;
+  font-weight:600
+}
+.figure-dialog-close {
+  width:34px;
+  height:34px;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:white;
+  color:var(--ink);
+  font-size:20px;
+  line-height:1;
+  cursor:pointer
+}
+.figure-dialog img {
   display:block;
   width:100%;
-  border-radius:5px
+  height:auto
 }
-.overview-figure figcaption {
-  font-size:12px;
-  line-height:1.75;
+.figure-dialog-caption {
+  margin-top:12px;
   color:var(--muted);
-  border-top:1px solid var(--line);
-  padding:18px 9px;
-  margin-top:14px
+  font-size:12px
 }
-.overview-figure figcaption strong {
-  color:var(--ink)
-}
-.pipeline-steps {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:32px;
-  margin-top:32px
-}
-.pipeline-steps>div {
-  border-left:1px solid var(--line);
-  padding-left:18px
-}
-.pipeline-steps span {
-  font-size:11px;
-  font-weight:650;
-  color:var(--blue)
-}
-.pipeline-steps h3 {
-  font-size:17px;
-  margin:7px 0
-}
-.pipeline-steps p {
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.7
+/* Set briefly when a pipeline link points at the contact sliders. */
+#augmentation-controls.is-highlighted {
+  outline:2px solid var(--blue);
+  outline-offset:8px;
+  border-radius:6px
 }
 .serve-grid {
   display:grid;
@@ -1236,9 +1415,6 @@ pre {
   }
 }
 @media(max-width:900px) {
-  .pipeline-steps {
-    gap:18px
-  }
   .demo-layout {
     grid-template-columns:205px 1fr
   }
@@ -1324,25 +1500,6 @@ pre {
   }
   .section-tag {
     display:none
-  }
-  .overview-figure {
-    padding:8px 8px 0;
-    border-radius:10px
-  }
-  .overview-figure figcaption {
-    font-size:10px;
-    padding:12px 3px
-  }
-  .pipeline-steps {
-    grid-template-columns:1fr 1fr;
-    gap:24px 15px;
-    margin-top:25px
-  }
-  .pipeline-steps>div {
-    padding-left:12px
-  }
-  .pipeline-steps p {
-    font-size:11px
   }
   .serve-grid {
     grid-template-columns:1fr;
@@ -1436,5 +1593,65 @@ pre {
   *,*:before,*:after {
     transition:none!important;
     animation:none!important
+  }
+}
+@media(max-width:1100px) {
+  .stepper-tabs {
+    flex-wrap:wrap;
+    justify-content:center
+  }
+  .stepper-tabs::before {
+    display:none
+  }
+}
+@media(max-width:900px) {
+  /* Numbered circles only; the step name shows as the panel title. */
+  .stepper-tabs {
+    flex-wrap:nowrap;
+    justify-content:space-between;
+    gap:4px
+  }
+  .stepper-tabs::before {
+    display:block;
+    left:18px;
+    right:18px
+  }
+  .stepper-tab {
+    padding:4px;
+    border-radius:50%
+  }
+  .stepper-num {
+    width:28px;
+    height:28px;
+    font-size:12px
+  }
+  .stepper-name {
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip-path:inset(50%)
+  }
+  .stepper-panel {
+    grid-template-columns:1fr
+  }
+  .stepper-media {
+    aspect-ratio:16/10
+  }
+  .stepper-media img {
+    inset:12px;
+    width:calc(100% - 24px);
+    height:calc(100% - 24px)
+  }
+  .stepper-body {
+    min-height:300px;
+    padding:20px
+  }
+  .stepper-title {
+    font-size:22px
+  }
+  .stepper-text {
+    margin-top:10px;
+    font-size:14px
   }
 }
