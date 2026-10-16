@@ -159,6 +159,10 @@ h3 {
   background:var(--tint);
   text-decoration:none
 }
+.code-status {
+  font-size:inherit;
+  white-space:nowrap
+}
 .nav-cta svg,.hero-button svg,.hero-toggle svg {
   width:15px;
   height:15px;
@@ -1195,6 +1199,24 @@ pre {
     margin-left:auto;
     padding-left:0;
     border-left:0
+  }
+}
+@media(min-width:361px) and (max-width:600px) {
+  .nav-cta {
+    padding:6px 9px;
+    gap:4px;
+    font-size:11px
+  }
+  .nav-cta[data-resource="code"] {
+    text-align:center
+  }
+  .nav-cta[data-resource="code"] svg {
+    display:none
+  }
+  .code-status {
+    display:block;
+    font-size:10px;
+    line-height:1.2
   }
 }
 @media(max-width:360px) {
