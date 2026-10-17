@@ -60,8 +60,7 @@ metadata, and JPEG posters. Videos use `preload="none"` and download on play.
 
 The three vertically stacked pickup recordings have been rearranged with the
 human demonstration on the left and robot execution on the right. Both complete
-views and their original timing are preserved. Existing side-by-side serve
-recordings retain their layout. Serves and pickup comparisons span the content width.
+views and their original timing are preserved. Serves use subject-centered crops of each side-by-side recording; pickup comparisons span the content width.
 
 To recreate these exports from the original folder, install `imageio-ffmpeg` (or
 provide `ffmpeg` on PATH), then run:
@@ -157,8 +156,14 @@ Place MP4 files in `assets/videos/`, then set each video's `src` in `assets/cont
 | Individual | `ladder-climbing.mp4` | Ladder climbing (simulation) |
 
 The six serves appear together in two columns and three rows on desktop and
-tablet, and one column on mobile screens up to 600 px. Their order and native
-video aspect ratios are preserved. Task cards show titles and tags without
+tablet, and one column on mobile screens up to 600 px. Each human/robot panel
+is cropped to **2:3**, producing a **4:3** paired video. The full frame height is
+retained, with horizontal crop positions chosen separately for each subject.
+Playback speed, frame count, audio, color grading, and contact alignment are preserved.
+The full-width sources remain in `assets/videos/`; the gallery uses the smaller
+exports in `assets/videos/serve-crops/` with matching posters. Rebuild with
+`python scripts/prepare_serve_crops.py` after updating the aligned source clips;
+`assets/videos/serve-crops/manifest.json` records each crop and source hash. Task cards show titles and tags without
 additional descriptions. Only ladder climbing includes a human/simulation comparison label. The three pickup comparisons are
 individually titled, full-width rows, followed by a centered climbing comparison at 50% width (full width on
 mobile screens up to 600 px). Set each video's `width` and `height`

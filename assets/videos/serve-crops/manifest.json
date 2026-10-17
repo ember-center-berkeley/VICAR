@@ -1,0 +1,152 @@
+[
+  {
+    "id": "backhand-side-spin",
+    "source": "assets/videos/backhand-side-spin.mp4",
+    "sourceSha256": "6784d898a427584532fa7b3a3a0f3b5112e41a7563f28bcefd15106f9e073901",
+    "video": "assets/videos/serve-crops/backhand-side-spin.mp4",
+    "poster": "assets/images/serve-crops/backhand-side-spin.jpg",
+    "width": 992,
+    "height": 744,
+    "panelAspectRatio": "2:3",
+    "combinedAspectRatio": "4:3",
+    "humanCrop": [
+      60,
+      0,
+      496,
+      744
+    ],
+    "robotCrop": [
+      1360,
+      0,
+      496,
+      744
+    ],
+    "bytes": 4950009,
+    "timing": "All source frames and timestamps preserved; audio copied"
+  },
+  {
+    "id": "forehand-side-spin",
+    "source": "assets/videos/forehand-side-spin.mp4",
+    "sourceSha256": "f7e20b5829eadfd3b59243526723b4a40d952da25545b2475bea0abf0c80ca9f",
+    "video": "assets/videos/serve-crops/forehand-side-spin.mp4",
+    "poster": "assets/images/serve-crops/forehand-side-spin.jpg",
+    "width": 960,
+    "height": 720,
+    "panelAspectRatio": "2:3",
+    "combinedAspectRatio": "4:3",
+    "humanCrop": [
+      80,
+      0,
+      480,
+      720
+    ],
+    "robotCrop": [
+      1380,
+      0,
+      480,
+      720
+    ],
+    "bytes": 4927307,
+    "timing": "All source frames and timestamps preserved; audio copied"
+  },
+  {
+    "id": "forehand",
+    "source": "assets/videos/forehand.mp4",
+    "sourceSha256": "69b5c7bed9afa82d0183f7d96a7e3e9fd1b9db9fba2d6848bd141518fa6e7e78",
+    "video": "assets/videos/serve-crops/forehand.mp4",
+    "poster": "assets/images/serve-crops/forehand.jpg",
+    "width": 960,
+    "height": 720,
+    "panelAspectRatio": "2:3",
+    "combinedAspectRatio": "4:3",
+    "humanCrop": [
+      320,
+      0,
+      480,
+      720
+    ],
+    "robotCrop": [
+      1360,
+      0,
+      480,
+      720
+    ],
+    "bytes": 1661933,
+    "timing": "All source frames and timestamps preserved; audio copied"
+  },
+  {
+    "id": "backhand",
+    "source": "assets/videos/backhand.mp4",
+    "sourceSha256": "30186404c160ba8ab0ec0a898442d860d39c646118b5b2963ed9705f54c7f3d4",
+    "video": "assets/videos/serve-crops/backhand.mp4",
+    "poster": "assets/images/serve-crops/backhand.jpg",
+    "width": 960,
+    "height": 720,
+    "panelAspectRatio": "2:3",
+    "combinedAspectRatio": "4:3",
+    "humanCrop": [
+      200,
+      0,
+      480,
+      720
+    ],
+    "robotCrop": [
+      1290,
+      0,
+      480,
+      720
+    ],
+    "bytes": 1637362,
+    "timing": "All source frames and timestamps preserved; audio copied"
+  },
+  {
+    "id": "backhand-top-spin",
+    "source": "assets/videos/backhand-top-spin.mp4",
+    "sourceSha256": "d275d8f446e41bd9e452926a59dd5d13afe99cb4ec11481f66d1c96b71c8720f",
+    "video": "assets/videos/serve-crops/backhand-top-spin.mp4",
+    "poster": "assets/images/serve-crops/backhand-top-spin.jpg",
+    "width": 960,
+    "height": 720,
+    "panelAspectRatio": "2:3",
+    "combinedAspectRatio": "4:3",
+    "humanCrop": [
+      200,
+      0,
+      480,
+      720
+    ],
+    "robotCrop": [
+      1400,
+      0,
+      480,
+      720
+    ],
+    "bytes": 1590979,
+    "timing": "All source frames and timestamps preserved; audio copied"
+  },
+  {
+    "id": "forehand-top-spin",
+    "source": "assets/videos/forehand-top-spin.mp4",
+    "sourceSha256": "094916081518888281efc183d83854cd224e27e5eb62e8c63be300c4ff0c19de",
+    "video": "assets/videos/serve-crops/forehand-top-spin.mp4",
+    "poster": "assets/images/serve-crops/forehand-top-spin.jpg",
+    "width": 960,
+    "height": 720,
+    "panelAspectRatio": "2:3",
+    "combinedAspectRatio": "4:3",
+    "humanCrop": [
+      200,
+      0,
+      480,
+      720
+    ],
+    "robotCrop": [
+      1440,
+      0,
+      480,
+      720
+    ],
+    "bytes": 1693485,
+    "timing": "All source frames and timestamps preserved; audio copied"
+  }
+]
