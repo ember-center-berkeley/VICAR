@@ -157,8 +157,9 @@ Place MP4 files in `assets/videos/`, then set each video's `src` in `assets/cont
 
 The six serves appear together in two columns and three rows on desktop and
 tablet, and one column on mobile screens up to 600 px. Each human/robot panel
-is cropped to **2:3**, producing a **4:3** paired video. The full frame height is
-retained, with horizontal crop positions chosen separately for each subject.
+is cropped to **3:2 landscape** (3 horizontal, 2 vertical), producing a **3:1** paired video. The full frame height is
+retained, with horizontal crop positions chosen separately to show each subject
+and more of the opposite table half where the second bounce lands.
 Playback speed, frame count, audio, color grading, and contact alignment are preserved.
 The full-width sources remain in `assets/videos/`; the gallery uses the smaller
 exports in `assets/videos/serve-crops/` with matching posters. Rebuild with

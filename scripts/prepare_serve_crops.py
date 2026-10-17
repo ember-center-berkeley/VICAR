@@ -1,6 +1,6 @@
 """Create subject-centered website crops from the six aligned serve comparisons.
 
-Each human/robot panel is 2:3; the side-by-side output is 4:3. Full-width inputs
+Each human/robot panel is 3:2 landscape; the side-by-side output is 3:1. Full-width inputs
 remain unchanged. No retiming, trimming, or additional color processing is used.
 Requires ffmpeg (or imageio-ffmpeg). Run after prepare_serve_pairs.py.
 """
@@ -14,14 +14,15 @@ import subprocess
 
 
 # Absolute x coordinates within each 2560-pixel paired source. Each crop retains
-# the full frame height. Positions were reviewed through serve and follow-through.
+# the full frame height. Wider landscape crops retain the opposite table half
+# and bounce region, with positions reviewed through serve and follow-through.
 CROPS = [
-    ("backhand-side-spin", 60, 1360, 496, 744),
-    ("forehand-side-spin", 80, 1380, 480, 720),
-    ("forehand", 320, 1360, 480, 720),
-    ("backhand", 200, 1290, 480, 720),
-    ("backhand-top-spin", 200, 1400, 480, 720),
-    ("forehand-top-spin", 200, 1440, 480, 720),
+    ("backhand-side-spin", 60, 1360, 1116, 744),
+    ("forehand-side-spin", 100, 1400, 1080, 720),
+    ("forehand", 200, 1420, 1080, 720),
+    ("backhand", 140, 1380, 1080, 720),
+    ("backhand-top-spin", 140, 1440, 1080, 720),
+    ("forehand-top-spin", 140, 1480, 1080, 720),
 ]
 
 
@@ -67,7 +68,7 @@ def main():
             "video": str(video.relative_to(root)),
             "poster": str(poster.relative_to(root)),
             "width": width * 2, "height": height,
-            "panelAspectRatio": "2:3", "combinedAspectRatio": "4:3",
+            "panelAspectRatio": "3:2", "combinedAspectRatio": "3:1",
             "humanCrop": [human_x, 0, width, height],
             "robotCrop": [robot_x, 0, width, height],
             "bytes": video.stat().st_size,

@@ -107,10 +107,10 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/serve-crops/backhand-side-spin.mp4?v=portrait-panels-20261016",
-      "poster": "assets/images/serve-crops/backhand-side-spin.jpg?v=portrait-panels-20261016",
+      "src": "assets/videos/serve-crops/backhand-side-spin.mp4?v=landscape-panels-20261016",
+      "poster": "assets/images/serve-crops/backhand-side-spin.jpg?v=landscape-panels-20261016",
       "captions": "",
-      "width": 992,
+      "width": 2232,
       "height": 744
     },
     {
@@ -120,10 +120,10 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/serve-crops/forehand-side-spin.mp4?v=portrait-panels-20261016",
-      "poster": "assets/images/serve-crops/forehand-side-spin.jpg?v=portrait-panels-20261016",
+      "src": "assets/videos/serve-crops/forehand-side-spin.mp4?v=landscape-panels-20261016",
+      "poster": "assets/images/serve-crops/forehand-side-spin.jpg?v=landscape-panels-20261016",
       "captions": "",
-      "width": 960,
+      "width": 2160,
       "height": 720
     },
     {
@@ -133,10 +133,10 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/serve-crops/forehand.mp4?v=portrait-panels-20261016",
-      "poster": "assets/images/serve-crops/forehand.jpg?v=portrait-panels-20261016",
+      "src": "assets/videos/serve-crops/forehand.mp4?v=landscape-panels-20261016",
+      "poster": "assets/images/serve-crops/forehand.jpg?v=landscape-panels-20261016",
       "captions": "",
-      "width": 960,
+      "width": 2160,
       "height": 720,
       "duration": 6
     },
@@ -147,10 +147,10 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/serve-crops/backhand.mp4?v=portrait-panels-20261016",
-      "poster": "assets/images/serve-crops/backhand.jpg?v=portrait-panels-20261016",
+      "src": "assets/videos/serve-crops/backhand.mp4?v=landscape-panels-20261016",
+      "poster": "assets/images/serve-crops/backhand.jpg?v=landscape-panels-20261016",
       "captions": "",
-      "width": 960,
+      "width": 2160,
       "height": 720,
       "duration": 6
     },
@@ -161,10 +161,10 @@ window.VICAR = {
         "Backhand",
         "Serve"
       ],
-      "src": "assets/videos/serve-crops/backhand-top-spin.mp4?v=portrait-panels-20261016",
-      "poster": "assets/images/serve-crops/backhand-top-spin.jpg?v=portrait-panels-20261016",
+      "src": "assets/videos/serve-crops/backhand-top-spin.mp4?v=landscape-panels-20261016",
+      "poster": "assets/images/serve-crops/backhand-top-spin.jpg?v=landscape-panels-20261016",
       "captions": "",
-      "width": 960,
+      "width": 2160,
       "height": 720,
       "duration": 6
     },
@@ -175,10 +175,10 @@ window.VICAR = {
         "Forehand",
         "Serve"
       ],
-      "src": "assets/videos/serve-crops/forehand-top-spin.mp4?v=portrait-panels-20261016",
-      "poster": "assets/images/serve-crops/forehand-top-spin.jpg?v=portrait-panels-20261016",
+      "src": "assets/videos/serve-crops/forehand-top-spin.mp4?v=landscape-panels-20261016",
+      "poster": "assets/images/serve-crops/forehand-top-spin.jpg?v=landscape-panels-20261016",
       "captions": "",
-      "width": 960,
+      "width": 2160,
       "height": 720,
       "duration": 6
     }

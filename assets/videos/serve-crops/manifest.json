@@ -5,23 +5,23 @@
     "sourceSha256": "6784d898a427584532fa7b3a3a0f3b5112e41a7563f28bcefd15106f9e073901",
     "video": "assets/videos/serve-crops/backhand-side-spin.mp4",
     "poster": "assets/images/serve-crops/backhand-side-spin.jpg",
-    "width": 992,
+    "width": 2232,
     "height": 744,
-    "panelAspectRatio": "2:3",
-    "combinedAspectRatio": "4:3",
+    "panelAspectRatio": "3:2",
+    "combinedAspectRatio": "3:1",
     "humanCrop": [
       60,
       0,
-      496,
+      1116,
       744
     ],
     "robotCrop": [
       1360,
       0,
-      496,
+      1116,
       744
     ],
-    "bytes": 4950009,
+    "bytes": 7665452,
     "timing": "All source frames and timestamps preserved; audio copied"
   },
   {
@@ -30,23 +30,23 @@
     "sourceSha256": "f7e20b5829eadfd3b59243526723b4a40d952da25545b2475bea0abf0c80ca9f",
     "video": "assets/videos/serve-crops/forehand-side-spin.mp4",
     "poster": "assets/images/serve-crops/forehand-side-spin.jpg",
-    "width": 960,
+    "width": 2160,
     "height": 720,
-    "panelAspectRatio": "2:3",
-    "combinedAspectRatio": "4:3",
+    "panelAspectRatio": "3:2",
+    "combinedAspectRatio": "3:1",
     "humanCrop": [
-      80,
+      100,
       0,
-      480,
+      1080,
       720
     ],
     "robotCrop": [
-      1380,
+      1400,
       0,
-      480,
+      1080,
       720
     ],
-    "bytes": 4927307,
+    "bytes": 8691047,
     "timing": "All source frames and timestamps preserved; audio copied"
   },
   {
@@ -55,23 +55,23 @@
     "sourceSha256": "69b5c7bed9afa82d0183f7d96a7e3e9fd1b9db9fba2d6848bd141518fa6e7e78",
     "video": "assets/videos/serve-crops/forehand.mp4",
     "poster": "assets/images/serve-crops/forehand.jpg",
-    "width": 960,
+    "width": 2160,
     "height": 720,
-    "panelAspectRatio": "2:3",
-    "combinedAspectRatio": "4:3",
+    "panelAspectRatio": "3:2",
+    "combinedAspectRatio": "3:1",
     "humanCrop": [
-      320,
+      200,
       0,
-      480,
+      1080,
       720
     ],
     "robotCrop": [
-      1360,
+      1420,
       0,
-      480,
+      1080,
       720
     ],
-    "bytes": 1661933,
+    "bytes": 2734655,
     "timing": "All source frames and timestamps preserved; audio copied"
   },
   {
@@ -80,23 +80,23 @@
     "sourceSha256": "30186404c160ba8ab0ec0a898442d860d39c646118b5b2963ed9705f54c7f3d4",
     "video": "assets/videos/serve-crops/backhand.mp4",
     "poster": "assets/images/serve-crops/backhand.jpg",
-    "width": 960,
+    "width": 2160,
     "height": 720,
-    "panelAspectRatio": "2:3",
-    "combinedAspectRatio": "4:3",
+    "panelAspectRatio": "3:2",
+    "combinedAspectRatio": "3:1",
     "humanCrop": [
-      200,
+      140,
       0,
-      480,
+      1080,
       720
     ],
     "robotCrop": [
-      1290,
+      1380,
       0,
-      480,
+      1080,
       720
     ],
-    "bytes": 1637362,
+    "bytes": 2691150,
     "timing": "All source frames and timestamps preserved; audio copied"
   },
   {
@@ -105,23 +105,23 @@
     "sourceSha256": "d275d8f446e41bd9e452926a59dd5d13afe99cb4ec11481f66d1c96b71c8720f",
     "video": "assets/videos/serve-crops/backhand-top-spin.mp4",
     "poster": "assets/images/serve-crops/backhand-top-spin.jpg",
-    "width": 960,
+    "width": 2160,
     "height": 720,
-    "panelAspectRatio": "2:3",
-    "combinedAspectRatio": "4:3",
+    "panelAspectRatio": "3:2",
+    "combinedAspectRatio": "3:1",
     "humanCrop": [
-      200,
+      140,
       0,
-      480,
+      1080,
       720
     ],
     "robotCrop": [
-      1400,
+      1440,
       0,
-      480,
+      1080,
       720
     ],
-    "bytes": 1590979,
+    "bytes": 2738934,
     "timing": "All source frames and timestamps preserved; audio copied"
   },
   {
@@ -130,23 +130,23 @@
     "sourceSha256": "094916081518888281efc183d83854cd224e27e5eb62e8c63be300c4ff0c19de",
     "video": "assets/videos/serve-crops/forehand-top-spin.mp4",
     "poster": "assets/images/serve-crops/forehand-top-spin.jpg",
-    "width": 960,
+    "width": 2160,
     "height": 720,
-    "panelAspectRatio": "2:3",
-    "combinedAspectRatio": "4:3",
+    "panelAspectRatio": "3:2",
+    "combinedAspectRatio": "3:1",
     "humanCrop": [
-      200,
+      140,
       0,
-      480,
+      1080,
       720
     ],
     "robotCrop": [
-      1440,
+      1480,
       0,
-      480,
+      1080,
       720
     ],
-    "bytes": 1693485,
+    "bytes": 2795100,
     "timing": "All source frames and timestamps preserved; audio copied"
   }
 ]
