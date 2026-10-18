@@ -1,0 +1,90 @@
+{
+  "voice": "en-US-AvaMultilingualNeural",
+  "rate": "+0%",
+  "language": "en-US",
+  "video_duration_seconds": 59.96666666666667,
+  "source_video_sha256": "d5593ad8deb20d5e937b0db6b97d3b07b2dc9bdcc4501c9ce6fb35557c3ee66a",
+  "cues": [
+    {
+      "id": "demonstration",
+      "start": 0.25,
+      "deadline": 3.25,
+      "text": "Start with a single human demonstration.",
+      "captions": [
+        "Start with a single human demonstration."
+      ]
+    },
+    {
+      "id": "reconstruction",
+      "start": 3.45,
+      "deadline": 6.55,
+      "text": "Reconstruct the scene where contact matters.",
+      "captions": [
+        "Reconstruct the scene where contact matters."
+      ]
+    },
+    {
+      "id": "contacts",
+      "start": 6.75,
+      "deadline": 11.15,
+      "text": "Mark the supporting hand and the object's grasp point.",
+      "captions": [
+        "Mark the supporting hand and the object's grasp point."
+      ]
+    },
+    {
+      "id": "retargeting",
+      "start": 11.65,
+      "deadline": 16.9,
+      "text": "Retarget the motion to the humanoid, preserving contact with the table and object.",
+      "captions": [
+        "Retarget the motion to the humanoid,",
+        "preserving contact with the table and object."
+      ]
+    },
+    {
+      "id": "augmentation",
+      "start": 17.15,
+      "deadline": 25.3,
+      "text": "Change object positions to create new motions that reach different targets, while keeping the support contact fixed.",
+      "captions": [
+        "Change object positions to create new motions",
+        "that reach different targets,",
+        "while keeping the support contact fixed."
+      ]
+    },
+    {
+      "id": "motion-generator",
+      "start": 26.0,
+      "deadline": 33.7,
+      "text": "These examples train a motion generator, allowing the robot to adapt to new contact locations.",
+      "captions": [
+        "These examples train a motion generator,",
+        "allowing the robot to adapt to new contact locations."
+      ]
+    },
+    {
+      "id": "simulation",
+      "start": 34.6,
+      "deadline": 44.9,
+      "text": "Reinforcement learning then trains a control policy in simulation to track these motions, maintain balance, and complete the pickup.",
+      "captions": [
+        "Reinforcement learning then trains a control policy",
+        "in simulation to track these motions,",
+        "maintain balance, and complete the pickup."
+      ]
+    },
+    {
+      "id": "hardware",
+      "start": 47.3,
+      "deadline": 59.4,
+      "text": "Finally, the learned policy transfers zero-shot to the real humanoid. It uses the table for support, reaches under it, and picks up the object.",
+      "captions": [
+        "Finally, the learned policy transfers zero-shot",
+        "to the real humanoid.",
+        "It uses the table for support,",
+        "reaches under it, and picks up the object."
+      ]
+    }
+  ]
+}

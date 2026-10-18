@@ -229,6 +229,21 @@
       manuallyPaused = false;
       if (!summaryVisible) pauseSummary();
     });
+    const narrationButton = $('#summary-narration');
+    if (narrationButton) {
+      narrationButton.hidden = false;
+      narrationButton.addEventListener('click', () => {
+        summaryVideo.currentTime = 0;
+        summaryVideo.muted = false;
+        summaryVideo.volume = 1;
+        manuallyPaused = false;
+        summaryVideo.play().then(() => {
+          narrationButton.textContent = 'Replay with narration';
+        }).catch(() => {
+          narrationButton.textContent = 'Play with narration';
+        });
+      });
+    }
     new IntersectionObserver(([entry]) => {
       summaryVisible = entry.isIntersecting && entry.intersectionRatio >= .15;
       if (!summaryVisible) pauseSummary();

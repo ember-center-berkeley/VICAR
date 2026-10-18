@@ -15,6 +15,27 @@ The website lives on the `website` branch and is published with GitHub Pages:
 
 No npm build, Python server, API key, or hosting service is required for the deployed site. `.nojekyll` tells Pages to serve the files directly. Every asset uses a relative path so the `/VICAR/` project prefix works.
 
+## Summary narration
+
+The summary includes a timed AI-generated English voiceover and optional English
+captions. It still autoplays muted; **Play with narration** restarts it with sound.
+The original video frames, edit timing, resolution, and compression are preserved.
+Only an AAC narration track is added to the MP4.
+
+Edit the narration and caption phrases in `docs/SUMMARY_NARRATION.json`.
+`scripts/add_summary_voiceover.py` uses [edge-tts](https://github.com/rany2/edge-tts)
+with the Ava multilingual neural voice and `imageio-ffmpeg`. Supply the original
+silent summary and a working directory outside the published site:
+
+```sh
+python scripts/add_summary_voiceover.py --source /path/to/Summary_Original_Silent.mp4 --work-dir /path/to/voiceover-work
+```
+
+The script preserves the video bitstream, generates a separate editable WAV and
+SRT in the working directory, and writes the narrated summary and WebVTT captions.
+It caches generated speech by text and voice settings. After changing the media,
+update `assets/videos/summary.json` and the media version in `index.html`.
+
 If you are starting from only a local copy:
 
 ```sh

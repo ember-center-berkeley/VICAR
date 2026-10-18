@@ -11,10 +11,10 @@
   <meta property="og:image" content="https://ember-center-berkeley.github.io/VICAR/assets/images/overview.png?v=updated-viser-20261015">
   <title>VICAR | Video Imitation with Contact-Aware Retargeting</title>
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/style.css?v=pipeline-annotated-20261018">
+  <link rel="stylesheet" href="assets/style.css?v=summary-narration-20261018">
   <script defer src="assets/content.js?v=authors-20261016"></script>
   <script defer src="assets/viewer-manifest.js?v=under-table-table-7cm-20261014"></script>
-  <script defer src="assets/site.js?v=pipeline-annotated-20261018"></script>
+  <script defer src="assets/site.js?v=summary-narration-20261018"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -45,10 +45,12 @@
     <section class="abstract-section summary-section" id="summary" aria-labelledby="summary-title">
       <div class="container"><h2 class="eyebrow summary-heading" id="summary-title">SUMMARY</h2>
       <figure class="summary-media">
-        <video id="summary-video" controls autoplay muted playsinline preload="metadata" width="1920" height="1080" poster="assets/images/summary-poster.webp?v=20261015" aria-label="VICAR summary: from human video to contact-preserving humanoid motion">
-          <source src="assets/videos/summary.mp4?v=20261015" type="video/mp4">
+        <video id="summary-video" controls autoplay muted playsinline preload="metadata" width="1920" height="1080" poster="assets/images/summary-poster.webp?v=20261015" aria-label="VICAR summary: from human video to contact-preserving humanoid motion" aria-describedby="summary-narration-note">
+          <source src="assets/videos/summary.mp4?v=narration-20261018" type="video/mp4">
+          <track kind="captions" src="assets/videos/summary.en.vtt?v=narration-20261018" srclang="en" label="English">
           <a href="assets/videos/summary.mp4">Download the VICAR summary video</a>.
         </video>
+        <figcaption class="summary-caption"><button id="summary-narration" type="button" aria-controls="summary-video" hidden>Play with narration</button><span id="summary-narration-note">AI-generated voiceover · English captions available</span></figcaption>
       </figure>
       <details class="abstract-details" id="abstract"><summary>Read the full abstract <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></summary><p id="abstract-text">Third-person human videos offer a scalable alternative to task-specific reward engineering, teleoperation, and manually scripted demonstrations for humanoid loco-manipulation. VICAR learns interactive humanoid skills while preserving world-frame contact poses, motion speed, and collision clearance.</p></details>
       </div>

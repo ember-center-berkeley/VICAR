@@ -1,0 +1,77 @@
+WEBVTT
+
+1
+00:00:00.279 --> 00:00:02.712
+Start with a single human demonstration.
+
+2
+00:00:03.466 --> 00:00:06.048
+Reconstruct the scene
+where contact matters.
+
+3
+00:00:06.764 --> 00:00:10.271
+Mark the supporting hand and
+the object's grasp point.
+
+4
+00:00:11.683 --> 00:00:13.553
+Retarget the motion to the humanoid,
+
+5
+00:00:13.808 --> 00:00:16.528
+preserving contact with
+the table and object.
+
+6
+00:00:17.162 --> 00:00:19.852
+Change object positions
+to create new motions
+
+7
+00:00:19.862 --> 00:00:21.194
+that reach different targets,
+
+8
+00:00:21.449 --> 00:00:23.669
+while keeping the support contact fixed.
+
+9
+00:00:26.011 --> 00:00:28.244
+These examples train a motion generator,
+
+10
+00:00:28.611 --> 00:00:32.006
+allowing the robot to adapt
+to new contact locations.
+
+11
+00:00:34.610 --> 00:00:37.462
+Reinforcement learning then
+trains a control policy
+
+12
+00:00:37.472 --> 00:00:39.580
+in simulation to track these motions,
+
+13
+00:00:39.722 --> 00:00:42.392
+maintain balance, and complete the pickup.
+
+14
+00:00:47.389 --> 00:00:50.179
+Finally, the learned
+policy transfers zero-shot
+
+15
+00:00:50.189 --> 00:00:51.559
+to the real humanoid.
+
+16
+00:00:51.814 --> 00:00:53.509
+It uses the table for support,
+
+17
+00:00:53.802 --> 00:00:56.122
+reaches under it, and picks up the object.
+

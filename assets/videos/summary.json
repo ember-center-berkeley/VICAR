@@ -10,7 +10,17 @@
   ],
   "hardware_frames": 777,
   "hardware_final_hold_frames": 0,
-  "video_bytes": 8149630,
-  "video_sha256": "d5593ad8deb20d5e937b0db6b97d3b07b2dc9bdcc4501c9ce6fb35557c3ee66a",
-  "source": "Website summary edit of the accepted VICAR overview; prepared layers with matching native titles."
+  "video_bytes": 8923552,
+  "video_sha256": "7333110f43ec636a058ec1a700bf924bfccfcf9a4a0415fa36cb99d7517e77b0",
+  "source": "Website summary edit of the accepted VICAR overview; prepared layers with matching native titles.",
+  "narration": {
+    "type": "AI-generated English narration",
+    "voice": "en-US-AvaMultilingualNeural",
+    "script": "docs/SUMMARY_NARRATION.json",
+    "captions": "assets/videos/summary.en.vtt",
+    "audio_codec": "AAC",
+    "sample_rate_hz": 48000,
+    "target_loudness_lufs": -18,
+    "original_video_bitstream_preserved": true
+  }
 }

@@ -463,6 +463,31 @@ h3 {
   outline:3px solid #6193ff;
   outline-offset:4px
 }
+.summary-caption {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:10px 16px;
+  padding:14px 8px 0;
+  color:var(--muted);
+  font-size:12px;
+  text-align:center
+}
+.summary-caption button {
+  padding:9px 16px;
+  border:1px solid currentColor;
+  border-radius:999px;
+  background:#fff;
+  color:var(--blue);
+  font:inherit;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer
+}
+.summary-caption button:hover {
+  background:#edf3ff
+}
 .abstract-details {
   margin-top:26px
 }
