@@ -47,7 +47,7 @@ const server = http.createServer((req, res) => {
   assert.equal(await page.locator('.hero-actions [data-resource="video"]').getAttribute('href'),'#summary');
   // Hero: two actions, paper links in the nav, and a still poster under reduced motion.
   assert.equal(await page.locator('.hero-actions a').count(),2);
-  assert.deepEqual(await page.locator('.nav-cta').allTextContents(),['arXiv','Paper','Code']);
+  assert.deepEqual(await page.locator('.nav-cta').allTextContents(),['arXiv','Paper','Code (coming soon)']);
   assert.match(await page.locator('#hero-video').getAttribute('poster'),/hero-ladder-climbing-poster/);
   assert.equal(await page.locator('#hero-video').getAttribute('src'),null,'Reduced motion must not play the hero loop');
   assert.equal(await page.locator('#hero-toggle').isHidden(),true);
@@ -93,6 +93,25 @@ const server = http.createServer((req, res) => {
   assert.equal(await timeInput.inputValue(),'4.5','Sliders must preserve paused playback time');
   await page.locator('#reset-shift').click();
   await page.waitForFunction(()=>document.querySelector('#augmentation-controls').dataset.selectedIndex==='364');
+  // Pipeline: the overview figure with seven numbered, explorable panels.
+  const annotated=await browser.newPage({viewport:{width:1440,height:1000}});
+  annotated.on('pageerror',e=>errors.push(e.message));
+  await annotated.goto(origin+'/VICAR/',{waitUntil:'networkidle'});
+  assert.equal(await annotated.locator('.annotated-hotspot').count(),7);
+  assert.ok(await annotated.locator('.annotated-figure img').evaluate(img=>img.complete && img.naturalWidth>0),'The overview figure must load');
+  await annotated.locator('.annotated-hotspot[data-stage="3"]').click();
+  assert.equal(await annotated.locator('.annotated-note-title').textContent(),'Retarget');
+  assert.equal(await annotated.locator('.annotated-hotspot[data-stage="3"]').getAttribute('aria-pressed'),'true');
+  await annotated.locator('.annotated-next').click();
+  assert.equal(await annotated.locator('.annotated-note-title').textContent(),'Vary');
+  await annotated.keyboard.press('Escape');
+  assert.equal(await annotated.locator('#annotated-note').isHidden(),true);
+  await annotated.locator('#annotated-start').click();
+  assert.equal(await annotated.locator('.annotated-note-title').textContent(),'Watch');
+  for(let i=1;i<7;i++) await annotated.locator('.annotated-next').click();
+  assert.equal(await annotated.locator('.annotated-note-title').textContent(),'Deploy');
+  assert.equal(await annotated.locator('.annotated-next').textContent(),'Done');
+  await annotated.close();
   // With data saver on, the viewer waits for the button.
   const saver=await browser.newPage({viewport:{width:1440,height:1000}});
   await saver.addInitScript(()=>Object.defineProperty(navigator,'connection',{value:{saveData:true}}));
@@ -323,6 +342,6 @@ const server = http.createServer((req, res) => {
    await page.locator('#ladder-climbing').screenshot({path:path.join(process.env.SCREENSHOT_DIR,'climbing-mobile.png')});
   }
   assert.deepEqual(errors,[]);
-  console.log('PASS: all ten compressed videos play and seek, responsive aligned climbing comparison, native aspect ratios, no task-video preloading, two-column serve grid, responsive widths, hero controls, all 10 tasks / 10 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
+  console.log('PASS: annotated pipeline figure and tour, all ten compressed videos play and seek, responsive aligned climbing comparison, native aspect ratios, no task-video preloading, two-column serve grid, responsive widths, hero controls, all 10 tasks / 10 viewers, every sampled XYZ position, fixed axes, scene layers, preserved playback, standalone controls, missing-scene recovery, and scene-switch race.');
  } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

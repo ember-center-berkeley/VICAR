@@ -547,54 +547,222 @@ h3 {
   padding:5px 12px;
   background:white
 }
-.overview-figure {
-  padding:16px 16px 0;
+/* Pipeline: the paper figure with numbered, explorable panels. */
+.annotated {
+  margin-top:36px;
+  padding:16px;
   border:1px solid var(--line);
   border-radius:var(--radius);
   background:white
 }
-.overview-figure a {
-  display:block
+.annotated-stage {
+  position:relative
 }
-.overview-figure img {
+/* The canvas clips the spotlight's dimming; its padding leaves room for corner badges. */
+.annotated-canvas {
+  overflow:hidden;
+  margin:-12px;
+  padding:12px
+}
+.annotated-figure {
+  position:relative
+}
+.annotated-figure img {
   display:block;
   width:100%;
-  border-radius:5px
+  height:auto
 }
-.overview-figure figcaption {
+.annotated-spotlight {
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:var(--w);
+  height:var(--h);
+  border-radius:10px;
+  box-shadow:0 0 0 2px var(--blue),0 0 0 9999px rgba(255,255,255,.75);
+  opacity:0;
+  pointer-events:none;
+  transition:left .35s,top .35s,width .35s,height .35s,opacity .2s
+}
+.annotated-stage.is-active .annotated-spotlight {
+  opacity:1
+}
+.annotated-hotspot {
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:var(--w);
+  height:var(--h);
+  padding:0;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  cursor:pointer
+}
+.annotated-hotspot:hover {
+  box-shadow:inset 0 0 0 2px rgba(36,91,213,.45)
+}
+.annotated-hotspot span {
+  position:absolute;
+  left:-11px;
+  top:-11px;
+  display:grid;
+  place-items:center;
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:var(--blue);
+  color:white;
   font-size:12px;
-  line-height:1.75;
-  color:var(--muted);
-  border-top:1px solid var(--line);
-  padding:18px 9px;
-  margin-top:14px
+  font-weight:700;
+  box-shadow:0 2px 6px rgba(32,41,51,.25)
 }
-.overview-figure figcaption strong {
+.annotated-stage:not(.is-touched) .annotated-hotspot span {
+  animation:hotspot-pulse 2.2s infinite
+}
+@keyframes hotspot-pulse {
+  0% {
+    box-shadow:0 0 0 0 rgba(36,91,213,.55)
+  }
+  70%,100% {
+    box-shadow:0 0 0 10px rgba(36,91,213,0)
+  }
+}
+.annotated-note {
+  position:absolute;
+  z-index:2;
+  width:26%;
+  min-width:230px;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:white;
+  box-shadow:0 12px 32px rgba(32,41,51,.18)
+}
+.annotated-stage[data-side="right"] .annotated-note {
+  left:calc(var(--x) + var(--w) + 1.5%)
+}
+.annotated-stage[data-side="left"] .annotated-note {
+  right:calc(100% - var(--x) + 1.5%)
+}
+.annotated-stage[data-vside="top"] .annotated-note {
+  top:var(--y)
+}
+.annotated-stage[data-vside="bottom"] .annotated-note {
+  bottom:calc(100% - var(--y) - var(--h))
+}
+.annotated-note-head {
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+.annotated-note-num {
+  display:grid;
+  flex:none;
+  place-items:center;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:var(--blue);
+  color:white;
+  font-size:11px;
+  font-weight:700
+}
+.annotated-note-label {
+  margin-right:auto;
+  color:var(--muted);
+  font-size:11px
+}
+.annotated-note-close {
+  width:26px;
+  height:26px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  color:var(--muted);
+  font-size:18px;
+  line-height:1;
+  cursor:pointer
+}
+.annotated-note-close:hover {
+  background:var(--tint);
   color:var(--ink)
 }
-.pipeline-steps {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:32px;
-  margin-top:32px
+.annotated-note-title {
+  margin:10px 0 6px;
+  font-size:17px
 }
-.pipeline-steps>div {
-  border-left:1px solid var(--line);
-  padding-left:18px
+.annotated-note-text {
+  color:#515c69;
+  font-size:13px;
+  line-height:1.6
 }
-.pipeline-steps span {
-  font-size:11px;
-  font-weight:650;
-  color:var(--blue)
+.annotated-note-nav {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px solid var(--line)
 }
-.pipeline-steps h3 {
-  font-size:17px;
-  margin:7px 0
-}
-.pipeline-steps p {
+.annotated-note-nav button {
+  padding:4px 0;
+  border:0;
+  background:transparent;
+  color:var(--blue);
   font-size:12px;
+  font-weight:600;
+  cursor:pointer
+}
+.annotated-note-nav button:disabled {
+  color:#b4bdc9;
+  cursor:default
+}
+.annotated-count {
   color:var(--muted);
+  font-size:11px;
+  font-variant-numeric:tabular-nums
+}
+.annotated-bar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--line)
+}
+.annotated-bar p {
+  color:#515c69;
+  font-size:13px
+}
+.annotated-start {
+  flex:none;
+  padding:9px 16px;
+  border:0;
+  border-radius:999px;
+  background:var(--blue);
+  color:white;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer
+}
+.annotated-start:hover {
+  background:var(--blue-dark)
+}
+.annotated-stage.is-active~.annotated-bar .annotated-start {
+  display:none
+}
+.annotated-caption {
+  margin-top:12px;
+  color:var(--muted);
+  font-size:12px;
   line-height:1.7
+}
+.annotated-caption strong {
+  color:var(--ink)
 }
 .serve-grid {
   display:grid;
@@ -1236,9 +1404,6 @@ pre {
   }
 }
 @media(max-width:900px) {
-  .pipeline-steps {
-    gap:18px
-  }
   .demo-layout {
     grid-template-columns:205px 1fr
   }
@@ -1324,25 +1489,6 @@ pre {
   }
   .section-tag {
     display:none
-  }
-  .overview-figure {
-    padding:8px 8px 0;
-    border-radius:10px
-  }
-  .overview-figure figcaption {
-    font-size:10px;
-    padding:12px 3px
-  }
-  .pipeline-steps {
-    grid-template-columns:1fr 1fr;
-    gap:24px 15px;
-    margin-top:25px
-  }
-  .pipeline-steps>div {
-    padding-left:12px
-  }
-  .pipeline-steps p {
-    font-size:11px
   }
   .serve-grid {
     grid-template-columns:1fr;
@@ -1436,5 +1582,28 @@ pre {
   *,*:before,*:after {
     transition:none!important;
     animation:none!important
+  }
+}
+@media(max-width:900px) {
+  .annotated {
+    padding:10px
+  }
+  .annotated-note {
+    position:static;
+    width:auto;
+    min-width:0;
+    margin-top:12px;
+    box-shadow:none
+  }
+  .annotated-hotspot span {
+    left:-8px;
+    top:-8px;
+    width:20px;
+    height:20px;
+    font-size:10px
+  }
+  .annotated-bar {
+    flex-direction:column;
+    align-items:flex-start
   }
 }

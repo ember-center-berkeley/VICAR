@@ -11,10 +11,10 @@
   <meta property="og:image" content="https://ember-center-berkeley.github.io/VICAR/assets/images/overview.png?v=updated-viser-20261015">
   <title>VICAR | Video Imitation with Contact-Aware Retargeting</title>
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/style.css?v=code-coming-soon-20261015">
+  <link rel="stylesheet" href="assets/style.css?v=pipeline-annotated-20261018">
   <script defer src="assets/content.js?v=authors-20261016"></script>
   <script defer src="assets/viewer-manifest.js?v=under-table-table-7cm-20261014"></script>
-  <script defer src="assets/site.js?v=serve-grid-ladder-label-20261015"></script>
+  <script defer src="assets/site.js?v=pipeline-annotated-20261018"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -55,9 +55,30 @@
     </section>
 
     <section id="overview" class="section container" aria-labelledby="overview-title">
-      <div class="section-heading centered"><p class="eyebrow">From observation to execution</p><h2 id="overview-title">A pipeline built around contact</h2></div>
-      <figure class="overview-figure"><a href="assets/images/overview.png?v=updated-viser-20261015" target="_blank" rel="noopener" aria-label="Open full-resolution VICAR overview figure"><img src="assets/images/overview.png?v=updated-viser-20261015" width="2600" height="1463" alt="VICAR pipeline: human videos and scene reconstruction feed contact-aware retargeting, contact-point augmentation, a motion generator, reinforcement learning, and zero-shot deployment on a humanoid robot." loading="lazy"></a><figcaption><strong>VICAR overview.</strong> Third-person human video becomes a contact-aware robot reference. Augmented contact points train a motion generator, whose outputs are tracked by a policy on the robot.</figcaption></figure>
-      <div class="pipeline-steps"><div><span>01</span><h3>Recover</h3><p>Human motion and task-relevant scene geometry from video.</p></div><div><span>02</span><h3>Retarget</h3><p>Preserve global contacts, motion speed, and collision clearance.</p></div><div><span>03</span><h3>Augment</h3><p>Vary contact locations while retaining the demonstrated skill.</p></div><div><span>04</span><h3>Execute</h3><p>Track contact-conditioned references on the humanoid.</p></div></div>
+      <div class="section-heading centered"><p class="eyebrow">From observation to execution</p><h2 id="overview-title">A pipeline built around contact</h2><p>The paper&#8217;s overview figure, explained one stage at a time.</p></div>
+      <div class="annotated">
+        <div id="annotated-stage" class="annotated-stage">
+          <div class="annotated-canvas"><div class="annotated-figure">
+            <img src="assets/images/overview.png?v=updated-viser-20261015" width="2600" height="1463" alt="VICAR pipeline: human videos and scene reconstruction feed contact-aware retargeting, contact-point augmentation, a motion generator, reinforcement learning, and zero-shot deployment on a humanoid robot." loading="lazy">
+            <div class="annotated-spotlight" aria-hidden="true"></div>
+            <button type="button" class="annotated-hotspot" data-stage="1" data-title="Watch" data-label="III-A · Human videos" data-text="Start from ordinary third-person videos of a person doing the task. Red dots mark where their hands touch the world." style="--x:0.9%;--y:2.9%;--w:16.35%;--h:93.8%" aria-label="Stage 1: Human videos" aria-pressed="false"><span aria-hidden="true">1</span></button>
+            <button type="button" class="annotated-hotspot" data-stage="2" data-title="Rebuild" data-label="III-B · Scene reconstruction" data-text="Recover the person’s motion and rebuild the objects that matter, like the table, in 3D from the same video." style="--x:19.85%;--y:2.9%;--w:20.25%;--h:34.3%" aria-label="Stage 2: Scene reconstruction" aria-pressed="false"><span aria-hidden="true">2</span></button>
+            <button type="button" class="annotated-hotspot" data-stage="3" data-title="Retarget" data-label="III-C · Contact-aware retargeting" data-text="Move the motion onto the robot while keeping the contacts, the speed and the clearance from obstacles. Contacts get top priority." style="--x:19.85%;--y:40.0%;--w:20.25%;--h:56.7%" aria-label="Stage 3: Contact-aware retargeting" aria-pressed="false"><span aria-hidden="true">3</span></button>
+            <button type="button" class="annotated-hotspot" data-stage="4" data-title="Vary" data-label="III-D · Contact-point augmentation" data-text="Move the contact points around to create many new versions of the same skill." style="--x:42.8%;--y:2.9%;--w:29.35%;--h:29.8%" aria-label="Stage 4: Contact-point augmentation" aria-pressed="false"><span aria-hidden="true">4</span></button>
+            <button type="button" class="annotated-hotspot" data-stage="5" data-title="Learn to generate" data-label="III-D · Train motion generator" data-text="Those versions train a motion generator: give it a style and new contact positions, and it produces a matching motion." style="--x:42.8%;--y:35.6%;--w:29.35%;--h:28.4%" aria-label="Stage 5: Train motion generator" aria-pressed="false"><span aria-hidden="true">5</span></button>
+            <button type="button" class="annotated-hotspot" data-stage="6" data-title="Train to track" data-label="III-E/F · RL training and rewards" data-text="Reinforcement learning in simulation trains a policy (π) that follows the generated motions." style="--x:42.8%;--y:66.8%;--w:29.35%;--h:29.9%" aria-label="Stage 6: RL training and rewards" aria-pressed="false"><span aria-hidden="true">6</span></button>
+            <button type="button" class="annotated-hotspot" data-stage="7" data-title="Deploy" data-label="IV-E · Zero-shot sim-to-real" data-text="The policy runs on the real robot straight away, with no real-robot training data." style="--x:74.85%;--y:2.9%;--w:24.25%;--h:93.8%" aria-label="Stage 7: Zero-shot sim-to-real" aria-pressed="false"><span aria-hidden="true">7</span></button>
+          </div></div>
+          <div id="annotated-note" class="annotated-note" aria-live="polite" hidden>
+            <div class="annotated-note-head"><span class="annotated-note-num"></span><p class="annotated-note-label"></p><button type="button" class="annotated-note-close" aria-label="Close note">&#215;</button></div>
+            <h3 class="annotated-note-title"></h3>
+            <p class="annotated-note-text"></p>
+            <div class="annotated-note-nav"><button type="button" class="annotated-prev">&#8592; Previous</button><span class="annotated-count"></span><button type="button" class="annotated-next">Next &#8594;</button></div>
+          </div>
+        </div>
+        <div class="annotated-bar"><p>Seven stages, in reading order. Tap any panel to see what it does.</p><button type="button" id="annotated-start" class="annotated-start">Start the tour</button></div>
+        <p class="annotated-caption"><strong>VICAR overview.</strong> Third-person human video becomes a contact-aware robot reference. Augmented contact points train a motion generator, whose outputs are tracked by a policy on the robot.</p>
+      </div>
     </section>
 
     <section id="skills" class="section section-tinted" aria-labelledby="serves-title"><div class="container">

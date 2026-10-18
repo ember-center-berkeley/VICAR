@@ -39,6 +39,41 @@
     link.href = content.links[link.dataset.resource] || './';
   });
   $('#abstract-text').textContent = content.abstract;
+  // Pipeline: the paper figure with numbered panels. Choosing one dims the rest
+  // and explains it in plain language; the tour steps through all seven.
+  const annotatedStage = $('#annotated-stage');
+  const hotspots = [...annotatedStage.querySelectorAll('.annotated-hotspot')];
+  const stageNote = $('#annotated-note');
+  let activeStage = 0;
+  function showStage(n) {
+    activeStage = n;
+    annotatedStage.classList.add('is-touched');
+    annotatedStage.classList.toggle('is-active', n > 0);
+    stageNote.hidden = !n;
+    hotspots.forEach(spot => spot.setAttribute('aria-pressed', String(Number(spot.dataset.stage) === n)));
+    if (!n) return;
+    const spot = hotspots[n - 1];
+    const [x, y, w, h] = ['x', 'y', 'w', 'h'].map(key => {
+      const value = spot.style.getPropertyValue(`--${key}`);
+      annotatedStage.style.setProperty(`--${key}`, value);
+      return parseFloat(value);
+    });
+    annotatedStage.dataset.side = x + w / 2 < 50 ? 'right' : 'left';
+    annotatedStage.dataset.vside = y > 55 ? 'bottom' : 'top';
+    stageNote.querySelector('.annotated-note-num').textContent = n;
+    stageNote.querySelector('.annotated-note-label').textContent = spot.dataset.label;
+    stageNote.querySelector('.annotated-note-title').textContent = spot.dataset.title;
+    stageNote.querySelector('.annotated-note-text').textContent = spot.dataset.text;
+    stageNote.querySelector('.annotated-count').textContent = `${n} / ${hotspots.length}`;
+    stageNote.querySelector('.annotated-prev').disabled = n === 1;
+    stageNote.querySelector('.annotated-next').textContent = n === hotspots.length ? 'Done' : 'Next →';
+  }
+  hotspots.forEach(spot => spot.addEventListener('click', () => showStage(Number(spot.dataset.stage))));
+  $('#annotated-start').addEventListener('click', () => showStage(1));
+  stageNote.querySelector('.annotated-prev').addEventListener('click', () => showStage(activeStage - 1));
+  stageNote.querySelector('.annotated-next').addEventListener('click', () => showStage(activeStage < hotspots.length ? activeStage + 1 : 0));
+  stageNote.querySelector('.annotated-note-close').addEventListener('click', () => showStage(0));
+  annotatedStage.addEventListener('keydown', event => { if (event.key === 'Escape') showStage(0); });
   if (content.authors.length) {
     const authors = $('#authors');
     authors.hidden = false;
