@@ -31,8 +31,10 @@ If this checkout already has its remote and branch, use `git add`, `git commit`,
 
 The summary includes a timed AI-generated English voiceover and optional English
 captions. It still autoplays muted; **Play with narration** restarts it with sound.
-The original video frames, edit timing, resolution, and compression are preserved.
-Only an AAC narration track is added to the MP4.
+The edit timing and resolution are preserved. The current website render also
+uses selective background blur on the live-action footage while retaining the
+subjects, table, object, and contact graphics. Its narration is copied without
+re-encoding. See [the focus rendering instructions](docs/SUMMARY_FOCUS.md).
 
 Edit the narration and caption phrases in `docs/SUMMARY_NARRATION.json`.
 `scripts/add_summary_voiceover.py` uses [edge-tts](https://github.com/rany2/edge-tts)

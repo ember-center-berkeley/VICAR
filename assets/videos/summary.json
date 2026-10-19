@@ -10,8 +10,8 @@
   ],
   "hardware_frames": 777,
   "hardware_final_hold_frames": 0,
-  "video_bytes": 11159461,
-  "video_sha256": "74ad3a21fc366d0461c6eb17dd78222cd817071a9006a66a9e4f41dfc1818f0a",
+  "video_bytes": 8881250,
+  "video_sha256": "bb237b50ce25ba32e9816a45def58c09ac7b32bac77b368d43b59a1c6dba1f23",
   "source": "Website summary edit of the accepted VICAR overview; prepared layers with matching native titles.",
   "narration": {
     "type": "AI-generated English narration",
@@ -28,5 +28,15 @@
     "text": "Contact-preserving retargeting",
     "start_frame": 692,
     "end_frame_exclusive": 1021
+  },
+  "selective_focus": {
+    "method": "Tracked human/robot mattes with table and object masks; background-only blur",
+    "source_sha256": "74ad3a21fc366d0461c6eb17dd78222cd817071a9006a66a9e4f41dfc1818f0a",
+    "background_blur_radius_px_at_panel_width_920": 8,
+    "render_script": "scripts/focus_summary.py",
+    "mask_script": "scripts/summary_focus_masks.swift",
+    "documentation": "docs/SUMMARY_FOCUS.md",
+    "original_audio_bitstream_preserved": true,
+    "motion_timing_preserved": true
   }
 }
