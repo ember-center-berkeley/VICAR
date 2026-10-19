@@ -862,6 +862,19 @@ h3 {
   object-fit:contain;
   background:#131923
 }
+#serve-track .media-slot:has(> video)::after,
+#other-skills .media-slot:has(> video)::after {
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:2px;
+  transform:translateX(-50%);
+  background:#fff;
+  pointer-events:none;
+  z-index:1
+}
 .video-copy {
   padding:20px
 }
