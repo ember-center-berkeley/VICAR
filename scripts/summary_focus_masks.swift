@@ -1,4 +1,4 @@
-// Generate tracking mattes for the two live-action layers of the approved summary.
+// Generate human tracking mattes for the summary or the ladder hero.
 import Foundation
 import Vision
 import AVFoundation
@@ -23,16 +23,15 @@ var f=0;var count=0
 while let sample=stream.copyNextSampleBuffer() {
  defer { f += 1 }
  let human=ladder || f<1644
- let hardware = !ladder && f>=2820
- if !(human || hardware) || f%2 != 0 {continue}
+ if !human || f%2 != 0 {continue}
  if ladder && (f<10 || f>594) {continue}
  let destination=output.appendingPathComponent(String(format:"%04d.png",f))
  let extraDestination=extra.appendingPathComponent(String(format:"%04d.png",f))
- if FileManager.default.fileExists(atPath:destination.path) && (!human || FileManager.default.fileExists(atPath:extraDestination.path)){continue}
+ if FileManager.default.fileExists(atPath:destination.path) && FileManager.default.fileExists(atPath:extraDestination.path){continue}
  try autoreleasepool {
   let buffer=CMSampleBufferGetImageBuffer(sample)!
   let im=CIImage(cvPixelBuffer:buffer)
-  var x=hardware ? 976.0 : 24.0;var y=176.0;var w=920.0;var h=880.0
+  var x=24.0;var y=176.0;var w=920.0;var h=880.0
   if !ladder && f<150 {
    let u=max(0.0,min(1.0,(Double(f)/60.0-1.1)/1.4));let v=u*u*(3-2*u)
    x=(24*v).rounded();y=(176*v).rounded();w=(1920-1000*v).rounded();h=(1080-200*v).rounded()
@@ -43,17 +42,11 @@ while let sample=stream.copyNextSampleBuffer() {
   let cg=ctx.createCGImage(crop,from:crop.extent)!
   let handler=VNImageRequestHandler(cgImage:cg)
   let result:CIImage
-  if human {
-   try handler.perform([person]);result=CIImage(cvPixelBuffer:person.results!.first!.pixelBuffer)
-   let foreground=VNGenerateForegroundInstanceMaskRequest();try handler.perform([foreground])
-   guard let r=foreground.results?.first, !r.allInstances.isEmpty else {fatalError("No human foreground at \(f)")}
-   let fg=CIImage(cvPixelBuffer:try r.generateScaledMaskForImage(forInstances:r.allInstances,from:handler))
-   try ctx.writePNGRepresentation(of:fg,to:extraDestination,format:.L8,colorSpace:CGColorSpaceCreateDeviceGray())
-  } else {
-   let foreground=VNGenerateForegroundInstanceMaskRequest();try handler.perform([foreground])
-   guard let r=foreground.results?.first, !r.allInstances.isEmpty else {fatalError("No robot mask at \(f)")}
-   result=CIImage(cvPixelBuffer:try r.generateScaledMaskForImage(forInstances:r.allInstances,from:handler))
-  }
+  try handler.perform([person]);result=CIImage(cvPixelBuffer:person.results!.first!.pixelBuffer)
+  let foreground=VNGenerateForegroundInstanceMaskRequest();try handler.perform([foreground])
+  guard let r=foreground.results?.first, !r.allInstances.isEmpty else {fatalError("No human foreground at \(f)")}
+  let fg=CIImage(cvPixelBuffer:try r.generateScaledMaskForImage(forInstances:r.allInstances,from:handler))
+  try ctx.writePNGRepresentation(of:fg,to:extraDestination,format:.L8,colorSpace:CGColorSpaceCreateDeviceGray())
   try ctx.writePNGRepresentation(of:result,to:destination,format:.L8,colorSpace:CGColorSpaceCreateDeviceGray())
  }
  count += 1

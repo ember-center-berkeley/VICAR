@@ -1,7 +1,8 @@
 """Selective, temporally tracked focus treatment of the existing summary edit.
 
-The Apple Vision mattes isolate the human/robot; measured polygons retain the
-table, object and contact graphics. All coordinates refer to the 1080p edit.
+The Apple Vision mattes isolate the human; measured polygons retain the table,
+object and contact graphics. Real robot footage retains its original background.
+All coordinates refer to the 1080p edit.
 """
 from pathlib import Path
 from functools import lru_cache
@@ -29,15 +30,6 @@ HUMAN_PARTS = [
  [(1095,802),(1134,804),(1134,1080),(1095,1080)],
  [(1020,815),(1050,815),(1120,915),(1100,927)],
 ]
-ROBOT_PARTS = [
- [(1462,673),(1896,673),(1896,816),(1387,808),(1387,766)],
- [(1527,808),(1563,809),(1563,1056),(1527,1056)],
- [(1855,814),(1896,815),(1896,1056),(1855,1056)],
- [(1544,911),(1650,810),(1663,813),(1556,925)],
- [(1554,906),(1860,923),(1860,951),(1552,933)],
- [(1770,817),(1790,817),(1840,909),(1820,916)],
- [(1530,671),(1610,671),(1610,697),(1530,697)],
-]
 # Frame, top center, bottom center, half width. Linear interpolation follows the
 # small white pickup object where the subject segmenter cannot resolve it.
 HUMAN_OBJECT = [
@@ -50,17 +42,11 @@ HUMAN_OBJECT = [
  (1492,510,594,493,681,21),(1522,548,586,535,673,21),
  (1692,548,586,535,673,21),
 ]
-ROBOT_OBJECT = [
- (2797,1455,907,1455,995,13),(2960,1455,907,1455,995,13),
- (3030,1473,882,1482,965,14),(3100,1411,901,1395,981,16),
- (3170,1330,859,1321,916,16),(3210,1320,840,1310,895,16),
-]
 
 def ease(v):
     v=max(0.,min(1.,v));return v*v*(3-2*v)
 
 def rect(f):
-    if f>=2797:return (976,176,920,880)
     v=ease((f/60-1.1)/1.4)
     return tuple(round(a+(b-a)*v) for a,b in zip((0,0,1920,1080),(24,176,920,880)))
 
@@ -93,10 +79,9 @@ def raw_matte(f):
     return result
 
 def matte(f,wh):
-    if f>=2797:mf=max(2820,f//2*2)
-    else:mf=min(1642,f//2*2)
+    mf=min(1642,f//2*2)
     a=raw_matte(mf).resize(wh,Image.Resampling.BILINEAR)
-    if f%2 and (mf<1642 or 2820<=mf<3596):
+    if f%2 and mf<1642:
         a=Image.blend(a,raw_matte(mf+2).resize(wh,Image.Resampling.BILINEAR),.5)
     # Eliminate low-confidence spill; retain a small safety edge around hair,
     # hands and shoes. The feather is narrow enough to avoid a cutout halo.
@@ -107,22 +92,20 @@ def matte(f,wh):
     return a
 
 def focus(frame,f,save_mask=False):
-    if not (f<1692 or f>=2797):return frame
+    # Background defocus applies only while the human demonstration is visible.
+    # Return the untouched source for the complete simulation/hardware section.
+    if f>=1692:return frame
     x,y,w,h=rect(f);crop=frame.crop((x,y,x+w,y+h))
     a=matte(f,(w,h));manual=Image.new('L',(w,h));d=ImageDraw.Draw(manual)
-    human=f<1692
-    mapping=(lambda pt:mapped_human(pt,f)) if human else (lambda pt:(pt[0]-x,pt[1]-y))
-    for polygon in HUMAN_PARTS if human else ROBOT_PARTS:
+    mapping=lambda pt:mapped_human(pt,f)
+    for polygon in HUMAN_PARTS:
         d.polygon([mapping(pt) for pt in polygon],fill=255)
-    if human or f<=3210:
-        d.polygon([mapping(pt) for pt in object_poly(HUMAN_OBJECT if human else ROBOT_OBJECT,f)],fill=255)
-    # Supporting-hand marker is partly outside the tabletop silhouette.
-    if not human:d.ellipse((1397-x-23,731-y-23,1397-x+23,731-y+23),fill=255)
+    d.polygon([mapping(pt) for pt in object_poly(HUMAN_OBJECT,f)],fill=255)
     a=ImageChops.lighter(a,manual)
     scale=w/920
     treated,alpha=soft_focus(crop,a,scale)
     # Original rounded-card antialiasing and white gutters remain untouched.
-    panel=Image.new('L',(w*2,h*2));ImageDraw.Draw(panel).rounded_rectangle((0,0,w*2-1,h*2-1),radius=36*ease((f/60-1.1)/1.4) if human else 36,fill=255)
+    panel=Image.new('L',(w*2,h*2));ImageDraw.Draw(panel).rounded_rectangle((0,0,w*2-1,h*2-1),radius=36*ease((f/60-1.1)/1.4),fill=255)
     panel=panel.resize((w,h),Image.Resampling.LANCZOS)
     if f<66:panel=Image.new('L',(w,h),255)
     frame.paste(treated,(x,y),panel)

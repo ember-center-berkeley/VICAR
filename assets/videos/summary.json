@@ -10,8 +10,8 @@
   ],
   "hardware_frames": 777,
   "hardware_final_hold_frames": 0,
-  "video_bytes": 8786370,
-  "video_sha256": "6f1c4cb3ecacf4d7550fb5e30d7a8fbe7ec3147bfbd377071dc883fcfb069169",
+  "video_bytes": 9853808,
+  "video_sha256": "7344c6f0d65c0085d184bdde7562f8747db166934c84a6bdcd9e00bbb93936b5",
   "source": "Website summary edit of the accepted VICAR overview; prepared layers with matching native titles.",
   "narration": {
     "type": "AI-generated English narration",
@@ -30,7 +30,7 @@
     "end_frame_exclusive": 1021
   },
   "selective_focus": {
-    "method": "Tracked human/robot mattes with table and object masks; background-only blur",
+    "method": "Tracked human mattes with table and object masks; background-only blur on the human demonstration",
     "source_sha256": "74ad3a21fc366d0461c6eb17dd78222cd817071a9006a66a9e4f41dfc1818f0a",
     "background_blur_radius_px_at_panel_width_920": 8,
     "render_script": "scripts/focus_summary.py",
@@ -40,6 +40,8 @@
     "motion_timing_preserved": true,
     "boundary_feather_radius_px_at_panel_width_920": 7,
     "shared_compositor": "scripts/focus_composite.py",
-    "background_convolution_precision": "float32"
+    "background_convolution_precision": "float32",
+    "real_robot_footage": "Original background retained; no added defocus",
+    "human_only": true
   }
 }

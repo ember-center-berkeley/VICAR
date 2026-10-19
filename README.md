@@ -32,8 +32,9 @@ If this checkout already has its remote and branch, use `git add`, `git commit`,
 The summary includes a timed AI-generated English voiceover and optional English
 captions. It still autoplays muted; **Play with narration** restarts it with sound.
 The edit timing and resolution are preserved. The current website render also
-uses selective background blur on the live-action footage while retaining the
-subjects, table, object, and contact graphics. Its narration is copied without
+uses selective background blur on the human demonstration while retaining the
+person, table, object, and contact graphics. Real robot footage keeps its original
+unblurred background. The narration is copied without
 re-encoding. The ladder hero's human video uses the same soft focus transition,
 with separate masks for the person and ladder. See
 [the focus rendering instructions](docs/SUMMARY_FOCUS.md).

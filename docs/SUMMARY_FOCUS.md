@@ -1,7 +1,8 @@
 # Selective background focus
 
-The website summary uses a shallow-focus treatment on its live-action human and
-robot footage. The moving subjects, table, pickup object, and contact markers
+The website summary uses a shallow-focus treatment on its human demonstration.
+Real robot footage retains the original, unblurred lab background.
+The human, table, pickup object, and contact markers
 retain their original detail. The lab background is softened, with a gradual
 return to sharpness on the nearby floor. Titles and Viser/simulation panels are
 outside the effect. This is a composited depth-of-field effect, not a new camera
@@ -36,8 +37,7 @@ calibrated to this particular edit.
 
 The Swift helper samples the subject mattes at 30 fps, and the renderer
 interpolates them at 60 fps. It combines person and foreground-instance
-segmentation for the human (to preserve the bent knee and shoes), and uses
-foreground-instance segmentation for the robot. Traced table parts and
+segmentation for the human (to preserve the bent knee and shoes). Traced table parts and
 keyframed object masks supplement the tracking. These coordinates, the original
 opening crop, and the fade intervals are in `scripts/focus_summary.py`.
 
