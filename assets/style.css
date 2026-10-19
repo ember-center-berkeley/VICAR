@@ -791,6 +791,10 @@ h3 {
 .annotated-caption strong {
   color:var(--ink)
 }
+.results-videos {
+  display:grid;
+  gap:24px
+}
 .serve-grid {
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
@@ -1529,6 +1533,9 @@ pre {
   }
   .section-tag {
     display:none
+  }
+  .results-videos {
+    gap:20px
   }
   .serve-grid {
     grid-template-columns:1fr;
