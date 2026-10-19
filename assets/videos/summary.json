@@ -10,8 +10,8 @@
   ],
   "hardware_frames": 777,
   "hardware_final_hold_frames": 0,
-  "video_bytes": 8881250,
-  "video_sha256": "bb237b50ce25ba32e9816a45def58c09ac7b32bac77b368d43b59a1c6dba1f23",
+  "video_bytes": 8786370,
+  "video_sha256": "6f1c4cb3ecacf4d7550fb5e30d7a8fbe7ec3147bfbd377071dc883fcfb069169",
   "source": "Website summary edit of the accepted VICAR overview; prepared layers with matching native titles.",
   "narration": {
     "type": "AI-generated English narration",
@@ -37,6 +37,9 @@
     "mask_script": "scripts/summary_focus_masks.swift",
     "documentation": "docs/SUMMARY_FOCUS.md",
     "original_audio_bitstream_preserved": true,
-    "motion_timing_preserved": true
+    "motion_timing_preserved": true,
+    "boundary_feather_radius_px_at_panel_width_920": 7,
+    "shared_compositor": "scripts/focus_composite.py",
+    "background_convolution_precision": "float32"
   }
 }

@@ -9,6 +9,7 @@ import argparse, hashlib, json, shutil, subprocess
 import numpy as np
 from scipy.ndimage import minimum_filter, maximum_filter
 from PIL import Image, ImageDraw, ImageFilter, ImageChops
+from focus_composite import soft_focus
 
 # Working media and mattes live outside the published website.
 P = None
@@ -119,27 +120,7 @@ def focus(frame,f,save_mask=False):
     if not human:d.ellipse((1397-x-23,731-y-23,1397-x+23,731-y+23),fill=255)
     a=ImageChops.lighter(a,manual)
     scale=w/920
-    pad=max(3,int(round(3*scale))|1)
-    core=Image.fromarray(maximum_filter(np.asarray(a),size=pad,mode='nearest'))
-    alpha=core.filter(ImageFilter.GaussianBlur(2*scale))
-    # Blur only background samples, so dark clothing/robot edges do not bleed
-    # into bright walls. Downsampled normalized convolution is sufficient for
-    # a soft background and keeps the full-resolution foreground untouched.
-    small=(max(1,w//2),max(1,h//2))
-    rgb=np.asarray(crop.resize(small,Image.Resampling.BILINEAR),dtype=np.float32)
-    weight=1-np.asarray(core.resize(small,Image.Resampling.BILINEAR),dtype=np.float32)/255
-    radius=4*scale
-    weighted=Image.fromarray(np.uint8(np.clip(rgb*weight[:,:,None],0,255)))
-    numerator=np.asarray(weighted.filter(ImageFilter.GaussianBlur(radius)),dtype=np.float32)
-    denominator=np.asarray(Image.fromarray(np.uint8(weight*255)).filter(ImageFilter.GaussianBlur(radius)),dtype=np.float32)/255
-    blurred=np.where((denominator>.02)[:,:,None],numerator/np.maximum(.02,denominator[:,:,None]),rgb)
-    blurred=Image.fromarray(np.uint8(np.clip(blurred,0,255))).resize((w,h),Image.Resampling.BILINEAR)
-    # Keep nearby floor texture in the same focal plane as the subject's feet.
-    yy=np.arange(h)/h
-    floor=np.clip((yy-.79)/.19,0,1)**2*.92
-    floor=Image.fromarray(np.uint8(np.broadcast_to(floor[:,None]*255,(h,w))))
-    alpha=ImageChops.lighter(alpha,floor)
-    treated=Image.composite(crop,blurred,alpha)
+    treated,alpha=soft_focus(crop,a,scale)
     # Original rounded-card antialiasing and white gutters remain untouched.
     panel=Image.new('L',(w*2,h*2));ImageDraw.Draw(panel).rounded_rectangle((0,0,w*2-1,h*2-1),radius=36*ease((f/60-1.1)/1.4) if human else 36,fill=255)
     panel=panel.resize((w,h),Image.Resampling.LANCZOS)

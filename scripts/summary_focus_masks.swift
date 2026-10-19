@@ -3,9 +3,10 @@ import Foundation
 import Vision
 import AVFoundation
 import CoreImage
-guard CommandLine.arguments.count == 3 else {
- fatalError("Usage: summary_focus_masks INPUT.mp4 WORK_DIRECTORY")
+guard CommandLine.arguments.count == 3 || (CommandLine.arguments.count == 4 && CommandLine.arguments[3] == "ladder") else {
+ fatalError("Usage: summary_focus_masks INPUT.mp4 WORK_DIRECTORY [ladder]")
 }
+let ladder = CommandLine.arguments.count == 4
 let work = URL(fileURLWithPath:CommandLine.arguments[2],isDirectory:true)
 let output = work.appendingPathComponent("masks",isDirectory:true)
 let extra = work.appendingPathComponent("foreground",isDirectory:true)
@@ -21,9 +22,10 @@ let person=VNGeneratePersonSegmentationRequest();person.qualityLevel = .accurate
 var f=0;var count=0
 while let sample=stream.copyNextSampleBuffer() {
  defer { f += 1 }
- let human=f<1644
- let hardware=f>=2820
+ let human=ladder || f<1644
+ let hardware = !ladder && f>=2820
  if !(human || hardware) || f%2 != 0 {continue}
+ if ladder && (f<10 || f>594) {continue}
  let destination=output.appendingPathComponent(String(format:"%04d.png",f))
  let extraDestination=extra.appendingPathComponent(String(format:"%04d.png",f))
  if FileManager.default.fileExists(atPath:destination.path) && (!human || FileManager.default.fileExists(atPath:extraDestination.path)){continue}
@@ -31,11 +33,13 @@ while let sample=stream.copyNextSampleBuffer() {
   let buffer=CMSampleBufferGetImageBuffer(sample)!
   let im=CIImage(cvPixelBuffer:buffer)
   var x=hardware ? 976.0 : 24.0;var y=176.0;var w=920.0;var h=880.0
-  if f<150 {
+  if !ladder && f<150 {
    let u=max(0.0,min(1.0,(Double(f)/60.0-1.1)/1.4));let v=u*u*(3-2*u)
    x=(24*v).rounded();y=(176*v).rounded();w=(1920-1000*v).rounded();h=(1080-200*v).rounded()
   }
-  let crop=im.cropped(to:CGRect(x:x,y:1080-y-h,width:w,height:h)).transformed(by:CGAffineTransform(translationX:-x,y:-(1080-y-h)))
+  let frameHeight=Double(CVPixelBufferGetHeight(buffer))
+  if ladder {x=0;y=0;w=Double(CVPixelBufferGetWidth(buffer));h=frameHeight}
+  let crop=im.cropped(to:CGRect(x:x,y:frameHeight-y-h,width:w,height:h)).transformed(by:CGAffineTransform(translationX:-x,y:-(frameHeight-y-h)))
   let cg=ctx.createCGImage(crop,from:crop.extent)!
   let handler=VNImageRequestHandler(cgImage:cg)
   let result:CIImage
@@ -53,7 +57,7 @@ while let sample=stream.copyNextSampleBuffer() {
   try ctx.writePNGRepresentation(of:result,to:destination,format:.L8,colorSpace:CGColorSpaceCreateDeviceGray())
  }
  count += 1
- if count%60==0{print("Tracking mask \(f)/3598");fflush(stdout)}
+ if count%60==0{print("Tracking mask \(f)/\(ladder ? 605 : 3598)");fflush(stdout)}
 }
 guard reader.status == .completed else{fatalError("\(String(describing:reader.error))")}
 print("Done: \(count) mattes from \(f) frames")

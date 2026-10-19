@@ -42,9 +42,12 @@ keyframed object masks supplement the tracking. These coordinates, the original
 opening crop, and the fade intervals are in `scripts/focus_summary.py`.
 
 At the 920-pixel comparison-panel width, the background blur radius is roughly
-8 pixels, scaled with the opening zoom. A narrow feather blends subject edges.
-Background-only normalized convolution prevents foreground colors from bleeding
-into the blurred lab. The effect is baked into the MP4 and adds no runtime cost
+8 pixels, scaled with the opening zoom. A 7-pixel Gaussian feather (increased
+from 2 pixels) produces a more gradual transition around subjects and props.
+The shared `scripts/focus_composite.py` keeps background convolution weights in
+floating point to avoid jagged edge pixels during normalization.
+Background-only convolution prevents foreground colors from bleeding into the
+blurred lab. The effect is baked into the MP4 and adds no runtime cost
 on the website. Fine silhouette edges remain an approximation of lens blur.
 
 Before publishing a revised render, inspect the opening zoom, crouch, object
@@ -52,3 +55,26 @@ lift, and hardware sequence; confirm the frame count and copied audio, regenerat
 the poster, and update the media metadata and URL version in `index.html`.
 The native Premiere project and original source media are separate and are not
 rewritten by this website rendering script.
+
+## Ladder hero human video
+
+The human climb uses the same compositor, with a 6-pixel background blur at
+480 × 800 and a feather scaled to that size. Separate polygons preserve the
+ladder rails, rungs, and feet while leaving the openings defocused. Person and
+foreground mattes follow the climber at 25 fps and interpolate at the video's
+original 50 fps. The 605 frames, 12.1-second loop, white fades, and synchronization
+with the Viser hero are retained.
+
+Generate this render from the original paired clip:
+
+```sh
+mkdir -p /tmp/vicar-ladder-focus
+git show fe36eb5:assets/videos/hero-ladder-human.mp4 > /tmp/vicar-ladder-focus/original.mp4
+/tmp/vicar-summary-focus/masks-tool /tmp/vicar-ladder-focus/original.mp4 /tmp/vicar-ladder-focus ladder
+python scripts/focus_ladder_human.py --source /tmp/vicar-ladder-focus/original.mp4 --work-dir /tmp/vicar-ladder-focus --output /tmp/vicar-ladder-focus/hero-ladder-human.mp4
+```
+
+Compile the current `summary_focus_masks.swift` with the command above first.
+`prepare_hero_human.py` produces the paired clip before this focus treatment;
+reapply the treatment if regenerating that original crop. Update both the MP4
+and its poster, the metadata, and the URLs in `assets/content.js` when publishing.

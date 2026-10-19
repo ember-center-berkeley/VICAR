@@ -34,7 +34,9 @@ captions. It still autoplays muted; **Play with narration** restarts it with sou
 The edit timing and resolution are preserved. The current website render also
 uses selective background blur on the live-action footage while retaining the
 subjects, table, object, and contact graphics. Its narration is copied without
-re-encoding. See [the focus rendering instructions](docs/SUMMARY_FOCUS.md).
+re-encoding. The ladder hero's human video uses the same soft focus transition,
+with separate masks for the person and ladder. See
+[the focus rendering instructions](docs/SUMMARY_FOCUS.md).
 
 Edit the narration and caption phrases in `docs/SUMMARY_NARRATION.json`.
 `scripts/add_summary_voiceover.py` uses [edge-tts](https://github.com/rany2/edge-tts)

@@ -19,7 +19,16 @@
   "audio": false,
   "video": "assets/videos/hero-ladder-human.mp4",
   "poster": "assets/images/hero-ladder-human-video-poster.jpg",
-  "video_bytes": 839131,
-  "video_sha256": "52eac8cee9f839ab79538d33e0174e3b15d8906f3cc44bc4dc71cdd1507114b4",
-  "note": "Existing SDR color grade retained. Wider vertical crop keeps the head and feet in view throughout the climb."
+  "video_bytes": 711648,
+  "video_sha256": "eccb76a06ef18810613f29f054300d0af682df3b91e39794d4f34482f2ed433c",
+  "note": "Existing SDR color grade retained. Wider vertical crop keeps the head and feet in view throughout the climb.",
+  "selective_focus": {
+    "source_sha256": "52eac8cee9f839ab79538d33e0174e3b15d8906f3cc44bc4dc71cdd1507114b4",
+    "render_script": "scripts/focus_ladder_human.py",
+    "shared_compositor": "scripts/focus_composite.py",
+    "background_blur_radius_px": 6,
+    "boundary_feather_radius_px": 3.652173913043478,
+    "ladder_parts_masked_separately": true,
+    "timing_and_fades_preserved": true
+  }
 }
