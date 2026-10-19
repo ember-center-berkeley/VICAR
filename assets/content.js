@@ -6,6 +6,11 @@ window.VICAR_HERO_PRESETS = {
     "poster": "assets/images/hero-ladder-climbing-poster.jpg?v=c0da56d3d265",
     "source": {
       "image": "assets/images/hero-ladder-human.jpg",
+      "video": "assets/videos/hero-ladder-human.mp4?v=paired-20261018",
+      "videoPoster": "assets/images/hero-ladder-human-video-poster.jpg?v=paired-20261018",
+      "videoWidth": 480,
+      "videoHeight": 800,
+      "videoAlt": "Human demonstration climbing the ladder, synchronized with the humanoid reference",
       "caption": "Human video",
       "width": 462,
       "height": 610,

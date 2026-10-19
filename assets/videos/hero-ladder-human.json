@@ -1,0 +1,25 @@
+{
+  "source": "assets/videos/ladder-climbing.mp4",
+  "source_sha256": "1823b09f57347b34c70b229f6cbe44d0561427d9f154f05cb1330451140ca7ca",
+  "source_duration_seconds": 11.8,
+  "crop_xywh": [
+    6,
+    24,
+    480,
+    800
+  ],
+  "width": 480,
+  "height": 800,
+  "frames": 605,
+  "fps": 50,
+  "duration_seconds": 12.1,
+  "source_playback_speed": 0.975206611570248,
+  "alignment": "Full human climb uniformly fit to the complete Viser reference loop.",
+  "fade_seconds": 0.18,
+  "audio": false,
+  "video": "assets/videos/hero-ladder-human.mp4",
+  "poster": "assets/images/hero-ladder-human-video-poster.jpg",
+  "video_bytes": 839131,
+  "video_sha256": "52eac8cee9f839ab79538d33e0174e3b15d8906f3cc44bc4dc71cdd1507114b4",
+  "note": "Existing SDR color grade retained. Wider vertical crop keeps the head and feet in view throughout the climb."
+}

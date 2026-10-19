@@ -140,7 +140,8 @@ const server = http.createServer((req, res) => {
    await touch.waitForFunction(()=>!document.querySelector('#hero-video').paused);
    await touch.locator('#hero-toggle').tap();
    assert.equal(await touch.evaluate(()=>document.querySelector('#hero-video').paused),true);
-   assert.equal(await touch.locator('#hero-toggle').getAttribute('aria-label'),'Play background video');
+   assert.equal(await touch.locator('#hero-toggle').getAttribute('aria-label'),'Play hero videos');
+   assert.equal(await touch.locator('#hero-human-video').evaluate(video=>video.paused),true);
   }
   await touch.locator('#demo-stage').scrollIntoViewIfNeeded();
   await touch.frameLocator('#viser-frame').locator('canvas:visible').first().waitFor({timeout:20000});

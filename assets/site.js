@@ -88,8 +88,8 @@
     $('#affiliations').textContent = content.affiliations;
     $('#affiliations').hidden = false;
   }
-  // Hero background: a muted loop, or just the poster with reduced motion or
-  // data saver. It pauses off screen, and the corner button pauses it for good.
+  // Muted hero videos share the Viser clock, pause control, and visibility state.
+  // Reduced motion and data saver retain the original still references.
   // If neither the loop nor the poster loads, the hero falls back to centred text.
   const heroVideo = $('#hero-video');
   const heroToggle = $('#hero-toggle');
@@ -97,6 +97,8 @@
   if (hero.objectPositionMobile) heroVideo.style.setProperty('--hero-mobile-position', hero.objectPositionMobile);
   let videoFailed = !hero.video || reducedMotion.matches || saveData;
   let posterFailed = !hero.poster;
+  let heroHumanVideo = null;
+  let resumeHero = () => {};
   const checkHeroMedia = () => {
     if (!videoFailed || !posterFailed) return;
     $('.hero').classList.add('hero-centered');
@@ -108,18 +110,87 @@
     probe.addEventListener('error', () => { posterFailed = true; checkHeroMedia(); });
     probe.src = hero.poster;
   }
+  if (hero.source?.image) {
+    const card = $('#hero-source');
+    const frame = card.querySelector('.human-frame');
+    const image = renderHumanFrame(frame, hero.source);
+    image.addEventListener('error', () => { if (!heroHumanVideo) card.hidden = true; }, {once: true});
+    card.querySelector('figcaption').textContent = hero.source.caption || '';
+    card.hidden = false;
+    if (hero.source.video && !videoFailed) {
+      const video = element('video');
+      Object.assign(video, {
+        muted: true, defaultMuted: true, loop: true, playsInline: true,
+        preload: 'auto', disablePictureInPicture: true, disableRemotePlayback: true,
+        width: hero.source.videoWidth, height: hero.source.videoHeight,
+        poster: hero.source.videoPoster || hero.source.image
+      });
+      video.id = 'hero-human-video';
+      video.setAttribute('aria-label', hero.source.videoAlt || 'Human demonstration');
+      heroHumanVideo = video;
+      frame.classList.add('is-video');
+      frame.append(video);
+      video.addEventListener('error', () => {
+        video.pause();
+        video.remove();
+        frame.classList.remove('is-video');
+        heroHumanVideo = null;
+        resumeHero();
+      }, {once: true});
+      video.src = hero.source.video;
+    }
+  }
   if (!videoFailed) {
     let heroPaused = false;
+    let heroVisible = false;
+    let starting = false;
+    const videos = () => [heroVideo, heroHumanVideo].filter(Boolean);
+    const allowed = () => !videoFailed && !heroPaused && heroVisible && !document.hidden;
+    const syncHuman = () => {
+      if (!heroHumanVideo || heroHumanVideo.readyState < 1) return;
+      if (Math.abs(heroHumanVideo.currentTime - heroVideo.currentTime) > .10) {
+        heroHumanVideo.currentTime = Math.min(heroVideo.currentTime, heroHumanVideo.duration - .02);
+      }
+    };
+    const pauseHero = () => videos().forEach(video => video.pause());
+    const playHero = async () => {
+      if (!allowed() || starting || videos().some(video => video.readyState < 2)) return;
+      starting = true;
+      syncHuman();
+      await Promise.allSettled(videos().map(video => video.play()));
+      starting = false;
+      if (!allowed()) pauseHero();
+    };
+    resumeHero = playHero;
     heroVideo.src = hero.video;
     heroToggle.hidden = false;
     const syncToggle = () => {
       heroToggle.classList.toggle('is-paused', heroVideo.paused);
-      heroToggle.setAttribute('aria-label', heroVideo.paused ? 'Play background video' : 'Pause background video');
+      const subject = heroHumanVideo ? 'hero videos' : 'background video';
+      heroToggle.setAttribute('aria-label', `${heroVideo.paused ? 'Play' : 'Pause'} ${subject}`);
     };
     heroVideo.addEventListener('play', syncToggle);
-    heroVideo.addEventListener('pause', syncToggle);
+    heroVideo.addEventListener('pause', () => { heroHumanVideo?.pause(); syncToggle(); });
+    heroVideo.addEventListener('waiting', () => heroHumanVideo?.pause());
+    heroVideo.addEventListener('playing', playHero);
+    heroVideo.addEventListener('seeking', syncHuman);
+    videos().forEach(video => video.addEventListener('canplay', playHero));
+    heroHumanVideo?.addEventListener('waiting', () => heroVideo.pause());
+    if (heroVideo.requestVideoFrameCallback) {
+      const checkSync = () => {
+        if (!heroVideo.paused) syncHuman();
+        if (!videoFailed) heroVideo.requestVideoFrameCallback(checkSync);
+      };
+      heroVideo.requestVideoFrameCallback(checkSync);
+    } else heroVideo.addEventListener('timeupdate', syncHuman);
     heroVideo.addEventListener('error', () => {
       videoFailed = true;
+      pauseHero();
+      if (heroHumanVideo) {
+        heroHumanVideo.parentElement.classList.remove('is-video');
+        heroHumanVideo.remove();
+        heroHumanVideo = null;
+      }
       heroToggle.hidden = true;
       heroVideo.removeAttribute('src');
       heroVideo.load(); // Show the poster instead.
@@ -127,24 +198,21 @@
     }, {once: true});
     heroToggle.addEventListener('click', () => {
       heroPaused = !heroVideo.paused;
-      if (heroPaused) heroVideo.pause();
-      else heroVideo.play().catch(() => {});
+      if (heroPaused) pauseHero();
+      else playHero();
       syncToggle();
     });
     new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) heroVideo.pause();
-      else if (!heroPaused) heroVideo.play().catch(() => {});
+      heroVisible = entry.isIntersecting;
+      if (!heroVisible) pauseHero();
+      else playHero();
     }).observe(heroVideo);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) pauseHero();
+      else playHero();
+    });
   }
   checkHeroMedia();
-  // The human demonstration the robot's motion was retargeted from.
-  if (hero.source?.image) {
-    const card = $('#hero-source');
-    const image = renderHumanFrame(card.querySelector('.human-frame'), hero.source);
-    image.addEventListener('error', () => { card.hidden = true; }, {once: true});
-    card.querySelector('figcaption').textContent = hero.source.caption || '';
-    card.hidden = false;
-  }
   const artPaths = {
     serve: '<path d="M8 52h79M15 52l-4 17m67-17 5 17M47 41v14M10 58h73"/><path d="m67 23 9-11c6-7 17 3 11 10L76 33zM69 29l-9 12"/><circle cx="35" cy="26" r="4"/><path d="M17 34c4-10 11-14 18-14" stroke-dasharray="3 5"/>',
     pickup: '<path d="M14 42h68M22 42v27m52-27v27M45 31V18h16v13zM26 12l-9 10 12 14 16-11"/><circle cx="28" cy="7" r="5"/><path d="m22 36 9 15-7 18M17 22l-6 28-5 18"/>',
